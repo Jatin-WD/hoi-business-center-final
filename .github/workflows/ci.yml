@@ -16,7 +16,7 @@ jobs:
       FRONTEND_URL: http://localhost:5173
       JWT_SECRET: ci-jwt-secret-change-in-production
       NODE_ENV: development
-      REQUIREMENT_EMAIL: LKMALLSHOP@GMAIL.COM
+      REQUIREMENT_EMAIL: jatinsaini019@gmail.com
 
     steps:
       - name: Checkout

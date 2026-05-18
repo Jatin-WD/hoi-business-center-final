@@ -4,7 +4,7 @@ import { createSchemaStatements } from './schema.js';
 dotenv.config();
 
 const DB_CLIENT = (process.env.DB_CLIENT || 'mysql').toLowerCase();
-const DATABASE_URL = process.env.DATABASE_URL || '';
+const DATABASE_URL = process.env.DATABASE_URL || process.env.MYSQL_URL || '';
 
 let connection;
 let dbInstance;
@@ -56,7 +56,7 @@ function createAsyncDb({ client, query }) {
 
 function assertConnectionUrl(client) {
   if (!DATABASE_URL) {
-    throw new Error(`${client} database requires DATABASE_URL. Docker MySQL should use mysql://hoi_user:hoi_password@127.0.0.1:3307/hoi_business_center`);
+    throw new Error(`${client} database requires DATABASE_URL or MYSQL_URL. Railway should use the MySQL service connection URL.`);
   }
 }
 

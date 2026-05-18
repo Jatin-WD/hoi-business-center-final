@@ -108,13 +108,14 @@ Admin panel manages:
 ## Deployment
 
 - Frontend: Vercel, using `vercel.json`.
-- Backend: Render Docker service, using `backend/Dockerfile` and `render.yaml`.
+- Backend: Railway, using `railway.json`.
 - CI/CD: GitHub Actions workflow in `.github/workflows/ci.yml`.
 
 Required production environment variables:
 
 ```env
 DATABASE_URL=mysql://user:password@host:3306/database
+# Or Railway MySQL: MYSQL_URL=${{MySQL.MYSQL_URL}}
 JWT_SECRET=long-random-secret
 FRONTEND_URL=https://your-frontend-domain.com
 REQUIREMENT_EMAIL=team@example.com

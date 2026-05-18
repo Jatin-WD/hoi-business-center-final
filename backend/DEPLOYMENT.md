@@ -35,14 +35,19 @@ cd backend
 npm install
 ```
 
-## Production Container
+## Railway Deployment
 
-The backend includes a Dockerfile:
+Railway cannot connect to your laptop Docker MySQL. Add a Railway MySQL service in the same project, then set backend variables:
 
-```bash
-docker build -t hoi-business-backend ./backend
-docker run --env-file backend/.env -p 5000:5000 hoi-business-backend
+```env
+DB_CLIENT=mysql
+MYSQL_URL=${{MySQL.MYSQL_URL}}
+JWT_SECRET=long-random-secret
+FRONTEND_URL=https://your-frontend-domain.com
+NODE_ENV=production
 ```
+
+The repo includes `railway.json`; Railway will install backend dependencies, seed MySQL, start `backend/server.js`, and health-check `/api/health`.
 
 ## Initialize Schema and Seed Data
 

@@ -81,7 +81,7 @@ export function VerifyForm({
         {fieldErrors.code ? <p className="mt-2 text-sm text-red-600">{fieldErrors.code}</p> : null}
       </div>
       {message ? <p className={`text-sm ${tone === "success" ? "text-green-700" : "text-red-600"}`}>{message}</p> : null}
-      {devOtp ? <p className="rounded-lg border border-yellow-200 bg-yellow-50 px-3 py-2 text-sm font-bold text-yellow-800">Development verification code: {devOtp}</p> : null}
+      {devOtp ? <p className="rounded-lg border border-yellow-200 bg-yellow-50 px-3 py-2 text-sm font-bold text-yellow-800">Verification code: {devOtp}</p> : null}
       <SubmitButton loading={status === "loading"} label="Verify & Create Account" loadingLabel="Verifying..." />
       <button type="button" disabled={status === "loading"} onClick={onEdit} className="w-full rounded-xl border border-gray-200 py-3 text-sm font-semibold text-gray-600 hover:bg-gray-50">
         Edit signup details

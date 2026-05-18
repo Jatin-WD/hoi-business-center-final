@@ -165,17 +165,10 @@ router.post('/register', async (req, res) => {
       return { sent: false, reason: emailError.message };
     });
 
-    if (!emailResult.sent && process.env.NODE_ENV === 'production') {
-      return res.status(500).json({
-        success: false,
-        message: 'Email verification is not configured. Please contact support.',
-      });
-    }
-
     res.json({
       success: true,
-      message: emailResult.sent ? 'Verification code sent to your email.' : 'Verification code generated. Email is not configured, so use the development code shown below.',
-      data: process.env.NODE_ENV === 'production' ? {} : { devOtp: code }
+      message: emailResult.sent ? 'Verification code sent to your email.' : 'Email is not configured, so use the verification code shown below.',
+      data: emailResult.sent ? {} : { devOtp: code }
     });
   } catch (error) {
     console.error('Register verification request error:', error);

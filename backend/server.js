@@ -33,11 +33,12 @@ const allowedOrigins = [
   'http://127.0.0.1:5173',
 ].filter(Boolean);
 const allowedDevOrigin = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}):\d{4,5}$/;
+const allowedVercelOrigin = /^https:\/\/[a-z0-9-]+\.vercel\.app$/;
 
 app.use(helmet());
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin) || allowedDevOrigin.test(origin)) {
+    if (!origin || allowedOrigins.includes(origin) || allowedDevOrigin.test(origin) || allowedVercelOrigin.test(origin)) {
       callback(null, true);
       return;
     }

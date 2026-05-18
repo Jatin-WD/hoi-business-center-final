@@ -572,7 +572,12 @@ const EVENTS = [
   ["JECC Handicraft Mela 2026", "November 1 - 10, 2026", "JECC Sitapura, Jaipur", "jaipur", "Handicrafts"],
 ];
 
-async function seedDatabase() {
+async function countRows(db, table) {
+  const row = await db.get(`SELECT COUNT(*) AS count FROM ${table}`);
+  return Number(row?.count || 0);
+}
+
+async function seedDatabase({ resetEvents = true } = {}) {
   const db = await initDatabase();
 
   try {
@@ -628,18 +633,33 @@ async function seedDatabase() {
     }
 
     console.log('✅ Database seeded successfully!');
-    console.log('Seeding events...');
-    await db.run('DELETE FROM events');
-    for (const [name, date, venue, locationId, category] of EVENTS) {
-      await db.run(
-        'INSERT INTO events (name, date, venue, location_id, category, status) VALUES (?, ?, ?, ?, ?, ?)',
-        [name, date, venue, locationId, category, 'Upcoming']
-      );
+    const shouldSeedEvents = resetEvents || (await countRows(db, 'events')) === 0;
+    if (shouldSeedEvents) {
+      console.log('Seeding events...');
+      if (resetEvents) await db.run('DELETE FROM events');
+      for (const [name, date, venue, locationId, category] of EVENTS) {
+        await db.run(
+          'INSERT INTO events (name, date, venue, location_id, category, status) VALUES (?, ?, ?, ?, ?, ?)',
+          [name, date, venue, locationId, category, 'Upcoming']
+        );
+      }
     }
   } catch (error) {
     console.error('❌ Error seeding database:', error);
     throw error;
   }
+}
+
+async function seedDatabaseIfEmpty() {
+  const db = await initDatabase();
+  const hasCatalog = (await countRows(db, 'services')) > 0
+    && (await countRows(db, 'venues')) > 0
+    && (await countRows(db, 'packages')) > 0
+    && (await countRows(db, 'events')) > 0;
+
+  if (hasCatalog) return db;
+  await seedDatabase({ resetEvents: false });
+  return initDatabase();
 }
 
 // Run seeding if called directly
@@ -656,4 +676,4 @@ if (import.meta.url === scriptUrl) {
     });
 }
 
-export { seedDatabase };
+export { seedDatabase, seedDatabaseIfEmpty };

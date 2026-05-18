@@ -5,7 +5,7 @@
     "buildCommand": "corepack enable && pnpm --dir backend install --prod --frozen-lockfile"
   },
   "deploy": {
-    "startCommand": "cd backend && npm run init-db && node server.js",
+    "startCommand": "cd backend && node server.js",
     "healthcheckPath": "/api/health",
     "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",

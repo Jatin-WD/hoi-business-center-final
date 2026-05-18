@@ -14,7 +14,7 @@ import eventsRoutes from './routes/events.js';
 import bookingsRoutes from './routes/bookings.js';
 import adminRoutes from './routes/admin.js';
 import cmsRoutes from './routes/cms.js';
-import { initDatabase } from './config/database.js';
+import { seedDatabaseIfEmpty } from './scripts/init-db.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 
 dotenv.config();
@@ -61,7 +61,7 @@ app.get('/api/health', (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-initDatabase()
+seedDatabaseIfEmpty()
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Backend server running on port ${PORT}`);

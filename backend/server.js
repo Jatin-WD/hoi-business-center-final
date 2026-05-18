@@ -15,13 +15,18 @@ import bookingsRoutes from './routes/bookings.js';
 import adminRoutes from './routes/admin.js';
 import cmsRoutes from './routes/cms.js';
 import { seedDatabaseIfEmpty } from './scripts/init-db.js';
+import { getDatabaseConfigStatus } from './config/database.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-let databaseReady = false;
+const databaseStatus = {
+  ready: false,
+  attempts: 0,
+  lastError: '',
+};
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'http://localhost:5173',
@@ -58,7 +63,10 @@ app.use('/api/cms', cmsRoutes);
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
-    database: databaseReady ? 'ready' : 'starting',
+    database: databaseStatus.ready ? 'ready' : 'starting',
+    databaseConfig: getDatabaseConfigStatus(),
+    databaseAttempts: databaseStatus.attempts,
+    databaseError: databaseStatus.ready ? '' : databaseStatus.lastError,
     timestamp: new Date().toISOString(),
   });
 });
@@ -67,12 +75,15 @@ app.use(notFound);
 app.use(errorHandler);
 
 async function initializeDatabase(attempt = 1) {
+  databaseStatus.attempts = attempt;
   try {
     await seedDatabaseIfEmpty();
-    databaseReady = true;
+    databaseStatus.ready = true;
+    databaseStatus.lastError = '';
     console.log('Database initialized');
   } catch (error) {
-    databaseReady = false;
+    databaseStatus.ready = false;
+    databaseStatus.lastError = error.message;
     const delay = Math.min(30000, 5000 * attempt);
     console.error(`Database initialization failed, retrying in ${delay / 1000}s:`, error);
     setTimeout(() => initializeDatabase(attempt + 1), delay);

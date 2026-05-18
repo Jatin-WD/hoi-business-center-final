@@ -5,6 +5,7 @@ dotenv.config();
 
 const DB_CLIENT = (process.env.DB_CLIENT || 'mysql').toLowerCase();
 const DATABASE_URL = process.env.MYSQL_URL || process.env.DATABASE_URL || '';
+const selectedDatabaseEnv = process.env.MYSQL_URL ? 'MYSQL_URL' : process.env.DATABASE_URL ? 'DATABASE_URL' : 'missing';
 
 let connection;
 let dbInstance;
@@ -94,6 +95,16 @@ export async function initDatabase() {
     await db.exec("ALTER TABLE users ADD COLUMN status varchar(40) default 'active'");
   }
   return db;
+}
+
+export function getDatabaseConfigStatus() {
+  return {
+    client: DB_CLIENT,
+    selectedEnv: selectedDatabaseEnv,
+    hasMysqlUrl: Boolean(process.env.MYSQL_URL),
+    hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
+    isMysqlUrl: DATABASE_URL.startsWith('mysql://') || DATABASE_URL.startsWith('mysql2://'),
+  };
 }
 
 export default { getDb, initDatabase };

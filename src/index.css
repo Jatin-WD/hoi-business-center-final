@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #admin-stage-report,
+  #admin-stage-report * {
+    visibility: visible;
+  }
+
+  #admin-stage-report {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+:root {
+  --hoi-primary: #1a3a8f;
+  --hoi-primary-dark: #0f2460;
+  --hoi-accent: #facc15;
+  --hoi-accent-text: #111827;
+}
+
+.logo {
+  filter: drop-shadow(0px 0px 3px black);
+  animation: bubbleGlow 3s ease-in-out infinite;
+}
+
+/* Light Bubble Animation */
+@keyframes bubbleGlow {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.6));
+    opacity: 0.9;
+  }
+
+  50% {
+    transform: scale(1.01);
+    filter: 
+      drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.8))
+      drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.6));
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0px 0px 3px rgba(7, 7, 7, 0.6));
+    opacity: 0.9;
+  }
+}
+
+@layer base {
+  .bg-\[\#1a3a8f\] {
+    background-color: var(--hoi-primary) !important;
+  }
+
+  .from-\[\#1a3a8f\] {
+    --tw-gradient-from: var(--hoi-primary) var(--tw-gradient-from-position) !important;
+    --tw-gradient-to: rgb(26 58 143 / 0) var(--tw-gradient-to-position) !important;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+  }
+
+  .to-\[\#1a3a8f\] {
+    --tw-gradient-to: var(--hoi-primary) var(--tw-gradient-to-position) !important;
+  }
+
+  .bg-\[\#0f2460\] {
+    background-color: var(--hoi-primary-dark) !important;
+  }
+
+  .from-\[\#0f2460\] {
+    --tw-gradient-from: var(--hoi-primary-dark) var(--tw-gradient-from-position) !important;
+    --tw-gradient-to: rgb(15 36 96 / 0) var(--tw-gradient-to-position) !important;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+  }
+
+  .to-\[\#0f2460\] {
+    --tw-gradient-to: var(--hoi-primary-dark) var(--tw-gradient-to-position) !important;
+  }
+
+  .text-\[\#1a3a8f\] {
+    color: var(--hoi-primary) !important;
+  }
+
+  .border-\[\#1a3a8f\] {
+    border-color: var(--hoi-primary) !important;
+  }
+
+  .bg-yellow-400 {
+    background-color: var(--hoi-accent) !important;
+  }
+
+  .text-gray-900.bg-yellow-400,
+  .bg-yellow-400.text-gray-900 {
+    color: var(--hoi-accent-text) !important;
+  }
+}

@@ -1,0 +1,105 @@
+name: CI/CD
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    name: Lint, build, and API smoke test
+    runs-on: ubuntu-latest
+
+    env:
+      DB_CLIENT: mysql
+      DATABASE_URL: mysql://hoi_user:hoi_password@127.0.0.1:3307/hoi_business_center
+      FRONTEND_URL: http://localhost:5173
+      JWT_SECRET: ci-jwt-secret-change-in-production
+      NODE_ENV: development
+      REQUIREMENT_EMAIL: LKMALLSHOP@GMAIL.COM
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Enable pnpm
+        run: corepack enable
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install backend dependencies
+        run: pnpm --dir backend install --frozen-lockfile
+
+      - name: Start Docker MySQL
+        run: docker compose -f docker-compose.mysql.yml up -d
+
+      - name: Wait for MySQL
+        run: |
+          for i in {1..40}; do
+            docker inspect --format='{{.State.Health.Status}}' hoi-business-mysql | grep -q healthy && exit 0
+            sleep 3
+          done
+          docker logs hoi-business-mysql
+          exit 1
+
+      - name: Seed database
+        run: npm --prefix backend run init-db
+
+      - name: Start backend
+        run: |
+          npm --prefix backend start > backend.log 2>&1 &
+          for i in {1..40}; do
+            curl -fsS http://localhost:5000/api/health && exit 0
+            sleep 2
+          done
+          cat backend.log
+          exit 1
+
+      - name: Lint frontend
+        run: npm run lint
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: API smoke tests
+        run: npm run test:api
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: dist
+
+  deploy:
+    name: Trigger deployment hooks
+    runs-on: ubuntu-latest
+    needs: verify
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Trigger backend deploy hook
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -n "$RENDER_DEPLOY_HOOK_URL" ]; then
+            curl -fsS -X POST "$RENDER_DEPLOY_HOOK_URL"
+          else
+            echo "RENDER_DEPLOY_HOOK_URL not configured; backend deploy skipped."
+          fi
+
+      - name: Trigger frontend deploy hook
+        env:
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -n "$VERCEL_DEPLOY_HOOK_URL" ]; then
+            curl -fsS -X POST "$VERCEL_DEPLOY_HOOK_URL"
+          else
+            echo "VERCEL_DEPLOY_HOOK_URL not configured; frontend deploy skipped."
+          fi

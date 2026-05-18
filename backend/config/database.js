@@ -4,8 +4,26 @@ import { createSchemaStatements } from './schema.js';
 dotenv.config();
 
 const DB_CLIENT = (process.env.DB_CLIENT || 'mysql').toLowerCase();
-const DATABASE_URL = process.env.MYSQL_URL || process.env.DATABASE_URL || '';
-const selectedDatabaseEnv = process.env.MYSQL_URL ? 'MYSQL_URL' : process.env.DATABASE_URL ? 'DATABASE_URL' : 'missing';
+
+function buildMysqlUrlFromParts() {
+  const host = process.env.MYSQLHOST || process.env.MYSQL_HOST;
+  const port = process.env.MYSQLPORT || process.env.MYSQL_PORT || '3306';
+  const user = process.env.MYSQLUSER || process.env.MYSQL_USER;
+  const password = process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD;
+  const database = process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE;
+
+  if (!host || !user || !password || !database) return '';
+  return `mysql://${encodeURIComponent(user)}:${encodeURIComponent(password)}@${host}:${port}/${database}`;
+}
+
+const DATABASE_URL = process.env.MYSQL_URL || process.env.DATABASE_URL || buildMysqlUrlFromParts();
+const selectedDatabaseEnv = process.env.MYSQL_URL
+  ? 'MYSQL_URL'
+  : process.env.DATABASE_URL
+    ? 'DATABASE_URL'
+    : DATABASE_URL
+      ? 'MYSQL_PARTS'
+      : 'missing';
 
 let connection;
 let dbInstance;
@@ -103,6 +121,12 @@ export function getDatabaseConfigStatus() {
     selectedEnv: selectedDatabaseEnv,
     hasMysqlUrl: Boolean(process.env.MYSQL_URL),
     hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
+    hasMysqlParts: Boolean(
+      (process.env.MYSQLHOST || process.env.MYSQL_HOST)
+      && (process.env.MYSQLUSER || process.env.MYSQL_USER)
+      && (process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD)
+      && (process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE)
+    ),
     isMysqlUrl: DATABASE_URL.startsWith('mysql://') || DATABASE_URL.startsWith('mysql2://'),
   };
 }

@@ -1,10 +1,10 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
 <head>
   <meta charset="utf-8" />
   <title>HOI Business Center Developer Report</title>
   <style>
-    body { font-family: Arial, Helvetica, sans-serif; color: #111827; line-height: 1.48; margin: 36px; }
+    body { font-family: Arial, Helvetica, sans-serif; color: #111827; line-height: 1.5; margin: 36px; }
     h1 { color: #0f2460; font-size: 28px; margin-bottom: 6px; }
     h2 { color: #1a3a8f; border-bottom: 1px solid #dbeafe; padding-bottom: 6px; margin-top: 28px; }
     h3 { color: #0f2460; margin-top: 18px; }
@@ -14,7 +14,7 @@
     .meta { color: #4b5563; margin-bottom: 22px; }
     .ok { color: #047857; font-weight: bold; }
     .warn { color: #b45309; font-weight: bold; }
-    .muted { color: #6b7280; }
+    .fail { color: #b91c1c; font-weight: bold; }
     code { background: #f3f4f6; padding: 2px 4px; border-radius: 4px; }
     ul { margin-top: 6px; }
     .page-break { page-break-before: always; }
@@ -25,129 +25,152 @@
   <div class="meta">
     Prepared for: HOI Business Center<br />
     Prepared on: 20 May 2026<br />
-    Baseline audit source: <code>HOI_Business_Center_Developer_Guidelines.pdf</code> prepared 13 May 2026 for <code>Jatin-WD/hoi-business-center</code><br />
+    Guideline source: <code>HOI_Business_Center_Developer_Guidelines.pdf</code><br />
+    Original reference repository: <code>https://github.com/Jatin-WD/hoi-business-center</code><br />
     Current repository: <code>https://github.com/Jatin-WD/hoi-business-center-final</code><br />
-    Current commit before report: <code>43a2723</code>
+    Current reported commit: <code>92c5e99 fix: restore full admin dashboard</code>
   </div>
 
   <h2>Executive Summary</h2>
   <p>
-    The current project has been refactored from a UI-heavy shell into a working full-stack project aligned with the PM guideline document. The application now uses a React/TypeScript frontend, an Express REST API backend, JWT authentication, PostgreSQL/Supabase database support, API-backed catalog data, and database seeding from a dedicated data file.
+    The current project is a full-stack HOI Business Center website with React/TypeScript frontend, Node.js/Express backend,
+    PostgreSQL/Supabase database support, seeded catalog data, authentication, customer submission flows, and a restored admin dashboard.
+    The website is ready for GitHub-based deployment after production environment variables are configured.
   </p>
   <table>
-    <tr><th>Guideline Item</th><th>Current Status</th><th>Evidence</th></tr>
-    <tr><td>Total LOC below 6,000</td><td class="ok">Completed</td><td><code>src + backend + scripts = 5,267 LOC</code></td></tr>
-    <tr><td>No component/file above 200 lines</td><td class="ok">Completed for app code</td><td>All route/component/source files are under 200 lines. The only larger file is <code>backend/data/seed-data.js</code>, a dedicated seed dataset, not a component.</td></tr>
-    <tr><td>No inline business data in components</td><td class="ok">Completed</td><td>Catalog data is stored in PostgreSQL tables seeded from <code>backend/data/seed-data.js</code>.</td></tr>
-    <tr><td>Working API server</td><td class="ok">Completed</td><td>Express API mounted under <code>/api</code>.</td></tr>
-    <tr><td>PostgreSQL database</td><td class="ok">Completed</td><td><code>DB_CLIENT=postgres</code>, <code>DATABASE_URL</code>, <code>pg</code> dependency.</td></tr>
-    <tr><td>Forms submit to backend</td><td class="ok">Completed</td><td>Signup, login, contact/inquiry, manpower, and bookings use API calls.</td></tr>
-    <tr><td>Validation on frontend and backend</td><td class="ok">Completed</td><td>Zod schemas in frontend, regex/server checks in backend.</td></tr>
-    <tr><td>CI/CD</td><td class="ok">Configured</td><td><code>.github/workflows/ci.yml</code> added for lint and build on PR/push.</td></tr>
+    <tr><th>Guideline Item</th><th>Status</th><th>Evidence / Note</th></tr>
+    <tr><td>Frontend language</td><td class="ok">Aligned</td><td>React 18 + TypeScript + Vite.</td></tr>
+    <tr><td>Backend language</td><td class="ok">Aligned</td><td>Node.js 22 + Express REST API.</td></tr>
+    <tr><td>Database</td><td class="ok">Aligned</td><td>PostgreSQL/Supabase via <code>DATABASE_URL</code> and <code>pg</code>.</td></tr>
+    <tr><td>Data stored in database</td><td class="ok">Aligned</td><td>Services, packages, venues, events, users, inquiries, manpower requests, bookings, CMS content, admin replies and notifications are DB-backed.</td></tr>
+    <tr><td>Frontend components below 200 lines</td><td class="ok">Aligned</td><td>No <code>src/pages</code> or <code>src/components</code> TSX component exceeds 200 lines. Largest admin page is 199 lines.</td></tr>
+    <tr><td>Total source LOC below 6,000</td><td class="warn">Not currently aligned</td><td>Current source LOC is 8,056 after restoring the full admin dashboard. This is the main remaining guideline deviation.</td></tr>
+    <tr><td>No file above 200 lines</td><td class="warn">Partially aligned</td><td>Frontend components comply. Backend <code>backend/routes/admin.js</code> is 624 lines and data seed file is 550 lines.</td></tr>
+    <tr><td>CI/CD</td><td class="ok">Configured</td><td><code>.github/workflows/ci.yml</code> runs lint/build on push and pull requests.</td></tr>
   </table>
 
   <h2>Technology Stack</h2>
   <table>
     <tr><th>Layer</th><th>Technology</th></tr>
-    <tr><td>Frontend language/framework</td><td>TypeScript, React 18, Vite, Wouter, TanStack React Query</td></tr>
-    <tr><td>Styling</td><td>Tailwind CSS with custom HOI theme variables</td></tr>
-    <tr><td>Backend language/framework</td><td>JavaScript, Node.js 22, Express</td></tr>
-    <tr><td>Database</td><td>PostgreSQL, Supabase-compatible connection string</td></tr>
-    <tr><td>Authentication</td><td>JWT, bcrypt password hashing</td></tr>
-    <tr><td>Validation</td><td>Zod on frontend; server-side validation in API routes</td></tr>
+    <tr><td>Frontend</td><td>React 18, TypeScript, Vite, Wouter, TanStack React Query</td></tr>
+    <tr><td>Styling</td><td>Tailwind CSS, Lucide React icons, HOI brand palette</td></tr>
+    <tr><td>Backend</td><td>Node.js 22, Express, JavaScript ES modules</td></tr>
+    <tr><td>Database</td><td>PostgreSQL/Supabase, initialized through <code>backend/config/schema.js</code></td></tr>
+    <tr><td>Authentication</td><td>JWT, bcrypt password hashing, admin token guard</td></tr>
     <tr><td>Email</td><td>Nodemailer for requirement notifications</td></tr>
+    <tr><td>Deployment Target</td><td>GitHub deployment to Hostinger Node.js app or similar Node hosting</td></tr>
   </table>
 
-  <h2>Stage 1 Report - Code Cleanup</h2>
-  <h3>Deleted/removed unused files and surfaces</h3>
+  <h2>Stage 1 - Code Cleanup and Structure</h2>
+  <h3>Cleanup Completed</h3>
   <ul>
-    <li>Removed admin dashboard frontend directory: <code>src/pages/admin-dashboard/*</code></li>
-    <li>Removed unused admin pages: <code>AdminDashboardPage.tsx</code>, <code>AdminLoginPage.tsx</code></li>
-    <li>Removed unused admin API helper: <code>src/lib/admin-api-methods.ts</code></li>
-    <li>Removed CMS hook and backend CMS route: <code>useCmsContent.ts</code>, <code>backend/routes/cms.js</code></li>
-    <li>Removed admin backend route: <code>backend/routes/admin.js</code></li>
-    <li>Removed SMS/OTP utility and OTP flows: <code>backend/utils/sms.js</code></li>
-    <li>Removed MySQL dependency/config and obsolete deployment notes.</li>
+    <li>Removed hardcoded frontend catalog dependency from service pages and moved primary catalog records into database seed data.</li>
+    <li>Removed MySQL deployment path from active configuration and standardized production config around PostgreSQL/Supabase.</li>
+    <li>Removed unsafe JWT fallback in production; <code>JWT_SECRET</code> is required.</li>
+    <li>Protected sensitive admin-only submission endpoints through admin middleware.</li>
+    <li>Restored admin dashboard into split frontend components so UI component files remain under 200 lines.</li>
   </ul>
-  <h3>Line count after cleanup</h3>
-  <p><span class="ok">5,267 LOC</span> across <code>src</code>, <code>backend</code>, and <code>scripts</code>.</p>
-  <h3>Shared components extracted/present</h3>
-  <ul>
-    <li><code>src/components/common/HeroSection.tsx</code></li>
-    <li><code>src/components/common/PageBreadcrumb.tsx</code></li>
-    <li><code>src/components/common/CTABanner.tsx</code></li>
-    <li><code>src/components/common/SubmissionPopup.tsx</code></li>
-  </ul>
-  <p>Repository link: <code>https://github.com/Jatin-WD/hoi-business-center-final</code></p>
-
-  <h2>Stage 2 Report - Backend API</h2>
+  <h3>Current Line Count</h3>
   <table>
-    <tr><th>Endpoint</th><th>Method</th><th>Status</th><th>Consumer</th></tr>
-    <tr><td><code>/api/auth/register</code></td><td>POST</td><td class="ok">Implemented</td><td>SignUpPage</td></tr>
-    <tr><td><code>/api/auth/login</code></td><td>POST</td><td class="ok">Implemented</td><td>LoginPage</td></tr>
-    <tr><td><code>/api/auth/logout</code></td><td>POST</td><td class="ok">Implemented</td><td>Header/auth state</td></tr>
-    <tr><td><code>/api/auth/me</code></td><td>GET</td><td class="ok">Implemented</td><td>Global auth state</td></tr>
-    <tr><td><code>/api/inquiries</code></td><td>POST</td><td class="ok">Implemented</td><td>ContactPage</td></tr>
-    <tr><td><code>/api/manpower</code></td><td>POST</td><td class="ok">Implemented</td><td>ManPowerPage</td></tr>
-    <tr><td><code>/api/venues</code></td><td>GET</td><td class="ok">Implemented</td><td>Venue pages, service menu</td></tr>
-    <tr><td><code>/api/venues/:id</code></td><td>GET</td><td class="ok">Implemented</td><td>VenueDetailPage</td></tr>
-    <tr><td><code>/api/services</code></td><td>GET</td><td class="ok">Implemented</td><td>ServicePage, CategoryPage</td></tr>
-    <tr><td><code>/api/packages</code></td><td>GET</td><td class="ok">Implemented</td><td>Package pages</td></tr>
-    <tr><td><code>/api/packages/:id</code></td><td>GET</td><td class="ok">Implemented</td><td>PackageDetailPage</td></tr>
-    <tr><td><code>/api/events</code></td><td>GET</td><td class="ok">Implemented</td><td>EventCalendarPage</td></tr>
-    <tr><td><code>/api/bookings</code></td><td>POST/GET</td><td class="ok">Implemented</td><td>Authenticated booking flow</td></tr>
+    <tr><th>Metric</th><th>Result</th></tr>
+    <tr><td>Total source LOC excluding <code>node_modules</code> and <code>dist</code></td><td><code>8,056</code></td></tr>
+    <tr><td>Frontend component files above 200 lines</td><td><span class="ok">0</span></td></tr>
+    <tr><td>Backend/source files above 200 lines</td><td><code>backend/routes/admin.js</code> (624), <code>backend/data/seed-data.js</code> (550)</td></tr>
+  </table>
+  <p>
+    Note: The admin dashboard requirement increased the total LOC. To fully satisfy the 6,000 LOC guideline, the next cleanup should split
+    <code>backend/routes/admin.js</code> into smaller route modules and reduce or externalize seed data.
+  </p>
+
+  <h2>Stage 2 - Backend API and Database</h2>
+  <h3>Implemented API Endpoints</h3>
+  <table>
+    <tr><th>Endpoint</th><th>Method</th><th>Status</th><th>Purpose</th></tr>
+    <tr><td><code>/api/auth/register</code></td><td>POST</td><td class="ok">Implemented</td><td>User registration</td></tr>
+    <tr><td><code>/api/auth/register/verify</code></td><td>POST</td><td class="ok">Implemented</td><td>Email verification</td></tr>
+    <tr><td><code>/api/auth/login</code></td><td>POST</td><td class="ok">Implemented</td><td>User login</td></tr>
+    <tr><td><code>/api/auth/logout</code></td><td>POST</td><td class="ok">Implemented</td><td>User logout</td></tr>
+    <tr><td><code>/api/auth/me</code></td><td>GET</td><td class="ok">Implemented</td><td>Session profile</td></tr>
+    <tr><td><code>/api/services</code></td><td>GET</td><td class="ok">Implemented</td><td>Service menu/catalog</td></tr>
+    <tr><td><code>/api/packages</code></td><td>GET</td><td class="ok">Implemented</td><td>Package catalog</td></tr>
+    <tr><td><code>/api/venues</code></td><td>GET</td><td class="ok">Implemented</td><td>Venue catalog</td></tr>
+    <tr><td><code>/api/events</code></td><td>GET</td><td class="ok">Implemented</td><td>Event calendar</td></tr>
+    <tr><td><code>/api/inquiries</code></td><td>POST</td><td class="ok">Implemented</td><td>Service requirement form</td></tr>
+    <tr><td><code>/api/manpower</code></td><td>POST</td><td class="ok">Implemented</td><td>Manpower application form</td></tr>
+    <tr><td><code>/api/bookings</code></td><td>POST/GET</td><td class="ok">Implemented</td><td>Authenticated bookings</td></tr>
+    <tr><td><code>/api/admin/login</code></td><td>POST</td><td class="ok">Implemented</td><td>Admin login</td></tr>
+    <tr><td><code>/api/admin/dashboard</code></td><td>GET</td><td class="ok">Implemented</td><td>Admin dashboard data</td></tr>
+    <tr><td><code>/api/admin/resource/:resource</code></td><td>GET/POST/PUT/DELETE</td><td class="ok">Implemented</td><td>Admin CMS/resource management</td></tr>
+    <tr><td><code>/api/admin/submission/:source/:id</code></td><td>PATCH/DELETE/POST</td><td class="ok">Implemented</td><td>Submission status, delete and reply workflow</td></tr>
+    <tr><td><code>/api/cms/content</code></td><td>GET/POST/DELETE</td><td class="ok">Implemented</td><td>Website CMS content</td></tr>
   </table>
 
-  <h3>Database schema</h3>
-  <p>Schema is defined in <code>backend/config/schema.js</code> and initialized automatically on startup.</p>
+  <h3>Database Tables</h3>
   <table>
     <tr><th>Table</th><th>Purpose</th></tr>
-    <tr><td>users</td><td>Registered users and authentication metadata</td></tr>
-    <tr><td>venues</td><td>Locations and venue details</td></tr>
-    <tr><td>services</td><td>Service categories and package links</td></tr>
-    <tr><td>packages</td><td>Package details, pricing, includes/excludes</td></tr>
-    <tr><td>events</td><td>Upcoming exhibition events</td></tr>
-    <tr><td>inquiries</td><td>Contact/service requirements</td></tr>
-    <tr><td>manpower_requests</td><td>Manpower application submissions and uploaded document references</td></tr>
-    <tr><td>bookings</td><td>Authenticated user booking requests</td></tr>
+    <tr><td>users</td><td>Website users and admin users</td></tr>
+    <tr><td>venues</td><td>Venue and location records</td></tr>
+    <tr><td>services</td><td>Service categories and menu links</td></tr>
+    <tr><td>packages</td><td>Package pages, price text, inclusions and exclusions</td></tr>
+    <tr><td>events</td><td>Event calendar records</td></tr>
+    <tr><td>inquiries</td><td>Contact and service requirements</td></tr>
+    <tr><td>manpower_requests</td><td>Manpower applications and uploaded document references</td></tr>
+    <tr><td>bookings</td><td>Customer booking requests</td></tr>
+    <tr><td>cms_content</td><td>Editable website text/theme/admin CMS content</td></tr>
+    <tr><td>admin_replies</td><td>Admin replies to user submissions</td></tr>
+    <tr><td>notification_dismissals</td><td>Admin notification dismissal state</td></tr>
   </table>
 
-  <h3>API test results</h3>
-  <ul>
-    <li><code>node --check</code> backend syntax checks: <span class="ok">Passed</span></li>
-    <li><code>pnpm run lint</code>: <span class="ok">Passed</span></li>
-    <li><code>pnpm run build</code>: <span class="ok">Passed</span></li>
-    <li><code>scripts/test-api.mjs</code> exists for environment-backed smoke testing with a running API and database.</li>
-  </ul>
+  <h3>Database Seed Data</h3>
+  <p>
+    Seed data is stored in <code>backend/data/seed-data.js</code> and loaded by <code>backend/scripts/init-db.js</code>.
+    On startup, <code>seedDatabaseIfEmpty()</code> initializes schema and inserts catalog data when required.
+  </p>
 
   <div class="page-break"></div>
-  <h2>Stage 3 Report - Frontend Integration</h2>
+  <h2>Stage 3 - Frontend Integration</h2>
   <table>
     <tr><th>Feature</th><th>Status</th><th>Notes</th></tr>
-    <tr><td>Signup</td><td class="ok">Working</td><td>Validates input, calls <code>/api/auth/register</code>, stores JWT session.</td></tr>
-    <tr><td>Login</td><td class="ok">Working</td><td>Validates input, calls <code>/api/auth/login</code>, stores JWT session.</td></tr>
-    <tr><td>Auth state/Header</td><td class="ok">Working</td><td>Header changes based on logged-in state; protected pages redirect to login.</td></tr>
-    <tr><td>Contact inquiry</td><td class="ok">Working</td><td>Zod validation, loading/error/success states, backend persistence.</td></tr>
-    <tr><td>Manpower application</td><td class="ok">Working</td><td>Role fields, file upload, validation, backend persistence.</td></tr>
-    <tr><td>Services/venues/packages/events</td><td class="ok">Working</td><td>Loaded through API from PostgreSQL-seeded data.</td></tr>
-    <tr><td>Error handling</td><td class="ok">Working</td><td>ErrorBoundary present; API errors surfaced in UI states.</td></tr>
+    <tr><td>Home/service browsing</td><td class="ok">Working</td><td>Reads services, packages and venues from backend API.</td></tr>
+    <tr><td>Signup/login</td><td class="ok">Working</td><td>Uses JWT auth and backend validation.</td></tr>
+    <tr><td>Contact inquiry</td><td class="ok">Working</td><td>Saves requirement data to database and can notify email.</td></tr>
+    <tr><td>Manpower application</td><td class="ok">Working</td><td>Supports role-specific fields and upload references.</td></tr>
+    <tr><td>Bookings</td><td class="ok">Working</td><td>Authenticated booking API is implemented.</td></tr>
+    <tr><td>Admin login</td><td class="ok">Working</td><td>Available at <code>/admin-login</code>.</td></tr>
+    <tr><td>Admin dashboard</td><td class="ok">Working</td><td>Available at <code>/admin</code> with requirements, notifications, users, admins, CMS content and resource management.</td></tr>
+    <tr><td>404/error states</td><td class="ok">Working</td><td>Custom not-found page and API error handling are present.</td></tr>
   </table>
-  <p>End-to-end flow supported: sign up -> log in -> browse services -> submit inquiry/manpower application -> create booking.</p>
 
-  <h2>Stage 4 Report - Quality and Deployment</h2>
+  <h2>Stage 4 - Quality, Testing and Deployment</h2>
   <table>
     <tr><th>Checkpoint</th><th>Status</th><th>Evidence</th></tr>
-    <tr><td>Lint/build quality</td><td class="ok">Passed</td><td><code>pnpm run lint</code>, <code>pnpm run build</code></td></tr>
-    <tr><td>CI/CD</td><td class="ok">Configured</td><td><code>.github/workflows/ci.yml</code> runs lint and build on push/PR.</td></tr>
-    <tr><td>Deployment URL</td><td class="warn">Environment dependent</td><td>Repository is deployment-ready; final URL depends on host settings and PostgreSQL credentials.</td></tr>
-    <tr><td>Test coverage report</td><td class="warn">Smoke-test level</td><td>Formal unit coverage tooling is not installed; API smoke script is present.</td></tr>
+    <tr><td>Frontend lint</td><td class="ok">Passed</td><td><code>pnpm run lint</code></td></tr>
+    <tr><td>Production build</td><td class="ok">Passed</td><td><code>pnpm run build</code></td></tr>
+    <tr><td>Backend syntax check</td><td class="ok">Passed</td><td><code>node --check backend/routes/admin.js</code> and <code>node --check backend/routes/cms.js</code></td></tr>
+    <tr><td>Frontend component size</td><td class="ok">Passed</td><td>No frontend component file above 200 lines.</td></tr>
+    <tr><td>CI/CD</td><td class="ok">Configured</td><td>GitHub Actions workflow exists in <code>.github/workflows/ci.yml</code>.</td></tr>
+    <tr><td>Formal unit test coverage</td><td class="warn">Not installed</td><td>Project currently relies on lint/build and API smoke readiness. A formal coverage tool is still recommended.</td></tr>
   </table>
 
-  <h2>Remaining Operational Notes</h2>
+  <h2>Deployment Requirements</h2>
+  <p>Set these production environment variables before deployment:</p>
   <ul>
-    <li>Set <code>DATABASE_URL</code>, <code>DB_CLIENT=postgres</code>, <code>DB_SSL=true</code>, and <code>JWT_SECRET</code> in the hosting environment.</li>
-    <li>Run <code>npm run init-db</code> or let startup seeding initialize PostgreSQL tables.</li>
-    <li>Run the GitHub Actions workflow after this report is pushed to confirm remote CI status.</li>
+    <li><code>NODE_ENV=production</code></li>
+    <li><code>PORT=3000</code> or host-provided port</li>
+    <li><code>FRONTEND_URL=https://your-domain.com</code></li>
+    <li><code>JWT_SECRET</code> with a strong random value</li>
+    <li><code>ADMIN_EMAIL</code> and <code>ADMIN_PASSWORD</code></li>
+    <li><code>DB_CLIENT=postgres</code></li>
+    <li><code>DATABASE_URL=postgresql://...</code> from Supabase/production PostgreSQL</li>
+    <li><code>DB_SSL=true</code> for Supabase</li>
+    <li><code>REQUIREMENT_EMAIL</code>, <code>EMAIL_USER</code>, <code>EMAIL_PASS</code> for emails</li>
+  </ul>
+
+  <h2>Final Notes</h2>
+  <ul>
+    <li>The project is functionally deployable after environment variables are configured correctly.</li>
+    <li>The restored admin dashboard meets the user's requested frontend component limit.</li>
+    <li>The remaining guideline improvement is backend size cleanup: split <code>backend/routes/admin.js</code> and reduce total LOC below 6,000 if strict PM review requires it.</li>
   </ul>
 </body>
 </html>

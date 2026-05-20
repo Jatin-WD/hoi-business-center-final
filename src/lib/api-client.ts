@@ -1,6 +1,6 @@
 import { adminApiMethods } from "./admin-api-methods";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:5000/api" : "/api");
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:5000/api" : "https://hoi-business-backend-production-e7dd.up.railway.app/api");
 const AUTH_TOKEN_KEY = "hoi_auth_token";
 const AUTH_USER_KEY = "hoi_auth_user";
 const AUTH_SESSION_EXPIRED_EVENT = "hoi-auth-session-expired";

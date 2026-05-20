@@ -3,3 +3,5 @@ allowBuilds:
 ignoredBuiltDependencies:
   - esbuild
 strictDepBuilds: false
+managePackageManagerVersions: false
+verifyDepsBeforeRun: false

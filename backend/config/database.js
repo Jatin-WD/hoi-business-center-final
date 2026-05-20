@@ -6,11 +6,11 @@ dotenv.config();
 const DB_CLIENT = (process.env.DB_CLIENT || 'mysql').toLowerCase();
 
 function buildMysqlUrlFromParts() {
-  const host = process.env.MYSQLHOST || process.env.MYSQL_HOST;
-  const port = process.env.MYSQLPORT || process.env.MYSQL_PORT || '3306';
-  const user = process.env.MYSQLUSER || process.env.MYSQL_USER;
-  const password = process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD;
-  const database = process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE;
+  const host = process.env.MYSQLHOST || process.env.MYSQL_HOST || process.env.DB_HOST || process.env.DATABASE_HOST;
+  const port = process.env.MYSQLPORT || process.env.MYSQL_PORT || process.env.DB_PORT || process.env.DATABASE_PORT || '3306';
+  const user = process.env.MYSQLUSER || process.env.MYSQL_USER || process.env.DB_USER || process.env.DATABASE_USER;
+  const password = process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD || process.env.DB_PASSWORD || process.env.DATABASE_PASSWORD;
+  const database = process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE || process.env.DB_NAME || process.env.DATABASE_NAME;
 
   if (!host || !user || !password || !database) return '';
   return `mysql://${encodeURIComponent(user)}:${encodeURIComponent(password)}@${host}:${port}/${database}`;
@@ -152,10 +152,10 @@ export function getDatabaseConfigStatus() {
     hasMysqlUrl: Boolean(process.env.MYSQL_URL),
     hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
     hasMysqlParts: Boolean(
-      (process.env.MYSQLHOST || process.env.MYSQL_HOST)
-      && (process.env.MYSQLUSER || process.env.MYSQL_USER)
-      && (process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD)
-      && (process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE)
+      (process.env.MYSQLHOST || process.env.MYSQL_HOST || process.env.DB_HOST || process.env.DATABASE_HOST)
+      && (process.env.MYSQLUSER || process.env.MYSQL_USER || process.env.DB_USER || process.env.DATABASE_USER)
+      && (process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD || process.env.DB_PASSWORD || process.env.DATABASE_PASSWORD)
+      && (process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE || process.env.DB_NAME || process.env.DATABASE_NAME)
     ),
     isMysqlUrl: DATABASE_URL.startsWith('mysql://') || DATABASE_URL.startsWith('mysql2://'),
     isPostgresUrl: DATABASE_URL.startsWith('postgres://') || DATABASE_URL.startsWith('postgresql://'),

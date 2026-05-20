@@ -33,6 +33,7 @@ Required Hostinger environment variables:
 
 ```env
 NODE_ENV=production
+PORT=3000
 DB_CLIENT=mysql
 MYSQLHOST=your-hostinger-mysql-host
 MYSQLPORT=3306

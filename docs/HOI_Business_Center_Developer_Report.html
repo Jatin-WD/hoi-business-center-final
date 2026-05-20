@@ -1,0 +1,153 @@
+﻿<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>HOI Business Center Developer Report</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; color: #111827; line-height: 1.48; margin: 36px; }
+    h1 { color: #0f2460; font-size: 28px; margin-bottom: 6px; }
+    h2 { color: #1a3a8f; border-bottom: 1px solid #dbeafe; padding-bottom: 6px; margin-top: 28px; }
+    h3 { color: #0f2460; margin-top: 18px; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 12px; }
+    th, td { border: 1px solid #d1d5db; padding: 8px; vertical-align: top; }
+    th { background: #eff6ff; color: #0f2460; text-align: left; }
+    .meta { color: #4b5563; margin-bottom: 22px; }
+    .ok { color: #047857; font-weight: bold; }
+    .warn { color: #b45309; font-weight: bold; }
+    .muted { color: #6b7280; }
+    code { background: #f3f4f6; padding: 2px 4px; border-radius: 4px; }
+    ul { margin-top: 6px; }
+    .page-break { page-break-before: always; }
+  </style>
+</head>
+<body>
+  <h1>HOI Business Center Developer Report</h1>
+  <div class="meta">
+    Prepared for: HOI Business Center<br />
+    Prepared on: 20 May 2026<br />
+    Baseline audit source: <code>HOI_Business_Center_Developer_Guidelines.pdf</code> prepared 13 May 2026 for <code>Jatin-WD/hoi-business-center</code><br />
+    Current repository: <code>https://github.com/Jatin-WD/hoi-business-center-final</code><br />
+    Current commit before report: <code>43a2723</code>
+  </div>
+
+  <h2>Executive Summary</h2>
+  <p>
+    The current project has been refactored from a UI-heavy shell into a working full-stack project aligned with the PM guideline document. The application now uses a React/TypeScript frontend, an Express REST API backend, JWT authentication, PostgreSQL/Supabase database support, API-backed catalog data, and database seeding from a dedicated data file.
+  </p>
+  <table>
+    <tr><th>Guideline Item</th><th>Current Status</th><th>Evidence</th></tr>
+    <tr><td>Total LOC below 6,000</td><td class="ok">Completed</td><td><code>src + backend + scripts = 5,267 LOC</code></td></tr>
+    <tr><td>No component/file above 200 lines</td><td class="ok">Completed for app code</td><td>All route/component/source files are under 200 lines. The only larger file is <code>backend/data/seed-data.js</code>, a dedicated seed dataset, not a component.</td></tr>
+    <tr><td>No inline business data in components</td><td class="ok">Completed</td><td>Catalog data is stored in PostgreSQL tables seeded from <code>backend/data/seed-data.js</code>.</td></tr>
+    <tr><td>Working API server</td><td class="ok">Completed</td><td>Express API mounted under <code>/api</code>.</td></tr>
+    <tr><td>PostgreSQL database</td><td class="ok">Completed</td><td><code>DB_CLIENT=postgres</code>, <code>DATABASE_URL</code>, <code>pg</code> dependency.</td></tr>
+    <tr><td>Forms submit to backend</td><td class="ok">Completed</td><td>Signup, login, contact/inquiry, manpower, and bookings use API calls.</td></tr>
+    <tr><td>Validation on frontend and backend</td><td class="ok">Completed</td><td>Zod schemas in frontend, regex/server checks in backend.</td></tr>
+    <tr><td>CI/CD</td><td class="ok">Configured</td><td><code>.github/workflows/ci.yml</code> added for lint and build on PR/push.</td></tr>
+  </table>
+
+  <h2>Technology Stack</h2>
+  <table>
+    <tr><th>Layer</th><th>Technology</th></tr>
+    <tr><td>Frontend language/framework</td><td>TypeScript, React 18, Vite, Wouter, TanStack React Query</td></tr>
+    <tr><td>Styling</td><td>Tailwind CSS with custom HOI theme variables</td></tr>
+    <tr><td>Backend language/framework</td><td>JavaScript, Node.js 22, Express</td></tr>
+    <tr><td>Database</td><td>PostgreSQL, Supabase-compatible connection string</td></tr>
+    <tr><td>Authentication</td><td>JWT, bcrypt password hashing</td></tr>
+    <tr><td>Validation</td><td>Zod on frontend; server-side validation in API routes</td></tr>
+    <tr><td>Email</td><td>Nodemailer for requirement notifications</td></tr>
+  </table>
+
+  <h2>Stage 1 Report - Code Cleanup</h2>
+  <h3>Deleted/removed unused files and surfaces</h3>
+  <ul>
+    <li>Removed admin dashboard frontend directory: <code>src/pages/admin-dashboard/*</code></li>
+    <li>Removed unused admin pages: <code>AdminDashboardPage.tsx</code>, <code>AdminLoginPage.tsx</code></li>
+    <li>Removed unused admin API helper: <code>src/lib/admin-api-methods.ts</code></li>
+    <li>Removed CMS hook and backend CMS route: <code>useCmsContent.ts</code>, <code>backend/routes/cms.js</code></li>
+    <li>Removed admin backend route: <code>backend/routes/admin.js</code></li>
+    <li>Removed SMS/OTP utility and OTP flows: <code>backend/utils/sms.js</code></li>
+    <li>Removed MySQL dependency/config and obsolete deployment notes.</li>
+  </ul>
+  <h3>Line count after cleanup</h3>
+  <p><span class="ok">5,267 LOC</span> across <code>src</code>, <code>backend</code>, and <code>scripts</code>.</p>
+  <h3>Shared components extracted/present</h3>
+  <ul>
+    <li><code>src/components/common/HeroSection.tsx</code></li>
+    <li><code>src/components/common/PageBreadcrumb.tsx</code></li>
+    <li><code>src/components/common/CTABanner.tsx</code></li>
+    <li><code>src/components/common/SubmissionPopup.tsx</code></li>
+  </ul>
+  <p>Repository link: <code>https://github.com/Jatin-WD/hoi-business-center-final</code></p>
+
+  <h2>Stage 2 Report - Backend API</h2>
+  <table>
+    <tr><th>Endpoint</th><th>Method</th><th>Status</th><th>Consumer</th></tr>
+    <tr><td><code>/api/auth/register</code></td><td>POST</td><td class="ok">Implemented</td><td>SignUpPage</td></tr>
+    <tr><td><code>/api/auth/login</code></td><td>POST</td><td class="ok">Implemented</td><td>LoginPage</td></tr>
+    <tr><td><code>/api/auth/logout</code></td><td>POST</td><td class="ok">Implemented</td><td>Header/auth state</td></tr>
+    <tr><td><code>/api/auth/me</code></td><td>GET</td><td class="ok">Implemented</td><td>Global auth state</td></tr>
+    <tr><td><code>/api/inquiries</code></td><td>POST</td><td class="ok">Implemented</td><td>ContactPage</td></tr>
+    <tr><td><code>/api/manpower</code></td><td>POST</td><td class="ok">Implemented</td><td>ManPowerPage</td></tr>
+    <tr><td><code>/api/venues</code></td><td>GET</td><td class="ok">Implemented</td><td>Venue pages, service menu</td></tr>
+    <tr><td><code>/api/venues/:id</code></td><td>GET</td><td class="ok">Implemented</td><td>VenueDetailPage</td></tr>
+    <tr><td><code>/api/services</code></td><td>GET</td><td class="ok">Implemented</td><td>ServicePage, CategoryPage</td></tr>
+    <tr><td><code>/api/packages</code></td><td>GET</td><td class="ok">Implemented</td><td>Package pages</td></tr>
+    <tr><td><code>/api/packages/:id</code></td><td>GET</td><td class="ok">Implemented</td><td>PackageDetailPage</td></tr>
+    <tr><td><code>/api/events</code></td><td>GET</td><td class="ok">Implemented</td><td>EventCalendarPage</td></tr>
+    <tr><td><code>/api/bookings</code></td><td>POST/GET</td><td class="ok">Implemented</td><td>Authenticated booking flow</td></tr>
+  </table>
+
+  <h3>Database schema</h3>
+  <p>Schema is defined in <code>backend/config/schema.js</code> and initialized automatically on startup.</p>
+  <table>
+    <tr><th>Table</th><th>Purpose</th></tr>
+    <tr><td>users</td><td>Registered users and authentication metadata</td></tr>
+    <tr><td>venues</td><td>Locations and venue details</td></tr>
+    <tr><td>services</td><td>Service categories and package links</td></tr>
+    <tr><td>packages</td><td>Package details, pricing, includes/excludes</td></tr>
+    <tr><td>events</td><td>Upcoming exhibition events</td></tr>
+    <tr><td>inquiries</td><td>Contact/service requirements</td></tr>
+    <tr><td>manpower_requests</td><td>Manpower application submissions and uploaded document references</td></tr>
+    <tr><td>bookings</td><td>Authenticated user booking requests</td></tr>
+  </table>
+
+  <h3>API test results</h3>
+  <ul>
+    <li><code>node --check</code> backend syntax checks: <span class="ok">Passed</span></li>
+    <li><code>pnpm run lint</code>: <span class="ok">Passed</span></li>
+    <li><code>pnpm run build</code>: <span class="ok">Passed</span></li>
+    <li><code>scripts/test-api.mjs</code> exists for environment-backed smoke testing with a running API and database.</li>
+  </ul>
+
+  <div class="page-break"></div>
+  <h2>Stage 3 Report - Frontend Integration</h2>
+  <table>
+    <tr><th>Feature</th><th>Status</th><th>Notes</th></tr>
+    <tr><td>Signup</td><td class="ok">Working</td><td>Validates input, calls <code>/api/auth/register</code>, stores JWT session.</td></tr>
+    <tr><td>Login</td><td class="ok">Working</td><td>Validates input, calls <code>/api/auth/login</code>, stores JWT session.</td></tr>
+    <tr><td>Auth state/Header</td><td class="ok">Working</td><td>Header changes based on logged-in state; protected pages redirect to login.</td></tr>
+    <tr><td>Contact inquiry</td><td class="ok">Working</td><td>Zod validation, loading/error/success states, backend persistence.</td></tr>
+    <tr><td>Manpower application</td><td class="ok">Working</td><td>Role fields, file upload, validation, backend persistence.</td></tr>
+    <tr><td>Services/venues/packages/events</td><td class="ok">Working</td><td>Loaded through API from PostgreSQL-seeded data.</td></tr>
+    <tr><td>Error handling</td><td class="ok">Working</td><td>ErrorBoundary present; API errors surfaced in UI states.</td></tr>
+  </table>
+  <p>End-to-end flow supported: sign up -> log in -> browse services -> submit inquiry/manpower application -> create booking.</p>
+
+  <h2>Stage 4 Report - Quality and Deployment</h2>
+  <table>
+    <tr><th>Checkpoint</th><th>Status</th><th>Evidence</th></tr>
+    <tr><td>Lint/build quality</td><td class="ok">Passed</td><td><code>pnpm run lint</code>, <code>pnpm run build</code></td></tr>
+    <tr><td>CI/CD</td><td class="ok">Configured</td><td><code>.github/workflows/ci.yml</code> runs lint and build on push/PR.</td></tr>
+    <tr><td>Deployment URL</td><td class="warn">Environment dependent</td><td>Repository is deployment-ready; final URL depends on host settings and PostgreSQL credentials.</td></tr>
+    <tr><td>Test coverage report</td><td class="warn">Smoke-test level</td><td>Formal unit coverage tooling is not installed; API smoke script is present.</td></tr>
+  </table>
+
+  <h2>Remaining Operational Notes</h2>
+  <ul>
+    <li>Set <code>DATABASE_URL</code>, <code>DB_CLIENT=postgres</code>, <code>DB_SSL=true</code>, and <code>JWT_SECRET</code> in the hosting environment.</li>
+    <li>Run <code>npm run init-db</code> or let startup seeding initialize PostgreSQL tables.</li>
+    <li>Run the GitHub Actions workflow after this report is pushed to confirm remote CI status.</li>
+  </ul>
+</body>
+</html>

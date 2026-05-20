@@ -153,6 +153,19 @@ class ApiClient {
     return this.request("/bookings");
   }
 
+  async adminLogin(credentials: unknown) {
+    return this.request("/admin/login", {
+      method: "POST",
+      body: JSON.stringify(credentials),
+    });
+  }
+
+  async getAdminRequirements(token: string) {
+    return this.request("/admin/requirements", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
+
 }
 
 function friendlyTextError(text: string, status: number) {

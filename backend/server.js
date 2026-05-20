@@ -12,6 +12,7 @@ import inquiriesRoutes from './routes/inquiries.js';
 import manpowerRoutes from './routes/manpower.js';
 import eventsRoutes from './routes/events.js';
 import bookingsRoutes from './routes/bookings.js';
+import adminRoutes from './routes/admin.js';
 import { seedDatabaseIfEmpty } from './scripts/init-db.js';
 import { getDatabaseConfigStatus } from './config/database.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
@@ -56,6 +57,7 @@ app.use('/api/inquiries', inquiriesRoutes);
 app.use('/api/manpower', manpowerRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/bookings', bookingsRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({

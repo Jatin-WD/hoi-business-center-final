@@ -36,7 +36,7 @@ class ApiClient {
     try {
       const response = await fetch(url, config);
       const contentType = response.headers.get("content-type") || "";
-      const data = contentType.includes("application/json") ? await response.json() : { message: await response.text() };
+      const data = contentType.includes("application/json") ? await response.json() : { message: friendlyTextError(await response.text(), response.status) };
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -183,6 +183,16 @@ class ApiClient {
     });
   }
 
+}
+
+function friendlyTextError(text: string, status: number) {
+  if (status === 503 || text.includes("503 Service Unavailable")) {
+    return "Server is temporarily unavailable. Please restart the Hostinger app and check database environment variables.";
+  }
+  if (text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")) {
+    return `Server returned an HTML error page (${status}).`;
+  }
+  return text || `API request failed with status ${status}`;
 }
 
 export const apiClient = Object.assign(new ApiClient(), adminApiMethods);

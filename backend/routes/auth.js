@@ -205,7 +205,9 @@ router.post('/register', async (req, res) => {
     console.error('Register verification request error:', error);
     res.status(500).json({
       success: false,
-      message: 'Registration verification failed'
+      message: error.message?.includes('database requires')
+        ? 'Database is not connected. Add Hostinger MySQL environment variables and restart the app.'
+        : 'Registration verification failed'
     });
   }
 });
@@ -261,7 +263,12 @@ router.post('/register/verify', async (req, res) => {
     });
   } catch (error) {
     console.error('Register verification error:', error);
-    res.status(500).json({ success: false, message: 'Registration failed' });
+    res.status(500).json({
+      success: false,
+      message: error.message?.includes('database requires')
+        ? 'Database is not connected. Add Hostinger MySQL environment variables and restart the app.'
+        : 'Registration failed'
+    });
   }
 });
 

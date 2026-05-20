@@ -1,5 +1,6 @@
 import express from 'express';
 import { getDb } from '../config/database.js';
+import { fallbackEvents } from '../utils/catalogFallback.js';
 
 const router = express.Router();
 
@@ -23,10 +24,7 @@ router.get('/', async (req, res) => {
     });
   } catch (error) {
     console.error('Get events error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch events',
-    });
+    res.json({ success: true, data: { events: fallbackEvents() }, fallback: true });
   }
 });
 

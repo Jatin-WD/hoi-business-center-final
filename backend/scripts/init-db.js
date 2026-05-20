@@ -676,4 +676,4 @@ if (import.meta.url === scriptUrl) {
     });
 }
 
-export { seedDatabase, seedDatabaseIfEmpty };
+export { EVENTS, PACKAGE_DETAILS, SERVICE_PACKAGES, VENUE_DETAILS, seedDatabase, seedDatabaseIfEmpty };

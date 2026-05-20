@@ -1,5 +1,6 @@
 import express from 'express';
 import { getDb } from '../config/database.js';
+import { fallbackPackages } from '../utils/catalogFallback.js';
 
 const router = express.Router();
 
@@ -39,10 +40,7 @@ router.get('/', async (req, res) => {
     });
   } catch (error) {
     console.error('Get packages error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch packages'
-    });
+    res.json({ success: true, data: { packages: fallbackPackages() }, fallback: true });
   }
 });
 
@@ -85,9 +83,10 @@ router.get('/category/:category', async (req, res) => {
     });
   } catch (error) {
     console.error('Get packages by category error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch packages'
+    res.json({
+      success: true,
+      data: { packages: fallbackPackages().filter((pkg) => pkg.category === req.params.category) },
+      fallback: true
     });
   }
 });
@@ -135,10 +134,9 @@ router.get('/:id', async (req, res, next) => {
     });
   } catch (error) {
     console.error('Get package by id error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch package'
-    });
+    const pkg = fallbackPackages().find((item) => String(item.id) === String(req.params.id));
+    if (!pkg) return res.status(404).json({ success: false, message: 'Package not found' });
+    res.json({ success: true, data: { package: pkg }, fallback: true });
   }
 });
 
@@ -187,10 +185,9 @@ router.get('/:category/:subcategory', async (req, res) => {
     });
   } catch (error) {
     console.error('Get package error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch package'
-    });
+    const pkg = fallbackPackages().find((item) => item.category === req.params.category && item.subcategory === req.params.subcategory);
+    if (!pkg) return res.status(404).json({ success: false, message: 'Package not found' });
+    res.json({ success: true, data: { package: pkg }, fallback: true });
   }
 });
 

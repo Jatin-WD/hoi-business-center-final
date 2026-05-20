@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "main": "app.js",
+  "engines": {
+    "node": "22.x"
+  },
   "packageManager": "pnpm@11.1.2",
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -13,7 +17,7 @@
     "dev": "node scripts/dev.mjs",
     "dev:frontend": "vite",
     "build": "node scripts/fix-esbuild-permissions.mjs && vite build",
-    "start": "node backend/server.js",
+    "start": "node app.js",
     "init-db": "node backend/scripts/init-db.js",
     "db:init": "node backend/scripts/init-db.js",
     "test:api": "node scripts/test-api.mjs",

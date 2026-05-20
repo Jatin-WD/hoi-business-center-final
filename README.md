@@ -18,7 +18,8 @@ Use these app settings:
 ```text
 Build command: npm run build
 Start command: npm start
-Output directory: dist
+Startup file: app.js
+Output directory: leave default / empty
 ```
 
 The Express backend serves both:

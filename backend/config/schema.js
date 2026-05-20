@@ -63,6 +63,18 @@ const TABLES = [
     name: 'bookings',
     columns: [['id', 'pk'], ['user_id', 'integer not null'], ['service_id', 'varchar(120)'], ['package_id', 'varchar(120)'], ['event_id', 'integer'], ['notes', 'text'], ['status', "varchar(40) default 'pending'"], ['created_at', 'timestamp default current_timestamp'], ['updated_at', 'timestamp default current_timestamp']],
   },
+  {
+    name: 'cms_content',
+    columns: [['id', 'pk'], ['content_key', 'varchar(180) not null unique'], ['label', 'varchar(180) not null'], ['value', 'text not null'], ['type', "varchar(40) default 'text'"], ['created_at', 'timestamp default current_timestamp'], ['updated_at', 'timestamp default current_timestamp']],
+  },
+  {
+    name: 'admin_replies',
+    columns: [['id', 'pk'], ['source', 'varchar(80) not null'], ['record_id', 'integer not null'], ['subject', 'varchar(220) not null'], ['message', 'text not null'], ['created_at', 'timestamp default current_timestamp']],
+  },
+  {
+    name: 'notification_dismissals',
+    columns: [['id', 'pk'], ['notification_id', 'varchar(160) not null unique'], ['created_at', 'timestamp default current_timestamp']],
+  },
 ];
 
 function columnSql(client, [name, type]) {

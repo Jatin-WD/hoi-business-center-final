@@ -42,3 +42,21 @@ export async function authenticate(req, res, next) {
     res.status(401).json({ success: false, message: 'Invalid or expired session' });
   }
 }
+
+export function requireAdmin(req, res, next) {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  if (!token) {
+    return res.status(401).json({ success: false, message: 'Admin login required' });
+  }
+
+  try {
+    const decoded = verifyToken(token);
+    if (!['admin', 'sub-admin', 'editor'].includes(decoded.role)) {
+      return res.status(403).json({ success: false, message: 'Admin access required' });
+    }
+    req.admin = decoded;
+    next();
+  } catch {
+    res.status(401).json({ success: false, message: 'Invalid admin session' });
+  }
+}

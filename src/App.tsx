@@ -19,7 +19,7 @@ import VenueDetailPage from "@/pages/VenueDetailPage";
 import LoginPage from "@/pages/LoginPage";
 import SignUpPage from "@/pages/SignUpPage";
 import AdminLoginPage from "@/pages/AdminLoginPage";
-import AdminRequirementsPage from "@/pages/AdminRequirementsPage";
+import AdminDashboardPage from "@/pages/AdminDashboardPage";
 import NotFound from "@/pages/not-found";
 import PolicyPage from "@/pages/PolicyPage";
 
@@ -80,7 +80,8 @@ function Router() {
           <Route path="/login" component={LoginPage} />
           <Route path="/signup" component={SignUpPage} />
           <Route path="/admin-login" component={AdminLoginPage} />
-          <Route path="/admin" component={AdminRequirementsPage} />
+          <Route path="/admin" component={AdminDashboardPage} />
+
           <Route component={NotFound} />
         </Switch>
       </main>

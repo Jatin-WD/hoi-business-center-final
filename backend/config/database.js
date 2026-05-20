@@ -17,17 +17,20 @@ function buildMysqlUrlFromParts() {
 }
 
 function resolveDatabaseUrl() {
+  if (DB_CLIENT === 'postgres' || DB_CLIENT === 'postgresql') return process.env.DATABASE_URL || '';
   return process.env.MYSQL_URL || process.env.DATABASE_URL || buildMysqlUrlFromParts();
 }
 
 const DATABASE_URL = resolveDatabaseUrl();
-const selectedDatabaseEnv = process.env.MYSQL_URL
-  ? 'MYSQL_URL'
-  : process.env.DATABASE_URL
-    ? 'DATABASE_URL'
-    : DATABASE_URL
-      ? 'MYSQL_PARTS'
-      : 'missing';
+const selectedDatabaseEnv = DB_CLIENT === 'postgres' || DB_CLIENT === 'postgresql'
+  ? (process.env.DATABASE_URL ? 'DATABASE_URL' : 'missing')
+  : process.env.MYSQL_URL
+    ? 'MYSQL_URL'
+    : process.env.DATABASE_URL
+      ? 'DATABASE_URL'
+      : DATABASE_URL
+        ? 'MYSQL_PARTS'
+        : 'missing';
 
 let connection;
 let dbInstance;
@@ -41,9 +44,14 @@ function normalizeResult(result) {
   };
 }
 
+function toPostgresSql(sql) {
+  let index = 0;
+  return sql.replace(/\?/g, () => `$${++index}`);
+}
+
 function createAsyncDb({ client, query }) {
   const runQuery = async (sql, params = []) => {
-    return normalizeResult(await query(sql, params));
+    return normalizeResult(await query(client === 'postgres' ? toPostgresSql(sql) : sql, params));
   };
 
   return {
@@ -79,10 +87,13 @@ function createAsyncDb({ client, query }) {
 
 function assertConnectionUrl(client) {
   if (!DATABASE_URL) {
-    throw new Error(`${client} database requires DATABASE_URL or MYSQL_URL.`);
+    throw new Error(`${client} database requires DATABASE_URL${client === 'mysql' ? ' or MYSQL_URL' : ''}.`);
   }
   if (client === 'mysql' && !DATABASE_URL.startsWith('mysql://') && !DATABASE_URL.startsWith('mysql2://')) {
     throw new Error(`${client} database URL must be a MySQL connection string.`);
+  }
+  if (client === 'postgres' && !DATABASE_URL.startsWith('postgres://') && !DATABASE_URL.startsWith('postgresql://')) {
+    throw new Error(`${client} database URL must be a PostgreSQL/Supabase connection string.`);
   }
 }
 
@@ -96,13 +107,28 @@ async function createMysqlDb() {
   });
 }
 
+async function createPostgresDb() {
+  assertConnectionUrl('postgres');
+  const { Pool } = await import('pg');
+  connection = new Pool({
+    connectionString: DATABASE_URL,
+    ssl: process.env.DB_SSL === 'false' ? false : { rejectUnauthorized: false },
+  });
+  return createAsyncDb({
+    client: 'postgres',
+    query: (sql, params) => connection.query(sql, params),
+  });
+}
+
 export async function getDb() {
   if (dbInstance) return dbInstance;
 
   if (DB_CLIENT === 'mysql') {
     dbInstance = await createMysqlDb();
+  } else if (DB_CLIENT === 'postgres' || DB_CLIENT === 'postgresql') {
+    dbInstance = await createPostgresDb();
   } else {
-    throw new Error(`Unsupported DB_CLIENT "${DB_CLIENT}". Use "mysql".`);
+    throw new Error(`Unsupported DB_CLIENT "${DB_CLIENT}". Use "mysql" or "postgres".`);
   }
 
   return dbInstance;
@@ -132,6 +158,7 @@ export function getDatabaseConfigStatus() {
       && (process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE || process.env.DB_NAME || process.env.DATABASE_NAME)
     ),
     isMysqlUrl: DATABASE_URL.startsWith('mysql://') || DATABASE_URL.startsWith('mysql2://'),
+    isPostgresUrl: DATABASE_URL.startsWith('postgres://') || DATABASE_URL.startsWith('postgresql://'),
   };
 }
 

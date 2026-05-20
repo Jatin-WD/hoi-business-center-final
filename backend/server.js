@@ -33,13 +33,12 @@ const allowedOrigins = [
   'http://127.0.0.1:5173',
 ].filter(Boolean);
 const allowedDevOrigin = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}):\d{4,5}$/;
-const allowedVercelOrigin = /^https:\/\/[a-z0-9-]+\.vercel\.app$/;
 const allowedHostingerOrigin = /^https:\/\/[a-z0-9-]+\.hostingersite\.com$/;
 
 app.use(helmet());
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin) || allowedDevOrigin.test(origin) || allowedVercelOrigin.test(origin) || allowedHostingerOrigin.test(origin)) {
+    if (!origin || allowedOrigins.includes(origin) || allowedDevOrigin.test(origin) || allowedHostingerOrigin.test(origin)) {
       callback(null, true);
       return;
     }
@@ -71,6 +70,16 @@ app.get('/api/health', (req, res) => {
     databaseError: databaseStatus.ready ? '' : databaseStatus.lastError,
     timestamp: new Date().toISOString(),
   });
+});
+
+const distPath = path.join(process.cwd(), 'dist');
+app.use(express.static(distPath));
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) {
+    next();
+    return;
+  }
+  res.sendFile(path.join(distPath, 'index.html'));
 });
 
 app.use(notFound);

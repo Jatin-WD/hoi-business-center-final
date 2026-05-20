@@ -1,9 +1,7 @@
 import { spawn } from "node:child_process";
-import { existsSync } from "node:fs";
 
 const isWindows = process.platform === "win32";
 const npmCmd = isWindows ? "npm.cmd" : "npm";
-const dockerCmd = isWindows ? "docker.exe" : "docker";
 const children = [];
 
 function run(name, command, args, options = {}) {
@@ -33,9 +31,5 @@ function shutdown(code = 0) {
 process.on("SIGINT", () => shutdown(0));
 process.on("SIGTERM", () => shutdown(0));
 
-if (existsSync("docker-compose.mysql.yml")) {
-  run("mysql", dockerCmd, ["compose", "-f", "docker-compose.mysql.yml", "up", "-d"], { optional: true });
-}
-
-run("backend", npmCmd, ["--prefix", "backend", "start"]);
+run("backend", npmCmd, ["start"]);
 run("frontend", npmCmd, ["run", "dev:frontend", "--", "--host", "0.0.0.0"]);

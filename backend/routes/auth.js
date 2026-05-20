@@ -103,6 +103,15 @@ async function notifyLogin(subject, fields) {
   }
 }
 
+async function createUserFromSignupVerification(db, verification, cleanEmail) {
+  await db.run(
+    'INSERT INTO users (name, email, password, phone, company) VALUES (?, ?, ?, ?, ?)',
+    [verification.name, cleanEmail, verification.password_hash, verification.phone, verification.company]
+  );
+  await db.run('UPDATE signup_verifications SET used_at = CURRENT_TIMESTAMP WHERE id = ?', [verification.id]);
+  return db.prepare('SELECT id, name, email, phone, company, role, status, created_at FROM users WHERE email = ?').get(cleanEmail);
+}
+
 function buildWelcomeHtml(user) {
   return `
     <div style="font-family:Arial,sans-serif;color:#111827;line-height:1.6">
@@ -164,10 +173,26 @@ router.post('/register', async (req, res) => {
       return { sent: false, reason: emailError.message };
     });
 
-    if (!emailResult.sent && process.env.NODE_ENV === 'production') {
-      return res.status(500).json({
-        success: false,
-        message: 'Email verification is not configured. Please contact support.',
+    if (!emailResult.sent) {
+      const verification = await db.prepare(`
+        SELECT * FROM signup_verifications
+        WHERE lower(email) = ? AND used_at IS NULL
+        ORDER BY created_at DESC
+      `).get(cleanEmail);
+      const createdUser = await createUserFromSignupVerification(db, verification, cleanEmail);
+      const token = issueToken(createdUser);
+      notifyLogin(`New HOI user signup: ${createdUser.name}`, {
+        Name: createdUser.name,
+        Email: createdUser.email,
+        Phone: createdUser.phone,
+        Company: createdUser.company,
+        Role: createdUser.role || 'user',
+        Verification: 'Email delivery unavailable; account created directly',
+      });
+      return res.status(201).json({
+        success: true,
+        message: 'Account created successfully. You are now signed in.',
+        data: { user: createdUser, token, autoVerified: true }
       });
     }
 
@@ -209,13 +234,7 @@ router.post('/register/verify', async (req, res) => {
       return res.status(409).json({ success: false, message: duplicateMessage });
     }
 
-    await db.run(
-      'INSERT INTO users (name, email, password, phone, company) VALUES (?, ?, ?, ?, ?)',
-      [verification.name, cleanEmail, verification.password_hash, verification.phone, verification.company]
-    );
-    await db.run('UPDATE signup_verifications SET used_at = CURRENT_TIMESTAMP WHERE id = ?', [verification.id]);
-
-    const createdUser = await db.prepare('SELECT id, name, email, phone, company, role, status, created_at FROM users WHERE email = ?').get(cleanEmail);
+    const createdUser = await createUserFromSignupVerification(db, verification, cleanEmail);
     const token = issueToken(createdUser);
 
     try {

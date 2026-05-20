@@ -46,6 +46,10 @@ export default function SignUpPage() {
     setStatus("loading");
     try {
       const response = await register(result.data);
+      if (response.autoVerified) {
+        setLocation("/");
+        return;
+      }
       setStep("verify");
       setSubmitError(response.message);
       setMessageTone("success");

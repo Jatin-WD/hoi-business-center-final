@@ -133,7 +133,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setError(null)
     try {
       const response = await apiClient.register(values)
-      return { message: response.message || "Verification code sent", devOtp: response.data?.devOtp }
+      if (response.data?.token && response.data?.user) {
+        setToken(response.data.token)
+        setUser(response.data.user)
+        apiClient.setAuthSession(response.data.token, response.data.user)
+      }
+      return {
+        message: response.message || "Verification code sent",
+        devOtp: response.data?.devOtp,
+        autoVerified: Boolean(response.data?.autoVerified || response.data?.token),
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed")
       throw err

@@ -34,11 +34,12 @@ const allowedOrigins = [
 ].filter(Boolean);
 const allowedDevOrigin = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}):\d{4,5}$/;
 const allowedVercelOrigin = /^https:\/\/[a-z0-9-]+\.vercel\.app$/;
+const allowedHostingerOrigin = /^https:\/\/[a-z0-9-]+\.hostingersite\.com$/;
 
 app.use(helmet());
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin) || allowedDevOrigin.test(origin) || allowedVercelOrigin.test(origin)) {
+    if (!origin || allowedOrigins.includes(origin) || allowedDevOrigin.test(origin) || allowedVercelOrigin.test(origin) || allowedHostingerOrigin.test(origin)) {
       callback(null, true);
       return;
     }

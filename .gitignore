@@ -1,10 +1,12 @@
 node_modules/
 dist/
+.pnpm-store/
 
 *.log
 *.err.log
 
 .env
+_tmp_*
 backend/.env
 backend/_tmp_*
 backend/uploads/*

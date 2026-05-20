@@ -1,14 +1,13 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 import { getDb } from '../config/database.js';
 import { databaseTables } from '../config/schema.js';
+import { requireAdmin, signToken } from '../middleware/auth.js';
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'LKMALLSHOP@GMAIL.COM').toLowerCase();
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin@12345';
 const adminImageDir = path.join(process.cwd(), 'uploads', 'admin-images');
@@ -104,24 +103,6 @@ const STAGE_REPORT = {
 
 function validatePassword(password) {
   return typeof password === 'string' && password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password);
-}
-
-function requireAdmin(req, res, next) {
-  const token = req.headers.authorization?.replace('Bearer ', '');
-  if (!token) {
-    return res.status(401).json({ success: false, message: 'Admin login required' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    if (decoded.role !== 'admin') {
-      return res.status(403).json({ success: false, message: 'Admin access only' });
-    }
-    req.admin = decoded;
-    next();
-  } catch {
-    res.status(401).json({ success: false, message: 'Invalid admin session' });
-  }
 }
 
 router.post('/upload/image', requireAdmin, imageUpload.single('image'), (req, res) => {
@@ -225,7 +206,7 @@ router.post('/login', async (req, res) => {
     `).get(email);
 
     if (dbAdmin && await bcrypt.compare(password, dbAdmin.password)) {
-      const token = jwt.sign({ id: dbAdmin.id, email: dbAdmin.email, role: dbAdmin.role }, JWT_SECRET, { expiresIn: '8h' });
+      const token = signToken({ id: dbAdmin.id, email: dbAdmin.email, role: dbAdmin.role }, { expiresIn: '8h' });
       const { password: _, ...admin } = dbAdmin;
       return res.json({
         success: true,
@@ -244,7 +225,7 @@ router.post('/login', async (req, res) => {
     });
   }
 
-  const token = jwt.sign({ email: ADMIN_EMAIL, role: 'admin', envAdmin: true }, JWT_SECRET, { expiresIn: '8h' });
+  const token = signToken({ email: ADMIN_EMAIL, role: 'admin', envAdmin: true }, { expiresIn: '8h' });
   res.json({
     success: true,
     message: 'Admin login successful',
@@ -336,7 +317,7 @@ router.get('/dashboard', requireAdmin, async (req, res) => {
         report: buildStageReport(counts),
         pagination: {
           defaultPageSize: 12,
-          note: 'Admin UI paginates large dashboard lists client-side; API includes full persisted records from SQLite.',
+          note: 'Admin UI paginates large dashboard lists client-side; API includes full persisted records from the configured database.',
         },
         cms: {
           note: 'Manage every website area from this panel: page text, services, packages, manpower roles, event calendar, theme, and submissions.',

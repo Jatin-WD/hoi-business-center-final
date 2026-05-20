@@ -1,5 +1,6 @@
 import express from 'express';
 import { getDb } from '../config/database.js';
+import { requireAdmin } from '../middleware/auth.js';
 import { buildRequirementHtml, REQUIREMENT_EMAIL, sendRequirementMail } from '../utils/mailer.js';
 
 const router = express.Router();
@@ -62,7 +63,7 @@ router.post('/', async (req, res) => {
 });
 
 // Get all inquiries (admin only)
-router.get('/', async (req, res) => {
+router.get('/', requireAdmin, async (req, res) => {
   try {
     const db = await getDb();
     const inquiries = await db.all(`
@@ -96,7 +97,7 @@ router.get('/', async (req, res) => {
 });
 
 // Update inquiry status
-router.patch('/:id/status', async (req, res) => {
+router.patch('/:id/status', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;

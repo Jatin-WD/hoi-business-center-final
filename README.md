@@ -6,7 +6,7 @@ React + Express app for HOI Business Center services, venues, packages, bookings
 
 - Frontend: React, TypeScript, Vite, Tailwind CSS
 - Backend: Express REST API
-- Database: Docker MySQL only
+- Database: MySQL locally; PostgreSQL is also supported for guideline-compliant deployments
 - Auth: JWT with email/password, phone OTP, and verified signup email OTP
 
 ## Run Locally
@@ -34,7 +34,7 @@ http://localhost:5000/api/health
 
 ## Database
 
-Local database runs in Docker:
+Local database runs in Docker MySQL:
 
 ```text
 container: hoi-business-mysql
@@ -49,7 +49,13 @@ DB_CLIENT=mysql
 DATABASE_URL=mysql://hoi_user:hoi_password@127.0.0.1:3307/hoi_business_center
 ```
 
-Table creation comes from `backend/config/schema.js`.
+Table creation comes from `backend/config/schema.js`. For PostgreSQL, set:
+
+```env
+DB_CLIENT=postgres
+DATABASE_URL=postgresql://user:password@host:5432/database
+DB_SSL=true
+```
 
 Seed/update catalog data:
 
@@ -108,14 +114,15 @@ Admin panel manages:
 ## Deployment
 
 - Frontend: Vercel, using `vercel.json`.
-- Backend: Railway, using `railway.json`.
+- Backend: Railway/Render, using `railway.json`.
 - CI/CD: GitHub Actions workflow in `.github/workflows/ci.yml`.
 
 Required production environment variables:
 
 ```env
-DATABASE_URL=mysql://user:password@host:3306/database
-# Or Railway MySQL: MYSQL_URL=${{MySQL.MYSQL_URL}}
+DB_CLIENT=postgres
+DATABASE_URL=postgresql://user:password@host:5432/database
+DB_SSL=true
 JWT_SECRET=long-random-secret
 FRONTEND_URL=https://your-frontend-domain.com
 REQUIREMENT_EMAIL=team@example.com

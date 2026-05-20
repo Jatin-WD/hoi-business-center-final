@@ -1,13 +1,12 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import dns from 'dns/promises';
 import { getDb } from '../config/database.js';
+import { signToken, verifyToken } from '../middleware/auth.js';
 import { buildRequirementHtml, REQUIREMENT_EMAIL, sendDirectMail, sendRequirementMail } from '../utils/mailer.js';
 import { sendOtpSms } from '../utils/sms.js';
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^\+?[0-9][0-9\s-]{7,}[0-9]$/;
 const disposableEmailDomains = new Set([
@@ -28,7 +27,7 @@ function getBearerToken(req) {
 }
 
 function issueToken(user) {
-  return jwt.sign({ id: user.id, email: user.email, role: user.role || 'user' }, JWT_SECRET, { expiresIn: '7d' });
+  return signToken({ id: user.id, email: user.email, role: user.role || 'user' }, { expiresIn: '7d' });
 }
 
 function publicUser(user) {
@@ -312,7 +311,7 @@ async function handleProfile(req, res) {
       });
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = verifyToken(token);
     const db = await getDb();
 
     const user = await db.prepare('SELECT id, name, email, phone, company, role, status, created_at FROM users WHERE id = ?').get(decoded.id);

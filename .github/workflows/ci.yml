@@ -11,12 +11,27 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DB_CLIENT: mysql
-      DATABASE_URL: mysql://hoi_user:hoi_password@127.0.0.1:3307/hoi_business_center
+      DB_CLIENT: postgres
+      DATABASE_URL: postgresql://hoi_user:hoi_password@127.0.0.1:5432/hoi_business_center
       FRONTEND_URL: http://localhost:5173
       JWT_SECRET: ci-jwt-secret-change-in-production
       NODE_ENV: development
       REQUIREMENT_EMAIL: jatinsaini019@gmail.com
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: hoi_business_center
+          POSTGRES_USER: hoi_user
+          POSTGRES_PASSWORD: hoi_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U hoi_user -d hoi_business_center"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
 
     steps:
       - name: Checkout
@@ -36,18 +51,6 @@ jobs:
 
       - name: Install backend dependencies
         run: pnpm --dir backend install --frozen-lockfile
-
-      - name: Start Docker MySQL
-        run: docker compose -f docker-compose.mysql.yml up -d
-
-      - name: Wait for MySQL
-        run: |
-          for i in {1..40}; do
-            docker inspect --format='{{.State.Health.Status}}' hoi-business-mysql | grep -q healthy && exit 0
-            sleep 3
-          done
-          docker logs hoi-business-mysql
-          exit 1
 
       - name: Seed database
         run: npm --prefix backend run init-db

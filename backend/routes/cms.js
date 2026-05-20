@@ -1,9 +1,8 @@
 import express from 'express';
-import jwt from 'jsonwebtoken';
 import { getDb } from '../config/database.js';
+import { requireAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 const DEFAULT_CONTENT = [
   ['home.hero.badge', 'Home hero badge', "India's Premier Exhibition & Business Center Service"],
@@ -43,23 +42,6 @@ const DEFAULT_CONTENT = [
     { id: 'info-desk', label: 'Information Desk Executive', enabled: true },
   ])],
 ];
-
-function requireAdmin(req, res, next) {
-  const token = req.headers.authorization?.replace('Bearer ', '');
-  if (!token) {
-    return res.status(401).json({ success: false, message: 'Admin login required' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    if (decoded.role !== 'admin') {
-      return res.status(403).json({ success: false, message: 'Admin access only' });
-    }
-    next();
-  } catch {
-    res.status(401).json({ success: false, message: 'Invalid admin session' });
-  }
-}
 
 async function ensureDefaultContent() {
   const db = await getDb();

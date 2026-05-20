@@ -104,7 +104,7 @@ const TABLES = [
 ];
 
 function columnSql(client, [name, type]) {
-  if (type === 'pk') return `${name} int auto_increment primary key`;
+  if (type === 'pk') return client === 'postgres' ? `${name} serial primary key` : `${name} int auto_increment primary key`;
   return `${name} ${type}`;
 }
 

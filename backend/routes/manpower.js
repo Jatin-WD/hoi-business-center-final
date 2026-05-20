@@ -3,6 +3,7 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 import { getDb } from '../config/database.js';
+import { requireAdmin } from '../middleware/auth.js';
 import { buildRequirementHtml, REQUIREMENT_EMAIL, sendRequirementMail } from '../utils/mailer.js';
 
 const router = express.Router();
@@ -156,7 +157,7 @@ router.post('/', upload.array('documents', 5), async (req, res) => {
 });
 
 // Get all manpower requests (admin only)
-router.get('/', async (req, res) => {
+router.get('/', requireAdmin, async (req, res) => {
   try {
     const db = await getDb();
     const requests = await db.all(`
@@ -203,7 +204,7 @@ router.get('/', async (req, res) => {
 });
 
 // Update manpower request status
-router.patch('/:id/status', async (req, res) => {
+router.patch('/:id/status', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;

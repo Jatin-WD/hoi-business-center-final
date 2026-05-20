@@ -15,32 +15,6 @@ const TABLES = [
     ],
   },
   {
-    name: 'otp_codes',
-    columns: [
-      ['id', 'pk'],
-      ['phone', 'varchar(40) not null'],
-      ['code_hash', 'varchar(255) not null'],
-      ['expires_at', 'varchar(40) not null'],
-      ['used_at', 'timestamp'],
-      ['created_at', 'timestamp default current_timestamp'],
-    ],
-  },
-  {
-    name: 'signup_verifications',
-    columns: [
-      ['id', 'pk'],
-      ['name', 'varchar(160) not null'],
-      ['email', 'varchar(255) not null'],
-      ['phone', 'varchar(40) not null'],
-      ['company', 'varchar(180)'],
-      ['password_hash', 'varchar(255) not null'],
-      ['code_hash', 'varchar(255) not null'],
-      ['expires_at', 'varchar(40) not null'],
-      ['used_at', 'timestamp'],
-      ['created_at', 'timestamp default current_timestamp'],
-    ],
-  },
-  {
     name: 'venues',
     columns: [
       ['id', 'pk'],
@@ -88,18 +62,6 @@ const TABLES = [
   {
     name: 'bookings',
     columns: [['id', 'pk'], ['user_id', 'integer not null'], ['service_id', 'varchar(120)'], ['package_id', 'varchar(120)'], ['event_id', 'integer'], ['notes', 'text'], ['status', "varchar(40) default 'pending'"], ['created_at', 'timestamp default current_timestamp'], ['updated_at', 'timestamp default current_timestamp']],
-  },
-  {
-    name: 'cms_content',
-    columns: [['id', 'pk'], ['content_key', 'varchar(255) not null unique'], ['label', 'varchar(255) not null'], ['value', 'text not null'], ['type', "varchar(40) default 'text'"], ['updated_at', 'timestamp default current_timestamp'], ['created_at', 'timestamp default current_timestamp']],
-  },
-  {
-    name: 'admin_replies',
-    columns: [['id', 'pk'], ['source', 'varchar(80) not null'], ['record_id', 'integer not null'], ['subject', 'varchar(255)'], ['message', 'text not null'], ['created_at', 'timestamp default current_timestamp']],
-  },
-  {
-    name: 'notification_dismissals',
-    columns: [['id', 'pk'], ['notification_id', 'varchar(160) not null unique'], ['created_at', 'timestamp default current_timestamp']],
   },
 ];
 

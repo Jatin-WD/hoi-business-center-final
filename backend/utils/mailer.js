@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-export const REQUIREMENT_EMAIL = process.env.REQUIREMENT_EMAIL || 'LKMALLSHOP@GMAIL.COM';
+export const REQUIREMENT_EMAIL = process.env.REQUIREMENT_EMAIL || 'team@example.com';
 
 function escapeHtml(value = '') {
   return String(value)

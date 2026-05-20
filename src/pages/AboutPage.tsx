@@ -1,13 +1,7 @@
 import { Link } from "wouter";
 import { ChevronRight } from "lucide-react";
-import { useCmsContent } from "@/hooks/useCmsContent";
 
 export default function AboutPage() {
-  const cms = useCmsContent({
-    "about.hero.title": "About HOI",
-    "about.hero.description": "Learn about our mission, values, and our role at India's premier business and exhibition center.",
-  });
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-gradient-to-r from-[#0f2460] to-[#1a3a8f] text-white py-14 px-8">
@@ -17,9 +11,9 @@ export default function AboutPage() {
             <ChevronRight size={14} />
             <span className="text-white">About Us</span>
           </div>
-          <h1 className="text-4xl font-bold mb-4">{cms("about.hero.title")}</h1>
+          <h1 className="text-4xl font-bold mb-4">About HOI</h1>
           <p className="text-blue-200 max-w-xl">
-            {cms("about.hero.description")}
+            Learn about our mission, values, and our role at India's premier business and exhibition center.
           </p>
         </div>
       </div>

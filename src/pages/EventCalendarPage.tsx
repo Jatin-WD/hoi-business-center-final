@@ -2,7 +2,6 @@
 import { Link } from "wouter";
 import { ChevronRight, Calendar, MapPin } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
-import { useCmsContent } from "@/hooks/useCmsContent";
 
 const LOCATIONS = [
   { id: "all", label: "All Locations" },
@@ -23,10 +22,6 @@ const LOCATIONS = [
 export default function EventCalendarPage() {
   const [activeLocation, setActiveLocation] = useState("all");
   const [events, setEvents] = useState<any[]>([]);
-  const cms = useCmsContent({
-    "events.hero.title": "Event Calendar",
-    "events.hero.description": "Browse upcoming exhibitions and trade fairs across India where HOI Business Center provides services.",
-  });
 
   useEffect(() => {
     let mounted = true;
@@ -55,9 +50,9 @@ export default function EventCalendarPage() {
             <ChevronRight size={14} />
             <span className="text-white">Event Calendar</span>
           </div>
-          <h1 className="text-4xl font-bold mb-3">{cms("events.hero.title")}</h1>
+          <h1 className="text-4xl font-bold mb-3">Event Calendar</h1>
           <p className="text-blue-200 max-w-xl">
-            {cms("events.hero.description")}
+            Browse upcoming exhibitions and trade fairs across India where HOI Business Center provides services.
           </p>
         </div>
       </div>

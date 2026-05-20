@@ -6,7 +6,6 @@ import CTABanner from "@/components/common/CTABanner";
 import SubmissionPopup from "@/components/common/SubmissionPopup";
 import { contactSchema, type ContactValues } from "@/lib/validators";
 import { useAuth } from "@/hooks/useAuth";
-import { useCmsContent } from "@/hooks/useCmsContent";
 import { ContactForm } from "./contact/ContactForm";
 import { ContactInfo } from "./contact/ContactInfo";
 import { loadCatalog } from "@/lib/catalog";
@@ -23,10 +22,6 @@ const blankForm: ContactValues = {
 
 export default function ContactPage() {
   const { user } = useAuth();
-  const cms = useCmsContent({
-    "contact.title": "Contact Us",
-    "contact.description": "Reach out to our team for inquiries, quotations, or to book any of our services.",
-  });
   const [form, setForm] = useState<ContactValues>(blankForm);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -100,7 +95,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <HeroSection breadcrumbs={[{ label: "Home", href: "/" }, { label: "Contact Us" }]} title={cms("contact.title")} description={cms("contact.description")} />
+      <HeroSection breadcrumbs={[{ label: "Home", href: "/" }, { label: "Contact Us" }]} title="Contact Us" description="Reach out to our team for inquiries, quotations, or to book any of our services." />
       <div className="max-w-[1600px] mx-auto px-8 py-14">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <ContactInfo />

@@ -2,7 +2,6 @@ import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { Link } from "wouter";
 import { AlertCircle, CheckCircle, ChevronRight, FileText } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
-import { useCmsContent } from "@/hooks/useCmsContent";
 import { manpowerCommonSchema } from "@/lib/validators";
 import { RoleSpecificFields, StepNumber } from "./manpower/RoleSpecificFields";
 import { CvUpload, PersonalDetails, type ManpowerFormState } from "./manpower/CommonSections";
@@ -22,8 +21,7 @@ const emptyForm: ManpowerFormState = {
 };
 
 export default function ManPowerPage() {
-  const cms = useCmsContent({ "manpower.roles": JSON.stringify(defaultRoles) });
-  const roles = parseRoles(cms("manpower.roles"));
+  const roles = parseRoles(JSON.stringify(defaultRoles));
   const fileRef = useRef<HTMLInputElement>(null);
   const [role, setRole] = useState("");
   const [roleFields, setRoleFields] = useState<RoleFields>({});
@@ -168,7 +166,7 @@ function Hero() {
           <span className="text-white">Apply for Man Power Service</span>
         </div>
         <h1 className="mb-3 text-4xl font-bold">Apply for Man Power Service</h1>
-        <p className="max-w-2xl text-blue-200">Select your role, add the role-specific details, and upload your CV. All submissions are stored for admin review.</p>
+        <p className="max-w-2xl text-blue-200">Select your role, add the role-specific details, and upload your CV. All submissions are stored in the project database.</p>
       </div>
     </div>
   );

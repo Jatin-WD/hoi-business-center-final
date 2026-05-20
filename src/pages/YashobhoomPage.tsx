@@ -1,13 +1,7 @@
 import { Link } from "wouter";
 import { ChevronRight, Building2, Users, Globe, Award } from "lucide-react";
-import { useCmsContent } from "@/hooks/useCmsContent";
 
 export default function YashobhoomiPage() {
-  const cms = useCmsContent({
-    "yashobhoomi.hero.title": "Yashobhoomi",
-    "yashobhoomi.hero.description": "India's largest and most modern MICE destination located in Dwarka, New Delhi - and KIL - HOI Business Center is its official service partner.",
-  });
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero */}
@@ -18,7 +12,7 @@ export default function YashobhoomiPage() {
             <ChevronRight size={14} />
             <span className="text-white">Yashobhoomi</span>
           </div>
-          <h1 className="text-4xl font-bold mb-3">{cms("yashobhoomi.hero.title")}</h1>
+          <h1 className="text-4xl font-bold mb-3">Yashobhoomi</h1>
           <p className="text-xl text-yellow-300 font-semibold mb-3">
             India International Convention &amp; Expo Centre
           </p>

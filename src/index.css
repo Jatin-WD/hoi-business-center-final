@@ -2,25 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@media print {
-  body * {
-    visibility: hidden;
-  }
-
-  #admin-stage-report,
-  #admin-stage-report * {
-    visibility: visible;
-  }
-
-  #admin-stage-report {
-    position: absolute;
-    inset: 0 auto auto 0;
-    width: 100%;
-    border: 0;
-    box-shadow: none;
-  }
-}
-
 :root {
   --hoi-primary: #1a3a8f;
   --hoi-primary-dark: #0f2460;

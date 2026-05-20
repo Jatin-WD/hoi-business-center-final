@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 import { ArrowRight, Award, Calendar, CheckCircle, MapPin, Users } from "lucide-react";
-import { useCmsContent } from "@/hooks/useCmsContent";
 import { loadCatalog, type CatalogService, type CatalogVenue } from "@/lib/catalog";
 
 const stats = [
@@ -23,19 +22,6 @@ const features = [
 export default function HomePage() {
   const [services, setServices] = useState<CatalogService[]>([]);
   const [venues, setVenues] = useState<CatalogVenue[]>([]);
-  const cms = useCmsContent({
-    "home.hero.badge": "India's Premier Exhibition & Business Center Service",
-    "home.hero.title": "Your Complete Exhibition Partner at HOI Business Center",
-    "home.hero.description": "From booth reservation to design, installation, logistics, marketing, and manpower services - we handle every aspect of your exhibition journey.",
-    "home.services.title": "Our Services",
-    "home.services.description": "Comprehensive exhibition solutions designed to make your presence unforgettable.",
-    "home.locations.title": "Where We Operate",
-    "home.locations.description": "Admin-managed venues loaded from the database.",
-    "home.why.title": "Why Choose KIL - HOI Business Center?",
-    "home.why.description": "Our end-to-end services ensure your exhibition is seamless, professional, and impactful.",
-    "home.cta.title": "Ready to Elevate Your Exhibition Presence?",
-    "home.cta.description": "Contact our team today and let us create an unforgettable exhibition experience for your brand.",
-  });
 
   const locations = useMemo(() => venues.slice(0, 3), [venues]);
   const heroImage = "/assets/yashobhoomi.png";
@@ -65,10 +51,10 @@ export default function HomePage() {
         <div className="relative max-w-[1600px] mx-auto px-8 py-24 lg:py-32">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-sm mb-6">
-              <span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />{cms("home.hero.badge")}
+              <span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />India's Premier Exhibition & Business Center Service
             </div>
-            <h1 className="text-4xl lg:text-6xl font-bold leading-tight mb-6">{cms("home.hero.title")}</h1>
-            <p className="text-xl text-blue-100 mb-8 leading-relaxed">{cms("home.hero.description")}</p>
+            <h1 className="text-4xl lg:text-6xl font-bold leading-tight mb-6">Your Complete Exhibition Partner at HOI Business Center</h1>
+            <p className="text-xl text-blue-100 mb-8 leading-relaxed">From booth reservation to design, installation, logistics, marketing, and manpower services - we handle every aspect of your exhibition journey.</p>
             <div className="flex flex-wrap gap-4">
               <Link href="/service" className="inline-flex items-center gap-2 bg-yellow-400 text-gray-900 font-bold px-6 py-3.5 rounded-xl hover:bg-yellow-300 transition-colors text-base">Explore Services <ArrowRight size={18} /></Link>
               <Link href="/contact" className="inline-flex items-center gap-2 bg-white/10 border border-white/30 text-white font-semibold px-6 py-3.5 rounded-xl hover:bg-white/20 transition-colors text-base">Get a Quote</Link>
@@ -77,16 +63,16 @@ export default function HomePage() {
         </div>
       </section>
       <StatsSection />
-      <ServicesSection title={cms("home.services.title")} description={cms("home.services.description")} services={services} />
-      <LocationsSection title={cms("home.locations.title")} description={cms("home.locations.description")} venues={locations} />
-      <WhySection title={cms("home.why.title")} description={cms("home.why.description")} />
+      <ServicesSection title="Our Services" description="Comprehensive exhibition solutions designed to make your presence unforgettable." services={services} />
+      <LocationsSection title="Where We Operate" description="Venues loaded from the project database." venues={locations} />
+      <WhySection title="Why Choose KIL - HOI Business Center?" description="Our end-to-end services ensure your exhibition is seamless, professional, and impactful." />
       <section className="relative overflow-hidden bg-[#0f2460] py-16">
         <img src="/assets/hall.jpg" alt="Exhibition hall" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-[#0f2460]/80" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0f2460]/95 via-[#1a3a8f]/70 to-[#0f2460]/70" />
         <div className="relative max-w-[1600px] mx-auto px-8 text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">{cms("home.cta.title")}</h2>
-          <p className="text-blue-200 mb-8 max-w-xl mx-auto">{cms("home.cta.description")}</p>
+          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">Ready to Elevate Your Exhibition Presence?</h2>
+          <p className="text-blue-200 mb-8 max-w-xl mx-auto">Contact our team today and let us create an unforgettable exhibition experience for your brand.</p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/contact" className="bg-yellow-400 text-gray-900 font-bold px-8 py-3.5 rounded-xl hover:bg-yellow-300 transition-colors">Contact Us Now</Link>
             <Link href="/service" className="bg-white/10 border border-white/30 text-white font-semibold px-8 py-3.5 rounded-xl hover:bg-white/20 transition-colors">View All Services</Link>

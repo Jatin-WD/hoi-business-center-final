@@ -9,14 +9,6 @@ export const loginSchema = z.object({
 
 export type LoginValues = z.infer<typeof loginSchema>
 
-export const phoneOtpRequestSchema = z.object({
-  phone: z.string().min(10, "Enter a valid phone number").regex(phoneRegex, "Enter a valid phone number"),
-})
-
-export const phoneOtpVerifySchema = phoneOtpRequestSchema.extend({
-  code: z.string().regex(/^\d{6}$/, "Enter the 6 digit OTP"),
-})
-
 export const signupSchema = z.object({
   name: z.string().min(2, "Full name is required"),
   company: z.string().optional(),
@@ -33,13 +25,6 @@ export const signupSchema = z.object({
 })
 
 export type SignUpValues = z.infer<typeof signupSchema>
-
-export const signupVerifySchema = z.object({
-  email: z.string().email("Enter a valid email address"),
-  code: z.string().regex(/^\d{6}$/, "Enter the 6 digit verification code"),
-})
-
-export type SignUpVerifyValues = z.infer<typeof signupVerifySchema>
 
 export const contactSchema = z.object({
   name: z.string().min(2, "Enter your full name"),

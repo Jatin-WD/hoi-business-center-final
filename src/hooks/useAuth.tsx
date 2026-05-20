@@ -16,10 +16,7 @@ interface AuthContextValue {
   loading: boolean
   error: string | null
   login: (values: LoginValues) => Promise<void>
-  loginWithOtp: (values: { phone: string; code: string }) => Promise<void>
-  requestPhoneOtp: (phone: string) => Promise<{ message: string; devOtp?: string }>
-  register: (values: SignUpValues) => Promise<{ message: string; devOtp?: string }>
-  verifyRegistration: (values: { email: string; code: string }) => Promise<void>
+  register: (values: SignUpValues) => Promise<void>
   logout: () => void
 }
 
@@ -98,36 +95,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const requestPhoneOtp = async (phone: string) => {
-    setLoading(true)
-    setError(null)
-    try {
-      const response = await apiClient.requestPhoneOtp(phone)
-      return { message: response.message || "OTP sent", devOtp: response.data?.devOtp }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "OTP request failed")
-      throw err
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const loginWithOtp = async (values: { phone: string; code: string }) => {
-    setLoading(true)
-    setError(null)
-    try {
-      const response = await apiClient.verifyPhoneOtp(values)
-      setToken(response.data.token)
-      setUser(response.data.user)
-      apiClient.setAuthSession(response.data.token, response.data.user)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "OTP login failed")
-      throw err
-    } finally {
-      setLoading(false)
-    }
-  }
-
   const register = async (values: SignUpValues) => {
     setLoading(true)
     setError(null)
@@ -138,29 +105,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(response.data.user)
         apiClient.setAuthSession(response.data.token, response.data.user)
       }
-      return {
-        message: response.message || "Verification code sent",
-        devOtp: response.data?.devOtp,
-        autoVerified: Boolean(response.data?.autoVerified || response.data?.token),
-      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed")
-      throw err
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const verifyRegistration = async (values: { email: string; code: string }) => {
-    setLoading(true)
-    setError(null)
-    try {
-      const response = await apiClient.verifyRegistration(values)
-      setToken(response.data.token)
-      setUser(response.data.user)
-      apiClient.setAuthSession(response.data.token, response.data.user)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Verification failed")
       throw err
     } finally {
       setLoading(false)
@@ -181,10 +127,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       loading,
       error,
       login,
-      loginWithOtp,
-      requestPhoneOtp,
       register,
-      verifyRegistration,
       logout,
     }),
     [user, token, loading, error]

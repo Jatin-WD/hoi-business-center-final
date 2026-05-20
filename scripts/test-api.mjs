@@ -35,30 +35,6 @@ async function expectFailure(path, status, options = {}) {
   }
 }
 
-async function cleanupCreatedUser(email) {
-  try {
-    const login = await request("/admin/login", {
-      method: "POST",
-      body: JSON.stringify({
-        email: process.env.ADMIN_EMAIL || "LKMALLSHOP@GMAIL.COM",
-        password: process.env.ADMIN_PASSWORD || "Admin@12345",
-      }),
-    });
-    const dashboard = await request("/admin/dashboard", {
-      headers: { Authorization: `Bearer ${login.data.token}` },
-    });
-    const created = dashboard.data.users.find((user) => user.email === email);
-    if (created) {
-      await request(`/admin/website-users/${created.id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${login.data.token}` },
-      });
-    }
-  } catch (error) {
-    console.warn(`Cleanup skipped: ${error.message}`);
-  }
-}
-
 async function main() {
   const health = await request("/health");
   if (health.status !== "OK") throw new Error("Health check did not return OK");
@@ -78,15 +54,7 @@ async function main() {
     method: "POST",
     body: JSON.stringify(testUser),
   });
-  const code = register.data?.devOtp;
-  if (!code) {
-    throw new Error("Signup smoke test requires development verification code. Ensure NODE_ENV is not production and email delivery is not configured in CI.");
-  }
-
-  await request("/auth/register/verify", {
-    method: "POST",
-    body: JSON.stringify({ email: testUser.email, code }),
-  });
+  if (!register.data?.token) throw new Error("Expected register to return an auth token");
 
   await expectFailure("/auth/register", 409, {
     method: "POST",
@@ -120,7 +88,6 @@ async function main() {
   const bookings = await request("/bookings", { headers: { Authorization: `Bearer ${token}` } });
   if (!bookings.data.bookings.length) throw new Error("Expected booking for smoke user");
 
-  await cleanupCreatedUser(testUser.email);
   console.log("API smoke tests passed");
 }
 

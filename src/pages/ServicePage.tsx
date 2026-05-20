@@ -4,7 +4,6 @@ import { CalendarCheck, MapPin, PackageCheck } from "lucide-react";
 import HeroSection from "@/components/common/HeroSection";
 import CTABanner from "@/components/common/CTABanner";
 import { loadCatalog, type CatalogVenue } from "@/lib/catalog";
-import { useCmsContent } from "@/hooks/useCmsContent";
 import { LocationCard, ServiceCard, VenueGroup, locationName } from "./service/ServiceCards";
 
 export default function ServicePage() {
@@ -12,12 +11,6 @@ export default function ServicePage() {
   const { data: catalog = { venues: [], services: [] }, isLoading, error, refetch } = useQuery({
     queryKey: ["service-catalog"],
     queryFn: loadCatalog,
-  });
-  const cms = useCmsContent({
-    "service.hero.title": "Exhibition Services",
-    "service.hero.description": "Explore booth, logistics, marketing, interpretation, and manpower support. Services, packages, and venues are managed from the admin panel.",
-    "service.overview.title": "Service Catalog",
-    "service.overview.description": "Choose a service to view package options, or select a venue to see what can be arranged there.",
   });
 
   const groupedVenues = useMemo(() => groupVenues(catalog.venues), [catalog.venues]);
@@ -31,7 +24,7 @@ export default function ServicePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <HeroSection breadcrumbs={[{ label: "Home", href: "/" }, { label: "Service" }]} title={cms("service.hero.title")} description={cms("service.hero.description")}>
+      <HeroSection breadcrumbs={[{ label: "Home", href: "/" }, { label: "Service" }]} title="Exhibition Services" description="Explore booth, logistics, marketing, interpretation, and manpower support loaded from the database.">
         <div className="grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
           <Stat icon={PackageCheck} label="Services" value={catalog.services.length} />
           <Stat icon={CalendarCheck} label="Packages" value={packageCount} />
@@ -40,7 +33,7 @@ export default function ServicePage() {
       </HeroSection>
 
       <main className="mx-auto max-w-[1600px] space-y-10 px-6 py-12 sm:px-8">
-        {isLoading ? <StateCard title="Loading services..." detail="Fetching the latest admin-managed service catalog." /> : null}
+        {isLoading ? <StateCard title="Loading services..." detail="Fetching the latest service catalog from the database." /> : null}
         {error ? <StateCard title="Could not load services" detail={error instanceof Error ? error.message : "Failed to load services"} onRetry={() => refetch()} /> : null}
 
         {!isLoading && !error ? (
@@ -61,7 +54,7 @@ export default function ServicePage() {
                   <SectionHeader eyebrow="Step 2" title={`Services at ${locationName(selectedLocation, selectedVenues)}`} description="Choose a service or package. Every quote and package link will continue with this selected location." />
                   <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                     {catalog.services.map((service) => <ServiceCard key={service.id} service={service} selectedVenues={selectedVenues} selectedLocation={selectedLocation} />)}
-                    {!catalog.services.length ? <StateCard title="No services added yet" detail="Add services from the admin panel to show them here." /> : null}
+                    {!catalog.services.length ? <StateCard title="No services found" detail="Seed the database to show service packages here." /> : null}
                   </div>
                 </section>
               </>

@@ -1,5 +1,4 @@
 import { initDatabase } from '../config/database.js';
-import bcrypt from 'bcryptjs';
 import { pathToFileURL } from 'url';
 import { EVENTS, PACKAGE_DETAILS, SERVICE_PACKAGES, VENUE_DETAILS } from '../data/seed-data.js';
 
@@ -27,29 +26,10 @@ async function countRows(db, table) {
   return Number(row?.count || 0);
 }
 
-async function seedAdminUser(db) {
-  const email = (process.env.ADMIN_EMAIL || 'LKMALLSHOP@GMAIL.COM').toLowerCase();
-  const password = process.env.ADMIN_PASSWORD || 'Admin@12345';
-  const passwordHash = await bcrypt.hash(password, 10);
-
-  await upsertByKeys(db, 'users', ['email'], {
-    name: process.env.ADMIN_NAME || 'HOI Admin',
-    email,
-    password: passwordHash,
-    phone: process.env.ADMIN_PHONE || '',
-    company: process.env.ADMIN_COMPANY || 'HOI Business Center',
-    role: 'admin',
-    status: 'active',
-  });
-}
-
 async function seedDatabase({ resetEvents = true } = {}) {
   const db = await initDatabase();
 
   try {
-    console.log('Seeding admin user...');
-    await seedAdminUser(db);
-
     // Seed services
     console.log('Seeding services...');
     for (const [serviceId, serviceData] of Object.entries(SERVICE_PACKAGES)) {

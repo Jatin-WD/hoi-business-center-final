@@ -1,6 +1,5 @@
 import express from 'express';
 import { getDb } from '../config/database.js';
-import { requireAdmin } from '../middleware/auth.js';
 import { buildRequirementHtml, REQUIREMENT_EMAIL, sendRequirementMail } from '../utils/mailer.js';
 
 const router = express.Router();
@@ -58,65 +57,6 @@ router.post('/', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to submit inquiry'
-    });
-  }
-});
-
-// Get all inquiries (admin only)
-router.get('/', requireAdmin, async (req, res) => {
-  try {
-    const db = await getDb();
-    const inquiries = await db.all(`
-      SELECT
-        id,
-        name,
-        email,
-        phone,
-        company,
-        service,
-        location,
-        message,
-        status,
-        created_at,
-        updated_at
-      FROM inquiries
-      ORDER BY created_at DESC
-    `);
-
-    res.json({
-      success: true,
-      data: { inquiries }
-    });
-  } catch (error) {
-    console.error('Get inquiries error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch inquiries'
-    });
-  }
-});
-
-// Update inquiry status
-router.patch('/:id/status', requireAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status } = req.body;
-    const db = await getDb();
-
-    await db.run(
-      'UPDATE inquiries SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-      [status, id]
-    );
-
-    res.json({
-      success: true,
-      message: 'Inquiry status updated successfully'
-    });
-  } catch (error) {
-    console.error('Update inquiry status error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to update inquiry status'
     });
   }
 });

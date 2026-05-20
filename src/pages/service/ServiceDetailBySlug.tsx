@@ -34,7 +34,7 @@ export default function ServiceDetailBySlug({ service, venues }: { service: Cata
                 </span>
               </Link>
             ))}
-            {!service.packages.length && <EmptyCard message="No packages are added for this service yet. Add packages from the admin panel." />}
+            {!service.packages.length && <EmptyCard message="No packages are available for this service yet." />}
           </div>
         </section>
 
@@ -50,7 +50,7 @@ export default function ServiceDetailBySlug({ service, venues }: { service: Cata
                 <p className="mt-1 text-sm text-gray-500">{venue.city}, {venue.state}</p>
               </Link>
             ))}
-            {!venues.length && <EmptyCard message="No venues are added yet. Add venues from the admin panel." />}
+            {!venues.length && <EmptyCard message="No venues are available yet." />}
           </div>
         </section>
 

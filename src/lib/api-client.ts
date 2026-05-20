@@ -1,5 +1,3 @@
-import { adminApiMethods } from "./admin-api-methods";
-
 const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:5000/api" : "/api");
 const AUTH_TOKEN_KEY = "hoi_auth_token";
 const AUTH_USER_KEY = "hoi_auth_user";
@@ -84,13 +82,6 @@ class ApiClient {
     });
   }
 
-  async verifyRegistration(payload: { email: string; code: string }) {
-    return this.request("/auth/register/verify", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-  }
-
   async getProfile() {
     return this.request("/auth/me");
   }
@@ -98,20 +89,6 @@ class ApiClient {
   async logout() {
     return this.request("/auth/logout", {
       method: "POST",
-    });
-  }
-
-  async requestPhoneOtp(phone: string) {
-    return this.request("/auth/otp/request", {
-      method: "POST",
-      body: JSON.stringify({ phone }),
-    });
-  }
-
-  async verifyPhoneOtp(payload: { phone: string; code: string }) {
-    return this.request("/auth/otp/verify", {
-      method: "POST",
-      body: JSON.stringify(payload),
     });
   }
 
@@ -176,13 +153,6 @@ class ApiClient {
     return this.request("/bookings");
   }
 
-  async adminLogin(credentials: unknown) {
-    return this.request("/admin/login", {
-      method: "POST",
-      body: JSON.stringify(credentials),
-    });
-  }
-
 }
 
 function friendlyTextError(text: string, status: number) {
@@ -195,4 +165,4 @@ function friendlyTextError(text: string, status: number) {
   return text || `API request failed with status ${status}`;
 }
 
-export const apiClient = Object.assign(new ApiClient(), adminApiMethods);
+export const apiClient = new ApiClient();

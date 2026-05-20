@@ -3,7 +3,6 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 import { getDb } from '../config/database.js';
-import { requireAdmin } from '../middleware/auth.js';
 import { buildRequirementHtml, REQUIREMENT_EMAIL, sendRequirementMail } from '../utils/mailer.js';
 
 const router = express.Router();
@@ -152,78 +151,6 @@ router.post('/', upload.array('documents', 5), async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to submit manpower request'
-    });
-  }
-});
-
-// Get all manpower requests (admin only)
-router.get('/', requireAdmin, async (req, res) => {
-  try {
-    const db = await getDb();
-    const requests = await db.all(`
-      SELECT
-        id,
-        role,
-        name,
-        email,
-        phone,
-        company,
-        experience,
-        languages,
-        industries,
-        tasks,
-        availability,
-        documents,
-        status,
-        created_at,
-        updated_at
-      FROM manpower_requests
-      ORDER BY created_at DESC
-    `);
-
-    // Parse JSON fields
-    const parsedRequests = requests.map(request => ({
-      ...request,
-      languages: parseList(request.languages),
-      industries: parseList(request.industries),
-      tasks: parseList(request.tasks),
-      documents: parseList(request.documents)
-    }));
-
-    res.json({
-      success: true,
-      data: { requests: parsedRequests }
-    });
-  } catch (error) {
-    console.error('Get manpower requests error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch manpower requests'
-    });
-  }
-});
-
-// Update manpower request status
-router.patch('/:id/status', requireAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status } = req.body;
-    const db = await getDb();
-
-    await db.run(
-      'UPDATE manpower_requests SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-      [status, id]
-    );
-
-    res.json({
-      success: true,
-      message: 'Manpower request status updated successfully'
-    });
-  } catch (error) {
-    console.error('Update manpower request status error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to update manpower request status'
     });
   }
 });

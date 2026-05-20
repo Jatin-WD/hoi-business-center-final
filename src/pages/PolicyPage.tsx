@@ -10,8 +10,8 @@ const content = {
     description: "How KIL - HOI Business Center collects, stores, and uses website and requirement data.",
     sections: [
       ["Information We Collect", "We collect account details, contact information, company details, service requirements, booking details, manpower application details, and uploaded documents submitted through this website."],
-      ["How We Use Data", "Your information is used to respond to inquiries, manage bookings, review manpower applications, send service notifications, maintain admin records, and improve exhibition support operations."],
-      ["Data Storage", "Website data is stored in the configured project database. Admin users can review submissions from the dashboard according to their access level."],
+      ["How We Use Data", "Your information is used to respond to inquiries, manage bookings, review manpower applications, send service notifications, and improve exhibition support operations."],
+      ["Data Storage", "Website data is stored in the configured PostgreSQL project database."],
       ["Contact", "For privacy questions, contact thlim@kilindia.in or call +91 98100 97323."],
     ],
   },
@@ -27,7 +27,7 @@ const content = {
   },
   support: {
     title: "Support",
-    description: "Get help with accounts, service inquiries, bookings, manpower applications, and admin-managed website data.",
+    description: "Get help with accounts, service inquiries, bookings, manpower applications, and website data.",
     sections: [
       ["Phone", "+91 98100 97323"],
       ["Email", "thlim@kilindia.in"],

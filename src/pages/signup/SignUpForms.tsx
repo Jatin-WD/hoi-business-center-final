@@ -1,7 +1,6 @@
 import { Eye, EyeOff, UserPlus } from "lucide-react";
 import type { SignUpValues } from "@/lib/validators";
 
-type Tone = "error" | "success";
 type FieldErrors = Record<string, string>;
 
 const inputClass = "w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a3a8f] focus:border-transparent transition";
@@ -43,49 +42,6 @@ export function DetailsForm({
       </div>
       {submitError ? <p className="text-sm text-red-600">{submitError}</p> : null}
       <SubmitButton loading={status === "loading"} label="Create Account" loadingLabel="Creating Account..." testId="btn-submit-signup" />
-    </form>
-  );
-}
-
-export function VerifyForm({
-  email,
-  code,
-  devOtp,
-  fieldErrors,
-  message,
-  tone,
-  status,
-  onCodeChange,
-  onSubmit,
-  onEdit,
-}: {
-  email: string;
-  code: string;
-  devOtp: string;
-  fieldErrors: FieldErrors;
-  message: string;
-  tone: Tone;
-  status: "idle" | "loading" | "error";
-  onCodeChange: (value: string) => void;
-  onSubmit: (event: React.FormEvent) => void;
-  onEdit: () => void;
-}) {
-  return (
-    <form onSubmit={onSubmit} className="space-y-4">
-      <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-[#1a3a8f]">
-        Verification code sent to <strong>{email}</strong>. Enter it below to create your account.
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Verification Code</label>
-        <input required inputMode="numeric" maxLength={6} value={code} onChange={(event) => onCodeChange(event.target.value.replace(/\D/g, ""))} className={inputClass} placeholder="6 digit code" data-testid="input-signup-code" />
-        {fieldErrors.code ? <p className="mt-2 text-sm text-red-600">{fieldErrors.code}</p> : null}
-      </div>
-      {message ? <p className={`text-sm ${tone === "success" ? "text-green-700" : "text-red-600"}`}>{message}</p> : null}
-      {devOtp ? <p className="rounded-lg border border-yellow-200 bg-yellow-50 px-3 py-2 text-sm font-bold text-yellow-800">Verification code: {devOtp}</p> : null}
-      <SubmitButton loading={status === "loading"} label="Verify & Create Account" loadingLabel="Verifying..." />
-      <button type="button" disabled={status === "loading"} onClick={onEdit} className="w-full rounded-xl border border-gray-200 py-3 text-sm font-semibold text-gray-600 hover:bg-gray-50">
-        Edit signup details
-      </button>
     </form>
   );
 }

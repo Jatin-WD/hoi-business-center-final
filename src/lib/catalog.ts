@@ -1,5 +1,4 @@
 import { apiClient } from "./api-client";
-import { fallbackServices, fallbackVenues } from "./fallback-catalog";
 
 export type CatalogPackage = {
   label: string;
@@ -85,22 +84,15 @@ export const normalizeVenue = (venue: ApiVenue): CatalogVenue => ({
 });
 
 export async function loadCatalog() {
-  try {
-    const [venuesResponse, servicesResponse] = await Promise.all([
-      apiClient.getVenues(),
-      apiClient.getServices(),
-    ]);
+  const [venuesResponse, servicesResponse] = await Promise.all([
+    apiClient.getVenues(),
+    apiClient.getServices(),
+  ]);
 
-    const venues = ((venuesResponse as any)?.data?.venues ?? []).map(normalizeVenue) as CatalogVenue[];
-    const services = ((servicesResponse as any)?.data?.services ?? []).map(normalizeService) as CatalogService[];
-    return {
-      venues: venues.length ? venues : fallbackVenues,
-      services: services.length ? services : fallbackServices,
-    };
-  } catch (error) {
-    console.warn("Catalog API unavailable; using bundled fallback catalog.", error);
-    return { venues: fallbackVenues, services: fallbackServices };
-  }
+  return {
+    venues: ((venuesResponse as any)?.data?.venues ?? []).map(normalizeVenue) as CatalogVenue[],
+    services: ((servicesResponse as any)?.data?.services ?? []).map(normalizeService) as CatalogService[],
+  };
 }
 
 export const locationLabel = (venues: CatalogVenue[], locationId: string) => {

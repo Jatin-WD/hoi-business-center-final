@@ -1,6 +1,5 @@
 import express from 'express';
 import { getDb } from '../config/database.js';
-import { fallbackVenues } from '../utils/catalogFallback.js';
 
 const router = express.Router();
 
@@ -44,7 +43,7 @@ router.get('/', async (req, res) => {
     });
   } catch (error) {
     console.error('Get venues error:', error);
-    res.json({ success: true, data: { venues: fallbackVenues() }, fallback: true });
+    res.status(500).json({ success: false, message: 'Failed to fetch venues from database' });
   }
 });
 
@@ -70,9 +69,7 @@ router.get('/:id', async (req, res, next) => {
     });
   } catch (error) {
     console.error('Get venue by id error:', error);
-    const venue = fallbackVenues().find((item) => String(item.id) === String(req.params.id));
-    if (!venue) return res.status(404).json({ success: false, message: 'Venue not found' });
-    res.json({ success: true, data: { venue }, fallback: true });
+    res.status(500).json({ success: false, message: 'Failed to fetch venue from database' });
   }
 });
 
@@ -125,9 +122,7 @@ router.get('/:locationId/:subVenueId', async (req, res) => {
     });
   } catch (error) {
     console.error('Get venue error:', error);
-    const venue = fallbackVenues().find((item) => item.location_id === req.params.locationId && item.sub_venue_id === req.params.subVenueId);
-    if (!venue) return res.status(404).json({ success: false, message: 'Venue not found' });
-    res.json({ success: true, data: { venue }, fallback: true });
+    res.status(500).json({ success: false, message: 'Failed to fetch venue from database' });
   }
 });
 
@@ -174,7 +169,7 @@ router.get('/:locationId', async (req, res) => {
     });
   } catch (error) {
     console.error('Get venues by location error:', error);
-    res.json({ success: true, data: { venues: fallbackVenues().filter((item) => item.location_id === req.params.locationId) }, fallback: true });
+    res.status(500).json({ success: false, message: 'Failed to fetch venues from database' });
   }
 });
 

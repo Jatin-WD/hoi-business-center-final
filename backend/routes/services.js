@@ -1,6 +1,5 @@
 import express from 'express';
 import { getDb } from '../config/database.js';
-import { fallbackServices } from '../utils/catalogFallback.js';
 
 const router = express.Router();
 
@@ -32,7 +31,7 @@ router.get('/', async (req, res) => {
     });
   } catch (error) {
     console.error('Get services error:', error);
-    res.json({ success: true, data: { services: fallbackServices() }, fallback: true });
+    res.status(500).json({ success: false, message: 'Failed to fetch services from database' });
   }
 });
 
@@ -73,9 +72,7 @@ router.get('/:serviceId', async (req, res) => {
     });
   } catch (error) {
     console.error('Get service error:', error);
-    const service = fallbackServices().find((item) => item.service_id === req.params.serviceId);
-    if (!service) return res.status(404).json({ success: false, message: 'Service not found' });
-    res.json({ success: true, data: { service }, fallback: true });
+    res.status(500).json({ success: false, message: 'Failed to fetch service from database' });
   }
 });
 

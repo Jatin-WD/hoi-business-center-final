@@ -8,8 +8,6 @@ import { databaseTables } from '../config/schema.js';
 import { requireAdmin, signToken } from '../middleware/auth.js';
 
 const router = express.Router();
-const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'LKMALLSHOP@GMAIL.COM').toLowerCase();
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin@12345';
 const adminImageDir = path.join(process.cwd(), 'uploads', 'admin-images');
 if (!fs.existsSync(adminImageDir)) {
   fs.mkdirSync(adminImageDir, { recursive: true });
@@ -216,23 +214,15 @@ router.post('/login', async (req, res) => {
     }
   } catch (error) {
     console.error('Admin DB login lookup error:', error);
-  }
-
-  if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
-    return res.status(401).json({
+    return res.status(503).json({
       success: false,
-      message: 'Invalid admin credentials',
+      message: 'Database is not connected. Check Hostinger MySQL environment variables and restart the app.',
     });
   }
 
-  const token = signToken({ email: ADMIN_EMAIL, role: 'admin', envAdmin: true }, { expiresIn: '8h' });
-  res.json({
-    success: true,
-    message: 'Admin login successful',
-    data: {
-      token,
-      admin: { email: ADMIN_EMAIL, role: 'admin' },
-    },
+  return res.status(401).json({
+    success: false,
+    message: 'Invalid admin credentials',
   });
 });
 

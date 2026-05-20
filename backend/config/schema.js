@@ -103,14 +103,14 @@ const TABLES = [
   },
 ];
 
-function columnSql(client, [name, type]) {
-  if (type === 'pk') return client === 'postgres' ? `${name} serial primary key` : `${name} int auto_increment primary key`;
+function columnSql([name, type]) {
+  if (type === 'pk') return `${name} int auto_increment primary key`;
   return `${name} ${type}`;
 }
 
-export function createSchemaStatements(client) {
+export function createSchemaStatements() {
   return TABLES.map((table) => {
-    const definitions = [...table.columns.map((column) => columnSql(client, column)), ...(table.constraints || [])];
+    const definitions = [...table.columns.map((column) => columnSql(column)), ...(table.constraints || [])];
     return `CREATE TABLE IF NOT EXISTS ${table.name} (${definitions.join(', ')})`;
   });
 }

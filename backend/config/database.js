@@ -1,21 +1,52 @@
-import dotenv from 'dotenv';
+import './env.js';
 import { createSchemaStatements } from './schema.js';
+import { URL } from 'url';
 
-dotenv.config();
+const DATABASE_URL = process.env.DATABASE_URL || '';
 
-const DB_CLIENT = (process.env.DB_CLIENT || 'postgres').toLowerCase();
+function inferDatabaseClient() {
+  const explicitClient = (process.env.DB_CLIENT || '').toLowerCase();
+  if (explicitClient) return explicitClient;
 
-function resolveDatabaseUrl() {
-  return process.env.DATABASE_URL || '';
+  if (DATABASE_URL.startsWith('mysql://') || DATABASE_URL.startsWith('mysql2://') || DATABASE_URL.startsWith('mariadb://')) {
+    return 'mysql';
+  }
+
+  if (DATABASE_URL.startsWith('postgres://') || DATABASE_URL.startsWith('postgresql://')) {
+    return 'postgres';
+  }
+
+  return 'postgres';
 }
 
-const DATABASE_URL = resolveDatabaseUrl();
+const DB_CLIENT = inferDatabaseClient();
+
 const selectedDatabaseEnv = process.env.DATABASE_URL ? 'DATABASE_URL' : 'missing';
 
 let connection;
 let dbInstance;
+let connectionType = DB_CLIENT;
 
 function normalizeResult(result) {
+  if (Array.isArray(result)) {
+    const [rowsOrResult, metadata] = result;
+    if (Array.isArray(rowsOrResult)) {
+      return {
+        rows: rowsOrResult,
+        lastID: metadata?.insertId ?? null,
+        rowCount: metadata?.affectedRows ?? rowsOrResult.length ?? 0,
+      };
+    }
+
+    if (rowsOrResult && typeof rowsOrResult === 'object') {
+      return {
+        rows: [],
+        lastID: rowsOrResult.insertId ?? null,
+        rowCount: rowsOrResult.affectedRows ?? 0,
+      };
+    }
+  }
+
   const resultHeader = Array.isArray(result) && !Array.isArray(result[0]) ? result[0] : null;
   return {
     rows: result?.rows || result?.[0] || [],
@@ -72,6 +103,9 @@ function assertConnectionUrl(client) {
   if (client === 'postgres' && !DATABASE_URL.startsWith('postgres://') && !DATABASE_URL.startsWith('postgresql://')) {
     throw new Error(`${client} database URL must be a PostgreSQL/Supabase connection string.`);
   }
+  if (client === 'mysql' && !DATABASE_URL.startsWith('mysql://') && !DATABASE_URL.startsWith('mysql2://') && !DATABASE_URL.startsWith('mariadb://')) {
+    throw new Error(`${client} database URL must be a MySQL/MariaDB connection string.`);
+  }
 }
 
 async function createPostgresDb() {
@@ -87,13 +121,37 @@ async function createPostgresDb() {
   });
 }
 
+async function createMysqlDb() {
+  assertConnectionUrl('mysql');
+  const mysqlModule = await import('mysql2/promise');
+  const mysql = mysqlModule.default ?? mysqlModule;
+  const parsedUrl = new URL(DATABASE_URL.replace(/^mysql2:\/\//, 'mysql://').replace(/^mariadb:\/\//, 'mysql://'));
+  connection = mysql.createPool({
+    host: parsedUrl.hostname,
+    port: parsedUrl.port ? Number(parsedUrl.port) : 3306,
+    user: decodeURIComponent(parsedUrl.username || ''),
+    password: decodeURIComponent(parsedUrl.password || ''),
+    database: parsedUrl.pathname.replace(/^\/+/, ''),
+    connectionLimit: Number(process.env.DB_CONNECTION_LIMIT || 10),
+    ssl: process.env.DB_SSL === 'false' ? false : { rejectUnauthorized: false },
+  });
+  return createAsyncDb({
+    client: 'mysql',
+    query: (sql, params) => connection.query(sql, params),
+  });
+}
+
 export async function getDb() {
   if (dbInstance) return dbInstance;
 
   if (DB_CLIENT === 'postgres' || DB_CLIENT === 'postgresql') {
+    connectionType = 'postgres';
     dbInstance = await createPostgresDb();
+  } else if (DB_CLIENT === 'mysql' || DB_CLIENT === 'mysql2' || DB_CLIENT === 'mariadb') {
+    connectionType = 'mysql';
+    dbInstance = await createMysqlDb();
   } else {
-    throw new Error(`Unsupported DB_CLIENT "${DB_CLIENT}". Use "postgres".`);
+    throw new Error(`Unsupported DB_CLIENT "${DB_CLIENT}". Use "postgres" or "mysql".`);
   }
 
   return dbInstance;
@@ -113,9 +171,16 @@ export async function initDatabase() {
 export function getDatabaseConfigStatus() {
   return {
     client: DB_CLIENT,
+    connectionType,
     selectedEnv: selectedDatabaseEnv,
     hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
-    isPostgresUrl: DATABASE_URL.startsWith('postgres://') || DATABASE_URL.startsWith('postgresql://'),
+    hasSupportedUrl:
+      DATABASE_URL.startsWith('postgres://')
+      || DATABASE_URL.startsWith('postgresql://')
+      || DATABASE_URL.startsWith('mysql://')
+      || DATABASE_URL.startsWith('mysql2://')
+      || DATABASE_URL.startsWith('mariadb://'),
+    sslEnabled: process.env.DB_SSL !== 'false',
   };
 }
 

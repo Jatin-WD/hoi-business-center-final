@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import dotenv from 'dotenv';
 import path from 'path';
 
 import authRoutes from './routes/auth.js';
@@ -17,8 +16,7 @@ import cmsRoutes from './routes/cms.js';
 import { seedDatabaseIfEmpty } from './scripts/init-db.js';
 import { getDatabaseConfigStatus } from './config/database.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
-
-dotenv.config();
+import './config/env.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -96,7 +94,12 @@ async function initializeDatabase(attempt = 1) {
     databaseStatus.ready = false;
     databaseStatus.lastError = error.message;
     const delay = Math.min(30000, 5000 * attempt);
-    console.error(`Database initialization failed, retrying in ${delay / 1000}s:`, error);
+    console.error(`Database initialization failed, retrying in ${delay / 1000}s:`, {
+      message: error.message,
+      code: error.code,
+      stack: error.stack,
+      databaseConfig: getDatabaseConfigStatus(),
+    });
     setTimeout(() => initializeDatabase(attempt + 1), delay);
   }
 }
@@ -104,5 +107,6 @@ async function initializeDatabase(attempt = 1) {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Backend server running on port ${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/api/health`);
+  console.log('Database config:', getDatabaseConfigStatus());
   initializeDatabase();
 });

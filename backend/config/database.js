@@ -1,6 +1,6 @@
 import './env.js';
 import { TABLES, createSchemaStatements } from './schema.js';
-import { SERVICE_PACKAGES } from '../data/seed-data.js';
+import { PACKAGE_DETAILS, SERVICE_PACKAGES, VENUE_DETAILS } from '../data/seed-data.js';
 import { URL } from 'url';
 
 const DATABASE_URL = process.env.DATABASE_URL || '';
@@ -95,6 +95,14 @@ function slugify(value) {
     .replace(/^-+|-+$/g, '');
 }
 
+function isBlank(value) {
+  return value === null || value === undefined || String(value).trim() === '';
+}
+
+function normalizeKeyPart(value) {
+  return String(value ?? '').trim().toLowerCase();
+}
+
 async function getExistingColumns(db, tableName) {
   const columns = await db.all(`SHOW COLUMNS FROM ${escapeIdentifier(tableName)}`);
   return new Map(columns.map((column) => [String(column.Field).toLowerCase(), column]));
@@ -139,12 +147,6 @@ async function synchronizeMysqlSchema(db) {
       await db.exec(`ALTER TABLE ${escapeIdentifier(table.name)} ADD COLUMN ${escapeIdentifier(columnName)} ${definition}`);
     }
 
-    const existingIndexes = await getExistingIndexes(db, table.name).catch(() => new Map());
-    for (const uniqueKey of table.uniqueKeys || []) {
-      if (hasMatchingUniqueIndex(existingIndexes, uniqueKey.columns)) continue;
-      const keyColumns = uniqueKey.columns.map((column) => escapeIdentifier(column)).join(', ');
-      await db.exec(`ALTER TABLE ${escapeIdentifier(table.name)} ADD UNIQUE KEY ${escapeIdentifier(uniqueKey.name)} (${keyColumns})`);
-    }
   }
 }
 
@@ -167,6 +169,112 @@ async function repairServiceIdentifiers(db) {
     }
   } catch (error) {
     console.error('Service identifier repair failed:', error);
+  }
+}
+
+async function repairVenueIdentifiers(db) {
+  try {
+    const rows = await db.all('SELECT id, location_id, sub_venue_id, name, address, city, state FROM venues');
+    if (!rows.length) return;
+
+    const canonicalById = new Map(
+      VENUE_DETAILS.map((venue) => [
+        `${normalizeKeyPart(venue.locationId)}|${normalizeKeyPart(venue.subVenueId)}`,
+        venue,
+      ])
+    );
+    const canonicalByIdentity = new Map(
+      VENUE_DETAILS.map((venue) => [
+        `${normalizeKeyPart(venue.name)}|${normalizeKeyPart(venue.address)}|${normalizeKeyPart(venue.city)}|${normalizeKeyPart(venue.state)}`,
+        venue,
+      ])
+    );
+
+    for (const row of rows) {
+      const byId = canonicalById.get(`${normalizeKeyPart(row.location_id)}|${normalizeKeyPart(row.sub_venue_id)}`);
+      const byIdentity = canonicalByIdentity.get(`${normalizeKeyPart(row.name)}|${normalizeKeyPart(row.address)}|${normalizeKeyPart(row.city)}|${normalizeKeyPart(row.state)}`);
+      const canonical = byId || byIdentity;
+      if (!canonical) continue;
+
+      if (isBlank(row.location_id) || isBlank(row.sub_venue_id)) {
+        await db.run(
+          'UPDATE venues SET location_id = ?, sub_venue_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+          [canonical.locationId, canonical.subVenueId, row.id]
+        );
+      }
+    }
+  } catch (error) {
+    console.error('Venue identifier repair failed:', error);
+  }
+}
+
+async function repairPackageIdentifiers(db) {
+  try {
+    const rows = await db.all('SELECT id, category, subcategory, title, subtitle FROM packages');
+    if (!rows.length) return;
+
+    const canonicalByIdentity = new Map();
+    for (const [category, subcategories] of Object.entries(PACKAGE_DETAILS)) {
+      for (const [subcategory, pkg] of Object.entries(subcategories)) {
+        canonicalByIdentity.set(
+          `${normalizeKeyPart(category)}|${normalizeKeyPart(subcategory)}|${normalizeKeyPart(pkg.title)}|${normalizeKeyPart(pkg.subtitle)}`,
+          { category, subcategory }
+        );
+      }
+    }
+
+    for (const row of rows) {
+      const canonical = canonicalByIdentity.get(
+        `${normalizeKeyPart(row.category)}|${normalizeKeyPart(row.subcategory)}|${normalizeKeyPart(row.title)}|${normalizeKeyPart(row.subtitle)}`
+      );
+      if (!canonical) continue;
+      if (isBlank(row.category) || isBlank(row.subcategory)) {
+        await db.run(
+          'UPDATE packages SET category = ?, subcategory = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+          [canonical.category, canonical.subcategory, row.id]
+        );
+      }
+    }
+  } catch (error) {
+    console.error('Package identifier repair failed:', error);
+  }
+}
+
+async function dedupeUniqueRows(db) {
+  for (const table of TABLES) {
+    for (const uniqueKey of table.uniqueKeys || []) {
+      try {
+        const rows = await db.all(`SELECT id, ${uniqueKey.columns.join(', ')} FROM ${escapeIdentifier(table.name)} ORDER BY id ASC`);
+        const groups = new Map();
+        for (const row of rows) {
+          const key = uniqueKey.columns.map((column) => normalizeKeyPart(row[column])).join('|');
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(row);
+        }
+
+        for (const group of groups.values()) {
+          if (group.length < 2) continue;
+          const [keeper, ...duplicates] = group;
+          for (const duplicate of duplicates) {
+            await db.run(`DELETE FROM ${escapeIdentifier(table.name)} WHERE id = ?`, [duplicate.id]);
+          }
+          void keeper;
+        }
+      } catch (error) {
+        console.error(`Deduplication failed for ${table.name}.${uniqueKey.name}:`, error);
+      }
+    }
+  }
+}
+
+async function ensureUniqueIndexes(db) {
+  for (const table of TABLES) {
+    const existingIndexes = await getExistingIndexes(db, table.name).catch(() => new Map());
+    for (const uniqueKey of table.uniqueKeys || []) {
+      if (hasMatchingUniqueIndex(existingIndexes, uniqueKey.columns)) continue;
+      const keyColumns = uniqueKey.columns.map((column) => escapeIdentifier(column)).join(', ');
+      await db.exec(`ALTER TABLE ${escapeIdentifier(table.name)} ADD UNIQUE KEY ${escapeIdentifier(uniqueKey.name)} (${keyColumns})`);
+    }
   }
 }
 
@@ -200,6 +308,10 @@ export async function initDatabase() {
   for (const statement of createSchemaStatements(db.client)) await db.exec(statement);
   await synchronizeMysqlSchema(db);
   await repairServiceIdentifiers(db);
+  await repairVenueIdentifiers(db);
+  await repairPackageIdentifiers(db);
+  await dedupeUniqueRows(db);
+  await ensureUniqueIndexes(db);
   try {
     await db.get('SELECT status FROM users LIMIT 1');
   } catch {

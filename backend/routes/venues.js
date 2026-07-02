@@ -3,6 +3,17 @@ import { getDb } from '../config/database.js';
 
 const router = express.Router();
 
+function parseJsonArray(value) {
+  if (Array.isArray(value)) return value;
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 // Get all venues
 router.get('/', async (req, res) => {
   try {
@@ -32,9 +43,9 @@ router.get('/', async (req, res) => {
     `).all();
 
     // Parse JSON fields
-    const parsedVenues = venues.map(venue => ({
+    const parsedVenues = venues.map((venue) => ({
       ...venue,
-      specialities: JSON.parse(venue.specialities || '[]')
+      specialities: parseJsonArray(venue.specialities),
     }));
 
     res.json({
@@ -65,7 +76,7 @@ router.get('/:id', async (req, res, next) => {
 
     res.json({
       success: true,
-      data: { venue: { ...venue, specialities: JSON.parse(venue.specialities || '[]') } }
+      data: { venue: { ...venue, specialities: parseJsonArray(venue.specialities) } }
     });
   } catch (error) {
     console.error('Get venue by id error:', error);
@@ -113,7 +124,7 @@ router.get('/:locationId/:subVenueId', async (req, res) => {
     // Parse JSON fields
     const parsedVenue = {
       ...venue,
-      specialities: JSON.parse(venue.specialities || '[]')
+      specialities: parseJsonArray(venue.specialities),
     };
 
     res.json({
@@ -158,9 +169,9 @@ router.get('/:locationId', async (req, res) => {
     `).all(locationId);
 
     // Parse JSON fields
-    const parsedVenues = venues.map(venue => ({
+    const parsedVenues = venues.map((venue) => ({
       ...venue,
-      specialities: JSON.parse(venue.specialities || '[]')
+      specialities: parseJsonArray(venue.specialities),
     }));
 
     res.json({

@@ -3,6 +3,17 @@ import { getDb } from '../config/database.js';
 
 const router = express.Router();
 
+function parseJsonArray(value) {
+  if (Array.isArray(value)) return value;
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 // Get all services
 router.get('/', async (req, res) => {
   try {
@@ -20,9 +31,9 @@ router.get('/', async (req, res) => {
     `).all();
 
     // Parse JSON fields
-    const parsedServices = services.map(service => ({
+    const parsedServices = services.map((service) => ({
       ...service,
-      packages: JSON.parse(service.packages || '[]')
+      packages: parseJsonArray(service.packages),
     }));
 
     res.json({
@@ -63,7 +74,7 @@ router.get('/:serviceId', async (req, res) => {
     // Parse JSON fields
     const parsedService = {
       ...service,
-      packages: JSON.parse(service.packages || '[]')
+      packages: parseJsonArray(service.packages),
     };
 
     res.json({

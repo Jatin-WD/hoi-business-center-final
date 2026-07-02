@@ -4,7 +4,7 @@ const TABLES = [
     columns: [
       ['id', 'pk'],
       ['name', 'varchar(160) not null'],
-      ['email', 'varchar(255) not null unique'],
+      ['email', 'varchar(255) not null'],
       ['password', 'varchar(255) not null'],
       ['phone', 'varchar(40)'],
       ['company', 'varchar(180)'],
@@ -13,6 +13,7 @@ const TABLES = [
       ['created_at', 'timestamp default current_timestamp'],
       ['updated_at', 'timestamp default current_timestamp'],
     ],
+    uniqueKeys: [{ name: 'unique_users_email', columns: ['email'] }],
   },
   {
     name: 'venues',
@@ -36,16 +37,17 @@ const TABLES = [
       ['created_at', 'timestamp default current_timestamp'],
       ['updated_at', 'timestamp default current_timestamp'],
     ],
-    constraints: ['unique(location_id, sub_venue_id)'],
+    uniqueKeys: [{ name: 'unique_location_venue', columns: ['location_id', 'sub_venue_id'] }],
   },
   {
     name: 'services',
-    columns: [['id', 'pk'], ['service_id', 'varchar(120) not null unique'], ['label', 'varchar(180) not null'], ['packages', 'text'], ['created_at', 'timestamp default current_timestamp'], ['updated_at', 'timestamp default current_timestamp']],
+    columns: [['id', 'pk'], ['service_id', 'varchar(120) not null'], ['label', 'varchar(180) not null'], ['packages', 'text'], ['created_at', 'timestamp default current_timestamp'], ['updated_at', 'timestamp default current_timestamp']],
+    uniqueKeys: [{ name: 'unique_services_service_id', columns: ['service_id'] }],
   },
   {
     name: 'packages',
     columns: [['id', 'pk'], ['category', 'varchar(120) not null'], ['subcategory', 'varchar(120) not null'], ['title', 'varchar(220) not null'], ['subtitle', 'varchar(220) not null'], ['price', 'varchar(80) not null'], ['price_note', 'text'], ['description', 'text'], ['includes', 'text'], ['not_includes', 'text'], ['duration', 'varchar(120)'], ['created_at', 'timestamp default current_timestamp'], ['updated_at', 'timestamp default current_timestamp']],
-    constraints: ['unique(category, subcategory)'],
+    uniqueKeys: [{ name: 'unique_packages_category_subcategory', columns: ['category', 'subcategory'] }],
   },
   {
     name: 'inquiries',
@@ -65,7 +67,8 @@ const TABLES = [
   },
   {
     name: 'cms_content',
-    columns: [['id', 'pk'], ['content_key', 'varchar(180) not null unique'], ['label', 'varchar(180) not null'], ['value', 'text not null'], ['type', "varchar(40) default 'text'"], ['created_at', 'timestamp default current_timestamp'], ['updated_at', 'timestamp default current_timestamp']],
+    columns: [['id', 'pk'], ['content_key', 'varchar(180) not null'], ['label', 'varchar(180) not null'], ['value', 'text not null'], ['type', "varchar(40) default 'text'"], ['created_at', 'timestamp default current_timestamp'], ['updated_at', 'timestamp default current_timestamp']],
+    uniqueKeys: [{ name: 'unique_cms_content_key', columns: ['content_key'] }],
   },
   {
     name: 'admin_replies',
@@ -73,7 +76,8 @@ const TABLES = [
   },
   {
     name: 'notification_dismissals',
-    columns: [['id', 'pk'], ['notification_id', 'varchar(160) not null unique'], ['created_at', 'timestamp default current_timestamp']],
+    columns: [['id', 'pk'], ['notification_id', 'varchar(160) not null'], ['created_at', 'timestamp default current_timestamp']],
+    uniqueKeys: [{ name: 'unique_notification_dismissals_notification_id', columns: ['notification_id'] }],
   },
 ];
 
@@ -84,9 +88,11 @@ function columnSql(client, [name, type]) {
 
 export function createSchemaStatements(client) {
   return TABLES.map((table) => {
-    const definitions = [...table.columns.map((column) => columnSql(client, column)), ...(table.constraints || [])];
+    const uniqueConstraints = (table.uniqueKeys || []).map((key) => `unique key \`${key.name}\` (${key.columns.map((column) => `\`${column}\``).join(', ')})`);
+    const definitions = [...table.columns.map((column) => columnSql(client, column)), ...uniqueConstraints];
     return `CREATE TABLE IF NOT EXISTS ${table.name} (${definitions.join(', ')})`;
   });
 }
 
 export const databaseTables = TABLES.map((table) => table.name);
+export { TABLES, columnSql };

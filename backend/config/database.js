@@ -1,5 +1,6 @@
 import './env.js';
-import { createSchemaStatements } from './schema.js';
+import { TABLES, createSchemaStatements } from './schema.js';
+import { SERVICE_PACKAGES } from '../data/seed-data.js';
 import { URL } from 'url';
 
 const DATABASE_URL = process.env.DATABASE_URL || '';
@@ -78,6 +79,97 @@ function assertConnectionUrl() {
   }
 }
 
+function escapeIdentifier(name) {
+  return `\`${String(name).replace(/`/g, '``')}\``;
+}
+
+function normalizeColumnType(type) {
+  return String(type).replace(/\s+unique\b/gi, '').trim();
+}
+
+function slugify(value) {
+  return String(value || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+async function getExistingColumns(db, tableName) {
+  const columns = await db.all(`SHOW COLUMNS FROM ${escapeIdentifier(tableName)}`);
+  return new Map(columns.map((column) => [String(column.Field).toLowerCase(), column]));
+}
+
+async function getExistingIndexes(db, tableName) {
+  const indexes = await db.all(`SHOW INDEX FROM ${escapeIdentifier(tableName)}`);
+  const grouped = new Map();
+  for (const index of indexes) {
+    const name = String(index.Key_name);
+    if (!grouped.has(name)) grouped.set(name, []);
+    grouped.get(name).push({
+      column: String(index.Column_name),
+      nonUnique: Number(index.Non_unique),
+      seq: Number(index.Seq_in_index),
+    });
+  }
+  return grouped;
+}
+
+function hasMatchingUniqueIndex(indexes, columns) {
+  const target = columns.map((column) => String(column).toLowerCase());
+  for (const entries of indexes.values()) {
+    if (!entries.length) continue;
+    if (Number(entries[0].nonUnique) !== 0) continue;
+    const ordered = [...entries].sort((a, b) => a.seq - b.seq).map((entry) => String(entry.column).toLowerCase());
+    if (ordered.length === target.length && ordered.every((column, index) => column === target[index])) {
+      return true;
+    }
+  }
+  return false;
+}
+
+async function synchronizeMysqlSchema(db) {
+  for (const table of TABLES) {
+    const existingColumns = await getExistingColumns(db, table.name).catch(() => null);
+    if (!existingColumns) continue;
+
+    for (const [columnName, columnType] of table.columns) {
+      if (existingColumns.has(columnName.toLowerCase())) continue;
+      const definition = normalizeColumnType(columnType);
+      await db.exec(`ALTER TABLE ${escapeIdentifier(table.name)} ADD COLUMN ${escapeIdentifier(columnName)} ${definition}`);
+    }
+
+    const existingIndexes = await getExistingIndexes(db, table.name).catch(() => new Map());
+    for (const uniqueKey of table.uniqueKeys || []) {
+      if (hasMatchingUniqueIndex(existingIndexes, uniqueKey.columns)) continue;
+      const keyColumns = uniqueKey.columns.map((column) => escapeIdentifier(column)).join(', ');
+      await db.exec(`ALTER TABLE ${escapeIdentifier(table.name)} ADD UNIQUE KEY ${escapeIdentifier(uniqueKey.name)} (${keyColumns})`);
+    }
+  }
+}
+
+async function repairServiceIdentifiers(db) {
+  try {
+    const rows = await db.all('SELECT id, label, service_id FROM services');
+    if (!rows.length) return;
+
+    const labelToId = new Map(
+      Object.entries(SERVICE_PACKAGES).map(([serviceId, service]) => [String(service.label || '').toLowerCase(), serviceId])
+    );
+
+    for (const row of rows) {
+      if (row.service_id) continue;
+      const mappedId = labelToId.get(String(row.label || '').toLowerCase()) || slugify(row.label) || `service-${row.id}`;
+      await db.run(
+        'UPDATE services SET service_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+        [mappedId, row.id]
+      );
+    }
+  } catch (error) {
+    console.error('Service identifier repair failed:', error);
+  }
+}
+
 async function createMysqlDb() {
   assertConnectionUrl();
   const mysqlModule = await import('mysql2/promise');
@@ -106,6 +198,8 @@ export async function getDb() {
 export async function initDatabase() {
   const db = await getDb();
   for (const statement of createSchemaStatements(db.client)) await db.exec(statement);
+  await synchronizeMysqlSchema(db);
+  await repairServiceIdentifiers(db);
   try {
     await db.get('SELECT status FROM users LIMIT 1');
   } catch {

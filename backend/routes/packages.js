@@ -3,6 +3,17 @@ import { getDb } from '../config/database.js';
 
 const router = express.Router();
 
+function parseJsonArray(value) {
+  if (Array.isArray(value)) return value;
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 // Get all packages
 router.get('/', async (req, res) => {
   try {
@@ -29,8 +40,8 @@ router.get('/', async (req, res) => {
     // Parse JSON fields
     const parsedPackages = packages.map(pkg => ({
       ...pkg,
-      includes: JSON.parse(pkg.includes || '[]'),
-      notIncludes: JSON.parse(pkg.not_includes || '[]')
+      includes: parseJsonArray(pkg.includes),
+      notIncludes: parseJsonArray(pkg.not_includes)
     }));
 
     res.json({
@@ -72,8 +83,8 @@ router.get('/category/:category', async (req, res) => {
     // Parse JSON fields
     const parsedPackages = packages.map(pkg => ({
       ...pkg,
-      includes: JSON.parse(pkg.includes || '[]'),
-      notIncludes: JSON.parse(pkg.not_includes || '[]')
+      includes: parseJsonArray(pkg.includes),
+      notIncludes: parseJsonArray(pkg.not_includes)
     }));
 
     res.json({
@@ -122,8 +133,8 @@ router.get('/:id', async (req, res, next) => {
       data: {
         package: {
           ...pkg,
-          includes: JSON.parse(pkg.includes || '[]'),
-          notIncludes: JSON.parse(pkg.not_includes || '[]')
+          includes: parseJsonArray(pkg.includes),
+          notIncludes: parseJsonArray(pkg.not_includes)
         }
       }
     });
@@ -168,8 +179,8 @@ router.get('/:category/:subcategory', async (req, res) => {
     // Parse JSON fields
     const parsedPackage = {
       ...pkg,
-      includes: JSON.parse(pkg.includes || '[]'),
-      notIncludes: JSON.parse(pkg.not_includes || '[]')
+      includes: parseJsonArray(pkg.includes),
+      notIncludes: parseJsonArray(pkg.not_includes)
     };
 
     res.json({

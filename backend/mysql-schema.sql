@@ -142,7 +142,19 @@ CREATE TABLE IF NOT EXISTS notification_dismissals (
   created_at timestamp default current_timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Seed data generated from backend/data/seed-data.js
+
+INSERT INTO users (name, email, password, phone, company, role, status) VALUES
+  ('Admin', 'admin@gmail.com', '$2a$10$qvmE1VdQjbsZCAHZ9rIWMu6NYggxOioDexju0YjdDWaqOfkFOtpFS', '', '', 'admin', 'active')
+ON DUPLICATE KEY UPDATE
+name = VALUES(name),
+email = VALUES(email),
+password = VALUES(password),
+phone = VALUES(phone),
+company = VALUES(company),
+role = VALUES(role),
+status = VALUES(status)
+;
+
 INSERT INTO services (service_id, label, packages) VALUES
   ('booth-reservation', 'Booth Reservation', '[{"label":"Compact Size 6'' x 6'' ft (36 sq ft)","href":"/packages/booth-reservation/compact"},{"label":"Standard Size 6'' x 9'' ft (54 sq ft)","href":"/packages/booth-reservation/standard"},{"label":"Premium Size 10'' x 10'' ft (100 sq ft)","href":"/packages/booth-reservation/premium"},{"label":"Executive 16'' x 20'' ft (380 sq ft)","href":"/packages/booth-reservation/executive"},{"label":"Custom Size","href":"/packages/booth-reservation/custom"}]'),
   ('booth-design', 'Booth Design', '[{"label":"Essential Design","href":"/packages/booth-design/essential"},{"label":"Professional Design","href":"/packages/booth-design/professional"},{"label":"Premium Design","href":"/packages/booth-design/premium"},{"label":"Luxury Design","href":"/packages/booth-design/luxury"},{"label":"Custom Design","href":"/packages/booth-design/custom"}]'),

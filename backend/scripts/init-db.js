@@ -2,6 +2,16 @@ import { initDatabase } from '../config/database.js';
 import { pathToFileURL } from 'url';
 import { EVENTS, PACKAGE_DETAILS, SERVICE_PACKAGES, VENUE_DETAILS } from '../data/seed-data.js';
 
+const DEFAULT_ADMIN = {
+  name: 'Admin',
+  email: 'admin@gmail.com',
+  password: '$2a$10$qvmE1VdQjbsZCAHZ9rIWMu6NYggxOioDexju0YjdDWaqOfkFOtpFS',
+  phone: '',
+  company: '',
+  role: 'admin',
+  status: 'active',
+};
+
 async function upsertByKeys(db, table, keys, values) {
   const where = keys.map((key) => `${key} = ?`).join(' AND ');
   const existing = await db.get(`SELECT id FROM ${table} WHERE ${where}`, keys.map((key) => values[key]));
@@ -26,10 +36,30 @@ async function countRows(db, table) {
   return Number(row?.count || 0);
 }
 
+async function ensureDefaultAdmin(db) {
+  const existing = await db.get('SELECT id FROM users WHERE lower(email) = ?', [DEFAULT_ADMIN.email]);
+  if (existing) return;
+
+  await db.run(
+    'INSERT INTO users (name, email, password, phone, company, role, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [
+      DEFAULT_ADMIN.name,
+      DEFAULT_ADMIN.email,
+      DEFAULT_ADMIN.password,
+      DEFAULT_ADMIN.phone,
+      DEFAULT_ADMIN.company,
+      DEFAULT_ADMIN.role,
+      DEFAULT_ADMIN.status,
+    ]
+  );
+}
+
 async function seedDatabase({ resetEvents = true } = {}) {
   const db = await initDatabase();
 
   try {
+    await ensureDefaultAdmin(db);
+
     // Seed services
     console.log('Seeding services...');
     for (const [serviceId, serviceData] of Object.entries(SERVICE_PACKAGES)) {

@@ -39,10 +39,10 @@ export default function HeaderMobileMenu({ onClose, user, logout }: Props) {
           {serviceOpen && (
             <div className="pl-4 pb-2 text-sm text-gray-500 space-y-1">
               <p className="text-xs text-gray-400 uppercase tracking-wide pt-1 pb-0.5">Select a location from the menu</p>
-              <Link href="/service/yashobhoomi" onClick={onClose} className="block py-1.5 font-semibold text-[#1a3a8f] hover:text-[#0f2460]">
+              <Link href="/service/yashobhoomi" onClick={onClose} className="block py-1.5 font-semibold text-[#f97316] hover:text-[#ea580c]">
                 Yashobhoomi
               </Link>
-              {locations.map((item) => <Link key={item.href} href={item.href} onClick={onClose} className="block py-1.5 text-gray-600 hover:text-[#1a3a8f]">{item.label}</Link>)}
+              {locations.map((item) => <Link key={item.href} href={item.href} onClick={onClose} className="block py-1.5 text-gray-600 hover:text-[#f97316]">{item.label}</Link>)}
               {!locations.length && <p className="py-1.5 text-gray-400">No venues added yet.</p>}
             </div>
           )}
@@ -53,7 +53,7 @@ export default function HeaderMobileMenu({ onClose, user, logout }: Props) {
         <NavLink href="/about" onClose={onClose}>About Us</NavLink>
         <NavLink href="/contact" onClose={onClose}>Contact Us</NavLink>
         <div className="pt-3 flex gap-2">
-          {user ? <button type="button" onClick={() => { logout(); onClose(); }} className="flex-1 text-center border border-[#1a3a8f] text-[#1a3a8f] px-4 py-2.5 rounded-md text-sm font-semibold">Logout</button> : <AuthLinks onClose={onClose} />}
+          {user ? <button type="button" onClick={() => { logout(); onClose(); }} className="flex-1 text-center border border-[#f97316] text-[#f97316] px-4 py-2.5 rounded-md text-sm font-semibold">Logout</button> : <AuthLinks onClose={onClose} />}
         </div>
       </div>
     </div>
@@ -67,8 +67,8 @@ function NavLink({ href, onClose, children }: { href: string; onClose: () => voi
 function AuthLinks({ onClose }: { onClose: () => void }) {
   return (
     <>
-      <Link href="/login" onClick={onClose} className="flex-1 text-center border border-[#1a3a8f] text-[#1a3a8f] px-4 py-2.5 rounded-md text-sm font-semibold">Login</Link>
-      <Link href="/signup" onClick={onClose} className="flex-1 text-center bg-[#1a3a8f] text-white px-4 py-2.5 rounded-md text-sm font-semibold">Sign Up</Link>
+      <Link href="/login" onClick={onClose} className="flex-1 text-center border border-[#f97316] text-[#f97316] px-4 py-2.5 rounded-md text-sm font-semibold">Login</Link>
+      <Link href="/signup" onClick={onClose} className="flex-1 text-center bg-[#f97316] text-white px-4 py-2.5 rounded-md text-sm font-semibold">Sign Up</Link>
     </>
   );
 }

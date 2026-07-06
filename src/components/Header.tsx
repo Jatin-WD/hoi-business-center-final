@@ -36,17 +36,17 @@ export default function Header() {
 
   const linkClass = (href: string) =>
     `px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
-      location === href ? "text-[#1a3a8f] bg-blue-50" : "text-gray-700 hover:text-[#1a3a8f] hover:bg-blue-50"
+      location === href ? "text-[#f97316] bg-[#fff7ed]" : "text-gray-700 hover:text-[#f97316] hover:bg-[#fff7ed]"
     }`;
 
   return (
     <header className="w-full bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-      <div className="bg-[#1a3a8f] text-white text-xs py-1 px-4 flex justify-end gap-4">
+      <div className="bg-[#f97316] text-white text-xs py-1 px-4 flex justify-end gap-4">
         <span>HOI Business Center</span>
         <span>|</span>
-        <a href="tel:+919810097323" className="hover:text-yellow-300 transition-colors">+91 98100 97323</a>
+        <a href="tel:+919810097323" className="hover:text-[#fff7ed] transition-colors">+91 98100 97323</a>
         <span>|</span>
-        <a href="mailto:thlim@kilindia.in" className="hover:text-yellow-300 transition-colors">thlim@kilindia.in</a>
+        <a href="mailto:thlim@kilindia.in" className="hover:text-[#fff7ed] transition-colors">thlim@kilindia.in</a>
       </div>
 
       <nav className="relative flex items-center justify-between px-4 lg:px-8 h-16 max-w-[1600px] mx-auto">
@@ -57,7 +57,7 @@ export default function Header() {
         <div className="hidden lg:flex items-center gap-0 text-sm font-medium">
           <Link href="/" className={linkClass("/")}>Home</Link>
           <div className="relative" onMouseEnter={handleServiceEnter} onMouseLeave={handleServiceLeave}>
-            <button className={`flex items-center gap-1 px-3 py-2 rounded-md transition-colors whitespace-nowrap ${serviceOpen ? "text-[#1a3a8f] bg-blue-50" : "text-gray-700 hover:text-[#1a3a8f] hover:bg-blue-50"}`} data-testid="nav-service" onClick={() => setServiceOpen((value) => !value)}>
+            <button className={`flex items-center gap-1 px-3 py-2 rounded-md transition-colors whitespace-nowrap ${serviceOpen ? "text-[#f97316] bg-[#fff7ed]" : "text-gray-700 hover:text-[#f97316] hover:bg-[#fff7ed]"}`} data-testid="nav-service" onClick={() => setServiceOpen((value) => !value)}>
               Service <ChevronDown size={14} className={`transition-transform ${serviceOpen ? "rotate-180" : ""}`} />
             </button>
             {serviceOpen && (
@@ -70,8 +70,8 @@ export default function Header() {
             href="/yashobhoomi"
             className={`px-3 py-2 rounded-md text-sm font-semibold transition-colors whitespace-nowrap ${
               location === "/yashobhoomi"
-                ? "text-[#1a3a8f] bg-yellow-100"
-                : "text-[#1a3a8f] hover:text-[#0f2460] hover:bg-yellow-50"
+                ? "text-[#f97316] bg-[#fff7ed]"
+                : "text-[#f97316] hover:text-[#ea580c] hover:bg-[#fff7ed]"
             }`}
           >
             Yashobhoomi
@@ -97,7 +97,7 @@ function UserActions({ name, logout }: { name: string; logout: () => void }) {
   return (
     <>
       <span className="text-sm text-gray-700">Hi, {name}</span>
-      <button type="button" onClick={logout} className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold text-[#1a3a8f] border border-[#1a3a8f] hover:bg-blue-50 transition-colors whitespace-nowrap">
+      <button type="button" onClick={logout} className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold text-[#f97316] border border-[#f97316] hover:bg-[#fff7ed] transition-colors whitespace-nowrap">
         Logout
       </button>
     </>
@@ -107,10 +107,10 @@ function UserActions({ name, logout }: { name: string; logout: () => void }) {
 function AuthActions() {
   return (
     <>
-      <Link href="/login" className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold text-[#1a3a8f] border border-[#1a3a8f] hover:bg-blue-50 transition-colors whitespace-nowrap" data-testid="btn-login">
+      <Link href="/login" className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold text-[#f97316] border border-[#f97316] hover:bg-[#fff7ed] transition-colors whitespace-nowrap" data-testid="btn-login">
         <LogIn size={15} /> Login
       </Link>
-      <Link href="/signup" className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold bg-[#1a3a8f] text-white hover:bg-[#152e75] transition-colors whitespace-nowrap" data-testid="btn-signup">
+      <Link href="/signup" className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold bg-[#f97316] text-white hover:bg-[#ea580c] transition-colors whitespace-nowrap" data-testid="btn-signup">
         <UserPlus size={15} /> Sign Up
       </Link>
     </>

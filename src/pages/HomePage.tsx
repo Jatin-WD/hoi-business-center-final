@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { ArrowRight, Award, Calendar, CheckCircle, MapPin, Users } from "lucide-react";
 import { loadCatalog, type CatalogService, type CatalogVenue } from "@/lib/catalog";
@@ -23,7 +23,6 @@ export default function HomePage() {
   const [services, setServices] = useState<CatalogService[]>([]);
   const [venues, setVenues] = useState<CatalogVenue[]>([]);
 
-  const locations = useMemo(() => venues.slice(0, 3), [venues]);
   const heroImage = "/assets/yashobhoomi.png";
 
   useEffect(() => {
@@ -64,7 +63,7 @@ export default function HomePage() {
       </section>
       <StatsSection />
       <ServicesSection title="Our Services" description="Comprehensive exhibition solutions designed to make your presence unforgettable." services={services} />
-      <LocationsSection title="Where We Operate" description="Venues loaded from the project database." venues={locations} />
+      <LocationsSection title="Where We Operate" description="Yashobhoomi is our primary showcase venue and the place where HOI makes its strongest impact." venues={venues} />
       <WhySection title="Why Choose HOI Business Center?" description="Our end-to-end services ensure your exhibition is seamless, professional, and impactful." />
       <section className="relative overflow-hidden bg-[#9a3412] py-16">
         <img src="/assets/hall.jpg" alt="Exhibition hall" className="absolute inset-0 h-full w-full object-cover" />
@@ -92,7 +91,95 @@ function ServicesSection({ title, description, services }: { title: string; desc
 }
 
 function LocationsSection({ title, description, venues }: { title: string; description: string; venues: CatalogVenue[] }) {
-  return <section className="bg-white py-16 lg:py-20"><div className="max-w-[1600px] mx-auto px-8"><SectionTitle title={title} description={description} /><div className="grid grid-cols-1 md:grid-cols-3 gap-6">{venues.map((venue) => <Link key={venue.id} href={`/venue/${venue.locationId}/${venue.subVenueId}`} className="relative rounded-2xl overflow-hidden group block" style={{ height: "280px" }}><img src={venue.image} alt={venue.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" /><div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" /><div className="absolute bottom-0 left-0 right-0 p-6"><h3 className="text-white font-bold text-xl mb-1">{venue.name}</h3><p className="text-white/70 text-sm">{venue.city}, {venue.state}</p></div></Link>)}</div></div></section>;
+  const yashobhoomi =
+    venues.find((venue) => venue.locationId === "yashobhoomi")
+    ?? venues[0]
+    ?? {
+      locationId: "yashobhoomi",
+      subVenueId: "iicc-dwarka",
+      name: "Yashobhoomi, India International Convention and Expo Centre",
+      city: "New Delhi",
+      state: "Delhi",
+      description: "HOI Business Center's primary exhibition location in Dwarka, New Delhi.",
+      about: "Yashobhoomi is the official HOI showcase venue for large exhibitions, conferences, and brand activations.",
+      totalArea: "India's largest MICE destination",
+      halls: "Exhibition and convention halls",
+      capacity: "Large-scale exhibitions and business events",
+      established: "2023",
+      image: "/assets/yashobhoomi.png",
+    };
+
+  return (
+    <section className="bg-white py-16 lg:py-20">
+      <div className="max-w-[1600px] mx-auto px-8">
+        <SectionTitle title={title} description={description} />
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-8 items-stretch">
+          <div className="rounded-[2rem] border border-orange-100 bg-gradient-to-br from-[#fff7ed] via-white to-[#fff1e8] p-8 lg:p-10 shadow-[0_20px_60px_rgba(249,115,22,0.08)]">
+            <div className="inline-flex items-center rounded-full bg-[#fff7ed] px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[#f97316]">
+              Official HOI Venue
+            </div>
+            <h3 className="mt-5 text-3xl lg:text-4xl font-bold text-gray-900">{yashobhoomi.name}</h3>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-gray-600">
+              {yashobhoomi.about || yashobhoomi.description}
+            </p>
+            <div className="mt-8 grid grid-cols-2 gap-4">
+              <VenueMetric label="Location" value={`${yashobhoomi.city}, ${yashobhoomi.state}`} />
+              <VenueMetric label="Scale" value={yashobhoomi.totalArea || "Large-scale venue"} />
+              <VenueMetric label="Facilities" value={yashobhoomi.halls || "Convention-ready halls"} />
+              <VenueMetric label="Since" value={yashobhoomi.established || "2023"} />
+            </div>
+            <div className="mt-8 flex flex-wrap gap-3">
+              {[
+                "Priority venue for HOI services",
+                "Ideal for exhibitions & conventions",
+                "End-to-end execution support",
+              ].map((point) => (
+                <span key={point} className="rounded-full border border-orange-200 bg-white px-4 py-2 text-sm font-medium text-gray-700">
+                  {point}
+                </span>
+              ))}
+            </div>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link href="/yashobhoomi" className="inline-flex items-center gap-2 rounded-xl bg-[#f97316] px-6 py-3.5 text-sm font-bold text-white hover:bg-[#ea580c] transition-colors">
+                Explore Yashobhoomi <ArrowRight size={16} />
+              </Link>
+              <Link href="/service" className="inline-flex items-center gap-2 rounded-xl border border-[#f97316] px-6 py-3.5 text-sm font-bold text-[#f97316] hover:bg-[#fff7ed] transition-colors">
+                Browse Services
+              </Link>
+            </div>
+          </div>
+
+          <Link href={`/venue/${yashobhoomi.locationId}/${yashobhoomi.subVenueId}`} className="group relative min-h-[420px] overflow-hidden rounded-[2rem] shadow-[0_24px_70px_rgba(0,0,0,0.12)]">
+            <img
+              src={yashobhoomi.image || "/assets/yashobhoomi.png"}
+              alt={yashobhoomi.name}
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-7 lg:p-8 text-white">
+              <div className="mb-4 inline-flex rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-orange-100">
+                Yashobhoomi Spotlight
+              </div>
+              <h4 className="text-2xl lg:text-3xl font-bold">{yashobhoomi.name}</h4>
+              <p className="mt-2 max-w-xl text-sm lg:text-base leading-relaxed text-orange-50/90">
+                {yashobhoomi.description}
+              </p>
+              <div className="mt-5 flex flex-wrap gap-3 text-sm">
+                {[
+                  yashobhoomi.city && yashobhoomi.state ? `${yashobhoomi.city}, ${yashobhoomi.state}` : "New Delhi",
+                  yashobhoomi.capacity || "Large-scale business events",
+                ].map((item) => (
+                  <span key={item} className="rounded-full bg-white/10 px-4 py-2 backdrop-blur-sm">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
 }
 
 function WhySection({ title, description }: { title: string; description: string }) {
@@ -101,4 +188,13 @@ function WhySection({ title, description }: { title: string; description: string
 
 function SectionTitle({ title, description }: { title: string; description: string }) {
   return <div className="text-center mb-12"><h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">{title}</h2><p className="text-gray-500 max-w-xl mx-auto">{description}</p></div>;
+}
+
+function VenueMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-orange-100 bg-white px-4 py-4 shadow-sm">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-400">{label}</p>
+      <p className="mt-1 text-sm font-bold text-gray-900 leading-snug">{value}</p>
+    </div>
+  );
 }

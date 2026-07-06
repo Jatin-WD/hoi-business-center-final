@@ -94,10 +94,6 @@ export default function ServiceMegaMenu({ onClose }: Props) {
                       Primary HOI venue
                     </span>
                   </div>
-
-                  <div className="mt-auto inline-flex items-center gap-2 text-[13px] font-semibold text-[#f97316]">
-                    View Yashobhoomi <ArrowRight size={13} />
-                  </div>
                 </div>
               </Link>
             </div>

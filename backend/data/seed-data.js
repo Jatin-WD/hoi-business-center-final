@@ -53,26 +53,12 @@ export const SERVICE_PACKAGES = {
   },
   "interpretation-protocol": {
     id: "interpretation-protocol",
-    label: "Interpretation & Protocol Services",
+    label: "Interpretation & Protocol",
     packages: [
       { label: "Basic Interpretation", href: "/packages/interpretation-protocol/basic" },
       { label: "Professional Interpretation", href: "/packages/interpretation-protocol/professional" },
       { label: "VIP Protocol Services", href: "/packages/interpretation-protocol/vip" },
       { label: "Full Protocol Management", href: "/packages/interpretation-protocol/management" },
-    ],
-  },
-  "manpower": {
-    id: "manpower",
-    label: "Apply for Man Power Service",
-    packages: [
-      { label: "Individual Application", href: "/manpower" },
-    ],
-  },
-  "other": {
-    id: "other",
-    label: "Other",
-    packages: [
-      { label: "Custom Service", href: "/contact" },
     ],
   },
 };

@@ -36,6 +36,17 @@ export type CatalogVenue = {
   image: string;
 };
 
+export const CANONICAL_SERVICE_IDS = [
+  "booth-reservation",
+  "booth-design",
+  "booth-install-demolition",
+  "logistics",
+  "marketing",
+  "interpretation-protocol",
+] as const;
+
+const CANONICAL_SERVICE_SET = new Set<string>(CANONICAL_SERVICE_IDS);
+
 type ApiService = {
   service_id?: string;
   label?: string;
@@ -129,9 +140,13 @@ export async function loadCatalog() {
     apiClient.getServices(),
   ]);
 
+  const services = ((servicesResponse as any)?.data?.services ?? [])
+    .map(normalizeService)
+    .filter((service: CatalogService) => CANONICAL_SERVICE_SET.has(service.id));
+
   return {
     venues: ((venuesResponse as any)?.data?.venues ?? []).map(normalizeVenue) as CatalogVenue[],
-    services: ((servicesResponse as any)?.data?.services ?? []).map(normalizeService) as CatalogService[],
+    services,
   };
 }
 

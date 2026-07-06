@@ -161,9 +161,7 @@ INSERT INTO services (service_id, label, packages) VALUES
   ('booth-install-demolition', 'Booth Install & Demolition', '[{"label":"Basic Installation","href":"/packages/booth-install-demolition/basic"},{"label":"Standard Installation","href":"/packages/booth-install-demolition/standard"},{"label":"Premium Installation","href":"/packages/booth-install-demolition/premium"},{"label":"Deluxe Installation","href":"/packages/booth-install-demolition/deluxe"}]'),
   ('logistics', 'Logistics Services', '[{"label":"Basic Logistics Package","href":"/packages/logistics/basic"},{"label":"Standard Logistics Package","href":"/packages/logistics/standard"},{"label":"Premium Logistics Package","href":"/packages/logistics/premium"},{"label":"Full Freight Management","href":"/packages/logistics/freight"}]'),
   ('marketing', 'Marketing Services', '[{"label":"Basic Marketing Package","href":"/packages/marketing/basic"},{"label":"Digital Marketing Package","href":"/packages/marketing/digital"},{"label":"Premium Marketing Package","href":"/packages/marketing/premium"},{"label":"Full Marketing Campaign","href":"/packages/marketing/campaign"}]'),
-  ('interpretation-protocol', 'Interpretation & Protocol Services', '[{"label":"Basic Interpretation","href":"/packages/interpretation-protocol/basic"},{"label":"Professional Interpretation","href":"/packages/interpretation-protocol/professional"},{"label":"VIP Protocol Services","href":"/packages/interpretation-protocol/vip"},{"label":"Full Protocol Management","href":"/packages/interpretation-protocol/management"}]'),
-  ('manpower', 'Apply for Man Power Service', '[{"label":"Individual Application","href":"/manpower"}]'),
-  ('other', 'Other', '[{"label":"Custom Service","href":"/contact"}]')
+  ('interpretation-protocol', 'Interpretation & Protocol', '[{"label":"Basic Interpretation","href":"/packages/interpretation-protocol/basic"},{"label":"Professional Interpretation","href":"/packages/interpretation-protocol/professional"},{"label":"VIP Protocol Services","href":"/packages/interpretation-protocol/vip"},{"label":"Full Protocol Management","href":"/packages/interpretation-protocol/management"}]')
 ON DUPLICATE KEY UPDATE
 service_id = VALUES(service_id),
 label = VALUES(label),
@@ -278,7 +276,7 @@ INSERT INTO cms_content (content_key, label, value, type) VALUES
   ('home.cta.title', 'Home CTA title', 'Ready to Elevate Your Exhibition Presence?', 'text'),
   ('home.cta.description', 'Home CTA description', 'Contact our team today and let us create an unforgettable exhibition experience for your brand.', 'text'),
   ('service.hero.title', 'Service page hero title', 'Exhibition Services', 'text'),
-  ('service.hero.description', 'Service page hero description', 'Explore booth, logistics, marketing, interpretation, and manpower support. Services, packages, and venues are managed from the admin panel.', 'text'),
+  ('service.hero.description', 'Service page hero description', 'Explore booth reservation, booth design, booth install & demolition, logistics, marketing, and interpretation & protocol services. Services, packages, and venues are managed from the admin panel.', 'text'),
   ('service.overview.title', 'Service catalog title', 'Service Catalog', 'text'),
   ('service.overview.description', 'Service catalog description', 'Choose a service to view package options, or select a venue to see what can be arranged there.', 'text'),
   ('contact.title', 'Contact page title', 'Contact Us', 'text'),

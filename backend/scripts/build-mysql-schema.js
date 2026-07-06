@@ -28,7 +28,7 @@ const DEFAULT_CONTENT = [
   ['home.cta.title', 'Home CTA title', 'Ready to Elevate Your Exhibition Presence?'],
   ['home.cta.description', 'Home CTA description', 'Contact our team today and let us create an unforgettable exhibition experience for your brand.'],
   ['service.hero.title', 'Service page hero title', 'Exhibition Services'],
-  ['service.hero.description', 'Service page hero description', 'Explore booth, logistics, marketing, interpretation, and manpower support. Services, packages, and venues are managed from the admin panel.'],
+  ['service.hero.description', 'Service page hero description', 'Explore booth reservation, booth design, booth install & demolition, logistics, marketing, and interpretation & protocol services. Services, packages, and venues are managed from the admin panel.'],
   ['service.overview.title', 'Service catalog title', 'Service Catalog'],
   ['service.overview.description', 'Service catalog description', 'Choose a service to view package options, or select a venue to see what can be arranged there.'],
   ['contact.title', 'Contact page title', 'Contact Us'],

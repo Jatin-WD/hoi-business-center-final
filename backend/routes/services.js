@@ -2,6 +2,15 @@ import express from 'express';
 import { getDb } from '../config/database.js';
 
 const router = express.Router();
+const CANONICAL_SERVICE_ORDER = [
+  'booth-reservation',
+  'booth-design',
+  'booth-install-demolition',
+  'logistics',
+  'marketing',
+  'interpretation-protocol',
+];
+const CANONICAL_SERVICE_IDS = new Set(CANONICAL_SERVICE_ORDER);
 
 function parseJsonArray(value) {
   if (Array.isArray(value)) return value;
@@ -25,7 +34,10 @@ router.get('/', async (req, res) => {
     `).all();
 
     // Parse JSON fields
-    const parsedServices = services.map((service) => ({
+    const parsedServices = services
+      .filter((service) => CANONICAL_SERVICE_IDS.has(service.service_id))
+      .sort((a, b) => CANONICAL_SERVICE_ORDER.indexOf(a.service_id) - CANONICAL_SERVICE_ORDER.indexOf(b.service_id))
+      .map((service) => ({
       ...service,
       label: service.label || service.name || service.slug || 'Service',
       description: service.description || '',
@@ -78,6 +90,13 @@ router.get('/:serviceId', async (req, res) => {
       durationType: service.duration_type || service.durationType || '',
       durationValue: service.duration_value || service.durationValue || '',
     };
+
+    if (!CANONICAL_SERVICE_IDS.has(parsedService.service_id)) {
+      return res.status(404).json({
+        success: false,
+        message: 'Service not found'
+      });
+    }
 
     res.json({
       success: true,

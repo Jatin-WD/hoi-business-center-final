@@ -2,6 +2,9 @@ import { initDatabase } from '../config/database.js';
 import { pathToFileURL } from 'url';
 import { EVENTS, PACKAGE_DETAILS, SERVICE_PACKAGES, VENUE_DETAILS } from '../data/seed-data.js';
 
+const CANONICAL_SERVICE_IDS = Object.keys(SERVICE_PACKAGES);
+const CANONICAL_PACKAGE_CATEGORIES = Object.keys(PACKAGE_DETAILS);
+
 const DEFAULT_ADMIN = {
   name: 'Admin',
   email: 'admin@gmail.com',
@@ -40,6 +43,27 @@ function countExpectedPackages() {
   return Object.values(PACKAGE_DETAILS).reduce((total, subcategories) => total + Object.keys(subcategories).length, 0);
 }
 
+async function cleanupDeprecatedCatalogRows(db) {
+  await db.run("DELETE FROM packages WHERE category = ?", ["no-show-space"]);
+  await db.run("DELETE FROM services WHERE service_id = ?", ["no-show-space"]);
+
+  if (CANONICAL_SERVICE_IDS.length) {
+    const servicePlaceholders = CANONICAL_SERVICE_IDS.map(() => '?').join(', ');
+    await db.run(
+      `DELETE FROM services WHERE service_id NOT IN (${servicePlaceholders})`,
+      CANONICAL_SERVICE_IDS
+    );
+  }
+
+  if (CANONICAL_PACKAGE_CATEGORIES.length) {
+    const packagePlaceholders = CANONICAL_PACKAGE_CATEGORIES.map(() => '?').join(', ');
+    await db.run(
+      `DELETE FROM packages WHERE category NOT IN (${packagePlaceholders})`,
+      CANONICAL_PACKAGE_CATEGORIES
+    );
+  }
+}
+
 async function ensureDefaultAdmin(db) {
   const existing = await db.get('SELECT id FROM users WHERE lower(email) = ?', [DEFAULT_ADMIN.email]);
   if (existing) return;
@@ -65,8 +89,7 @@ async function seedDatabase({ resetEvents = true } = {}) {
     await ensureDefaultAdmin(db);
 
     // Remove deprecated catalog entries before re-seeding.
-    await db.run("DELETE FROM packages WHERE category = ?", ["no-show-space"]);
-    await db.run("DELETE FROM services WHERE service_id = ?", ["no-show-space"]);
+    await cleanupDeprecatedCatalogRows(db);
 
     // Seed services
     console.log('Seeding services...');
@@ -139,6 +162,7 @@ async function seedDatabase({ resetEvents = true } = {}) {
 
 async function seedDatabaseIfEmpty() {
   const db = await initDatabase();
+  await cleanupDeprecatedCatalogRows(db);
   const expectedServices = Object.keys(SERVICE_PACKAGES).length;
   const expectedVenues = VENUE_DETAILS.length;
   const expectedPackages = countExpectedPackages();

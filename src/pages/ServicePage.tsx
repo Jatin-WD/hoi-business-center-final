@@ -24,7 +24,7 @@ export default function ServicePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <HeroSection breadcrumbs={[{ label: "Home", href: "/" }, { label: "Service" }]} title="Exhibition Services" description="Explore booth, logistics, marketing, interpretation, and manpower support loaded from the database.">
+      <HeroSection breadcrumbs={[{ label: "Home", href: "/" }, { label: "Service" }]} title="Exhibition Services" description="Explore booth reservation, booth design, booth install & demolition, logistics, marketing, and interpretation & protocol services loaded from the database.">
         <div className="grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
           <Stat icon={PackageCheck} label="Services" value={catalog.services.length} />
           <Stat icon={CalendarCheck} label="Packages" value={packageCount} />
@@ -83,14 +83,14 @@ function SectionHeader({ eyebrow, title, description }: { eyebrow?: string; titl
 function Stat({ icon: Icon, label, value }: { icon: typeof PackageCheck; label: string; value: number }) {
   return (
     <div className="rounded-lg border border-white/20 bg-white/10 px-4 py-3">
-      <div className="flex items-center gap-2 text-blue-100"><Icon size={16} /> <span className="text-xs font-semibold uppercase tracking-wide">{label}</span></div>
+      <div className="flex items-center gap-2 text-orange-100"><Icon size={16} /> <span className="text-xs font-semibold uppercase tracking-wide">{label}</span></div>
       <p className="mt-2 text-2xl font-bold text-white">{value}</p>
     </div>
   );
 }
 
 function StateCard({ title, detail, onRetry }: { title: string; detail?: string; onRetry?: () => void }) {
-  return <div className="rounded-lg border border-gray-100 bg-white p-8 text-center"><p className="font-semibold text-gray-900">{title}</p>{detail ? <p className="mt-2 text-sm text-gray-500">{detail}</p> : null}{onRetry ? <button type="button" onClick={onRetry} className="mt-4 rounded-lg bg-[#1a3a8f] px-4 py-2 text-sm font-semibold text-white">Retry</button> : null}</div>;
+  return <div className="rounded-lg border border-gray-100 bg-white p-8 text-center"><p className="font-semibold text-gray-900">{title}</p>{detail ? <p className="mt-2 text-sm text-gray-500">{detail}</p> : null}{onRetry ? <button type="button" onClick={onRetry} className="mt-4 rounded-lg bg-[#f97316] px-4 py-2 text-sm font-semibold text-white">Retry</button> : null}</div>;
 }
 
 function groupVenues(venues: CatalogVenue[]) {

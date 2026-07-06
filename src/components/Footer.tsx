@@ -1,5 +1,6 @@
 import { Link } from "wouter";
-import hoiLogo from "/assets/hoi.png";
+
+const hoiLogo = "/assets/hoi.png";
 
 export default function Footer() {
   return (

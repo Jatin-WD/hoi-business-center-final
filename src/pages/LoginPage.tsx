@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Eye, EyeOff, LogIn } from "lucide-react";
-import hoiLogo from "/assets/hoi.png";
 import { useAuth } from "@/hooks/useAuth";
 import { loginSchema, type LoginValues } from "@/lib/validators";
+
+const hoiLogo = "/assets/hoi.png";
 
 export default function LoginPage() {
   const { user, loading, login } = useAuth();

@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { ChevronDown, LogIn, Menu, UserPlus, X } from "lucide-react";
-import hoiLogo from "/assets/hoi.png";
 import HeaderMobileMenu from "./HeaderMobileMenu";
 import ServiceMegaMenu from "./ServiceMegaMenu";
 import { useAuth } from "@/hooks/useAuth";
+
+const hoiLogo = "/assets/hoi.png";
 
 const NAV_LINKS = [
   { href: "/event-calendar", label: "Event Calendar" },

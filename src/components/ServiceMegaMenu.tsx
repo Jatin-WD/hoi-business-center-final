@@ -80,17 +80,6 @@ export default function ServiceMegaMenu({ onClose }: Props) {
                   <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-[#f97316] px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
                     <Sparkles size={12} /> Official Venue
                   </div>
-                  <div className="absolute bottom-4 left-4 right-4 text-white">
-                    <div className="inline-flex items-center rounded-full bg-black/30 px-2.5 py-1 text-[11px] font-medium tracking-wide text-white/90 backdrop-blur-sm">
-                      Dwarka, New Delhi
-                    </div>
-                    <h3 className="mt-2 max-w-[210px] text-[17px] font-bold leading-tight drop-shadow-sm">
-                      {yashobhoomiVenue?.name || YASHOBHOOMI_LOCATION.label}
-                    </h3>
-                    <p className="mt-1 max-w-[90%] text-[11px] leading-5 text-white/90">
-                      HOI's primary exhibition base for focused, premium service delivery.
-                    </p>
-                  </div>
                 </div>
                 <div className="-mt-6 h-6 bg-gradient-to-b from-black/20 to-transparent" />
 
@@ -103,10 +92,6 @@ export default function ServiceMegaMenu({ onClose }: Props) {
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1.5 text-[11px] font-semibold text-gray-700 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
                       <MapPin size={12} className="text-[#f97316]" />
                       Primary HOI venue
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1.5 text-[11px] font-semibold text-gray-700 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-                      <Sparkles size={12} className="text-[#f97316]" />
-                      6 services, 1 venue
                     </span>
                   </div>
 

@@ -61,14 +61,6 @@ export const SERVICE_PACKAGES = {
       { label: "Full Protocol Management", href: "/packages/interpretation-protocol/management" },
     ],
   },
-  "no-show-space": {
-    id: "no-show-space",
-    label: "No Show Space Booking",
-    packages: [
-      { label: "Basic No-Show Space", href: "/packages/no-show-space/basic" },
-      { label: "Premium No-Show Space", href: "/packages/no-show-space/premium" },
-    ],
-  },
   "manpower": {
     id: "manpower",
     label: "Apply for Man Power Service",
@@ -503,28 +495,6 @@ export const PACKAGE_DETAILS = {
       description: "Complete protocol management for large-scale events, international delegations, and complex diplomatic requirements.",
       includes: ["Complete protocol management", "International delegation handling", "Diplomatic coordination", "Full interpretation services", "Transportation & logistics", "Security coordination", "Event management"],
       notIncludes: ["State security requirements"],
-      duration: "Per event",
-    },
-  },
-  "no-show-space": {
-    basic: {
-      title: "Basic No-Show Space",
-      subtitle: "No Show Space Booking",
-      price: "₹50,000 - ₹1,00,000",
-      priceNote: "Price depends on space requirements.",
-      description: "Basic storage and preparation space for exhibition materials and equipment setup.",
-      includes: ["Basic storage space", "Loading/unloading access", "Basic security", "24/7 access"],
-      notIncludes: ["Climate control", "Specialized storage", "Equipment rental"],
-      duration: "Per event",
-    },
-    premium: {
-      title: "Premium No-Show Space",
-      subtitle: "No Show Space Booking",
-      price: "₹1,00,000 - ₹3,00,000",
-      priceNote: "Price depends on space requirements.",
-      description: "Premium storage and preparation facilities with enhanced security and amenities for valuable exhibition materials.",
-      includes: ["Premium storage space", "Climate-controlled environment", "Enhanced security", "Equipment rental options", "Staff assistance", "24/7 monitoring"],
-      notIncludes: ["Ultra-secure facilities", "Specialized equipment"],
       duration: "Per event",
     },
   },

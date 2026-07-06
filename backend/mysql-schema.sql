@@ -162,7 +162,6 @@ INSERT INTO services (service_id, label, packages) VALUES
   ('logistics', 'Logistics Services', '[{"label":"Basic Logistics Package","href":"/packages/logistics/basic"},{"label":"Standard Logistics Package","href":"/packages/logistics/standard"},{"label":"Premium Logistics Package","href":"/packages/logistics/premium"},{"label":"Full Freight Management","href":"/packages/logistics/freight"}]'),
   ('marketing', 'Marketing Services', '[{"label":"Basic Marketing Package","href":"/packages/marketing/basic"},{"label":"Digital Marketing Package","href":"/packages/marketing/digital"},{"label":"Premium Marketing Package","href":"/packages/marketing/premium"},{"label":"Full Marketing Campaign","href":"/packages/marketing/campaign"}]'),
   ('interpretation-protocol', 'Interpretation & Protocol Services', '[{"label":"Basic Interpretation","href":"/packages/interpretation-protocol/basic"},{"label":"Professional Interpretation","href":"/packages/interpretation-protocol/professional"},{"label":"VIP Protocol Services","href":"/packages/interpretation-protocol/vip"},{"label":"Full Protocol Management","href":"/packages/interpretation-protocol/management"}]'),
-  ('no-show-space', 'No Show Space Booking', '[{"label":"Basic No-Show Space","href":"/packages/no-show-space/basic"},{"label":"Premium No-Show Space","href":"/packages/no-show-space/premium"}]'),
   ('manpower', 'Apply for Man Power Service', '[{"label":"Individual Application","href":"/manpower"}]'),
   ('other', 'Other', '[{"label":"Custom Service","href":"/contact"}]')
 ON DUPLICATE KEY UPDATE
@@ -226,8 +225,6 @@ INSERT INTO packages (category, subcategory, title, subtitle, price, price_note,
   ('interpretation-protocol', 'professional', 'Professional Interpretation Service', 'Interpretation & Protocol Services', '₹50,000 - ₹1,50,000', 'Price depends on duration and languages.', 'Professional interpretation services with qualified interpreters and enhanced equipment for important business communications.', '["Professional interpreters","Multiple language support","Quality equipment","Extended sessions","Protocol coordination","Documentation support"]', '["Simultaneous interpretation","VIP services"]', 'Per event'),
   ('interpretation-protocol', 'vip', 'VIP Protocol Services', 'Interpretation & Protocol Services', '₹1,50,000 - ₹4,00,000', 'Price depends on requirements.', 'Premium protocol and interpretation services for VIP visitors, dignitaries, and high-profile business delegations.', '["VIP protocol management","Expert interpreters","Simultaneous interpretation","Premium equipment","Transportation coordination","Accommodation arrangements","Personal assistants"]', '["State-level protocol"]', 'Per event'),
   ('interpretation-protocol', 'management', 'Full Protocol Management', 'Protocol Services', '₹4,00,000 - ₹10,00,000+', 'Price depends on scale and requirements.', 'Complete protocol management for large-scale events, international delegations, and complex diplomatic requirements.', '["Complete protocol management","International delegation handling","Diplomatic coordination","Full interpretation services","Transportation & logistics","Security coordination","Event management"]', '["State security requirements"]', 'Per event'),
-  ('no-show-space', 'basic', 'Basic No-Show Space', 'No Show Space Booking', '₹50,000 - ₹1,00,000', 'Price depends on space requirements.', 'Basic storage and preparation space for exhibition materials and equipment setup.', '["Basic storage space","Loading/unloading access","Basic security","24/7 access"]', '["Climate control","Specialized storage","Equipment rental"]', 'Per event'),
-  ('no-show-space', 'premium', 'Premium No-Show Space', 'No Show Space Booking', '₹1,00,000 - ₹3,00,000', 'Price depends on space requirements.', 'Premium storage and preparation facilities with enhanced security and amenities for valuable exhibition materials.', '["Premium storage space","Climate-controlled environment","Enhanced security","Equipment rental options","Staff assistance","24/7 monitoring"]', '["Ultra-secure facilities","Specialized equipment"]', 'Per event')
 ON DUPLICATE KEY UPDATE
 category = VALUES(category),
 subcategory = VALUES(subcategory),
@@ -303,4 +300,3 @@ label = VALUES(label),
 value = VALUES(value),
 type = VALUES(type)
 ;
-

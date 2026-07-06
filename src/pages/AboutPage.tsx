@@ -65,7 +65,6 @@ export default function AboutPage() {
               "Logistics Services",
               "Marketing Services",
               "Interpretation & Protocol",
-              "No Show Space Booking",
               "Man Power Services",
               "Event Calendar Management",
             ].map((s, i) => (

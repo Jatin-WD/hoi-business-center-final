@@ -60,6 +60,10 @@ async function seedDatabase({ resetEvents = true } = {}) {
   try {
     await ensureDefaultAdmin(db);
 
+    // Remove deprecated catalog entries before re-seeding.
+    await db.run("DELETE FROM packages WHERE category = ?", ["no-show-space"]);
+    await db.run("DELETE FROM services WHERE service_id = ?", ["no-show-space"]);
+
     // Seed services
     console.log('Seeding services...');
     for (const [serviceId, serviceData] of Object.entries(SERVICE_PACKAGES)) {

@@ -62,6 +62,13 @@ type ApiVenue = {
 const defaultVenueImage =
   "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1600&q=80";
 
+const slugify = (value: string) =>
+  String(value || "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
 export const normalizeService = (service: ApiService): CatalogService => ({
   id: service.service_id ?? "",
   label: service.label ?? service.name ?? service.slug ?? "Service",
@@ -71,8 +78,8 @@ export const normalizeService = (service: ApiService): CatalogService => ({
 
 export const normalizeVenue = (venue: ApiVenue): CatalogVenue => ({
   id: venue.id,
-  locationId: venue.location_id ?? "",
-  subVenueId: venue.sub_venue_id ?? "",
+  locationId: venue.location_id || slugify(venue.city || venue.state || venue.name || `venue-${venue.id}`),
+  subVenueId: venue.sub_venue_id || slugify(venue.name || venue.address || `venue-${venue.id}`),
   name: venue.name ?? "Venue",
   address: venue.address ?? "",
   city: venue.city ?? "",

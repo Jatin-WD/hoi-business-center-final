@@ -92,6 +92,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
                     </p>
                   </div>
                 </div>
+                <div className="-mt-6 h-6 bg-gradient-to-b from-black/20 to-transparent" />
 
                 <div className="flex flex-1 flex-col gap-3 p-4">
                   <p className="text-sm leading-relaxed text-gray-600">
@@ -122,7 +123,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
                   key={service.id}
                   onMouseEnter={() => setActiveServiceId(service.id)}
                   onClick={() => setActiveServiceId(service.id)}
-                  className={`mb-0.5 flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-all ${
+                  className={`mb-1.5 flex w-full items-center justify-between rounded-lg px-3 py-3 text-left text-sm font-medium transition-all ${
                     activeService?.id === service.id
                       ? "border border-[#fed7aa] bg-[#fff7ed] text-gray-900 shadow-sm"
                       : "text-gray-700 hover:bg-gray-50 hover:text-[#f97316]"
@@ -139,13 +140,13 @@ export default function ServiceMegaMenu({ onClose }: Props) {
                 {activeService?.label ?? "Service"} Packages
               </p>
               {activeService?.packages.length ? (
-                <div className="space-y-1.5">
+                <div className="space-y-2">
                   {activeService.packages.map((pkg, idx) => (
                     <Link
                       key={`${activeService.id}-${idx}`}
                       href={withLocation(pkg.href, "Yashobhoomi")}
                       onClick={onClose}
-                      className="group flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 transition-all hover:border-[#f97316] hover:bg-[#fff7ed] hover:shadow-sm"
+                      className="group flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3.5 transition-all hover:border-[#f97316] hover:bg-[#fff7ed] hover:shadow-sm"
                     >
                       <span className="text-sm font-medium text-gray-700 group-hover:text-[#f97316]">{pkg.label}</span>
                       <ArrowRight size={14} className="text-gray-300 group-hover:text-[#f97316]" />

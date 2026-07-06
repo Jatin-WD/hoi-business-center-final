@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Eye, EyeOff, LogIn } from "lucide-react";
-import hoiLogo from "/assets/hoi-logo.svg";
+import hoiLogo from "/assets/hoi.png";
 import { useAuth } from "@/hooks/useAuth";
 import { loginSchema, type LoginValues } from "@/lib/validators";
 

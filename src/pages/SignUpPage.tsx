@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
-import hoiLogo from "/assets/hoi-logo.svg";
+import hoiLogo from "/assets/hoi.png";
 import { useAuth } from "@/hooks/useAuth";
 import { signupSchema, type SignUpValues } from "@/lib/validators";
 import { DetailsForm } from "./signup/SignUpForms";

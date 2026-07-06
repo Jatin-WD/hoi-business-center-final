@@ -63,44 +63,43 @@ export default function ServiceMegaMenu({ onClose }: Props) {
         {error && <MenuState title="Could not load menu" detail={error} />}
 
         {!loading && !error && (
-          <div className="grid min-h-[310px] grid-cols-[290px_minmax(250px,260px)_minmax(300px,1fr)_180px]">
-            <div className="min-w-0 overflow-hidden border-r border-gray-100 px-4 py-4" style={{ maxHeight: "310px" }}>
+          <div className="grid min-h-[430px] grid-cols-[290px_minmax(250px,260px)_minmax(300px,1fr)_180px]">
+            <div className="min-w-0 border-r border-gray-100 px-4 py-4">
               <Link
                 href="/yashobhoomi"
                 onClick={onClose}
-                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-orange-100 bg-[#fff8f1] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
-                <div className="relative h-[142px] overflow-hidden bg-[#fff7ed]">
+                <div className="relative h-[190px] overflow-hidden">
                   <img
                     src="/assets/yashobhoomi.png"
                     alt={yashobhoomiVenue?.name || "Yashobhoomi"}
                     className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-black/5" />
-                  <div className="absolute left-3 top-3 inline-flex items-center gap-2 rounded-full bg-[#f97316] px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
+                  <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-[#f97316] px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
                     <Sparkles size={12} /> Official Venue
                   </div>
-                  <div className="absolute bottom-3 left-4 right-4 text-white">
-                    <div className="inline-flex items-center rounded-full bg-white/15 px-2 py-1 text-[11px] font-medium tracking-wide text-white/90 backdrop-blur-sm">
+                  <div className="absolute bottom-4 left-4 right-4 text-white">
+                    <div className="inline-flex items-center rounded-full bg-black/25 px-2.5 py-1 text-[11px] font-medium tracking-wide text-white/90 backdrop-blur-sm">
                       Dwarka, New Delhi
                     </div>
-                    <h3 className="mt-2 text-[18px] font-bold leading-tight drop-shadow-sm">
+                    <h3 className="mt-2 text-[19px] font-bold leading-tight drop-shadow-sm">
                       {yashobhoomiVenue?.name || YASHOBHOOMI_LOCATION.label}
                     </h3>
+                    <p className="mt-1 max-w-[90%] text-[12px] leading-5 text-white/90">
+                      HOI's primary exhibition base for focused, premium service delivery.
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex flex-1 flex-col gap-3 p-4">
-                  <p className="text-sm leading-relaxed text-gray-600">
-                    HOI's primary exhibition base. All six services and packages are routed through Yashobhoomi for a focused, premium experience.
-                  </p>
-
                   <div className="flex flex-wrap gap-2">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#fff7ed] px-3 py-1.5 text-xs font-semibold text-gray-700">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
                       <MapPin size={12} className="text-[#f97316]" />
                       Primary HOI venue
                     </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#fff7ed] px-3 py-1.5 text-xs font-semibold text-gray-700">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
                       <Sparkles size={12} className="text-[#f97316]" />
                       6 services, 1 venue
                     </span>
@@ -131,7 +130,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
               ))}
             </Panel>
 
-            <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-5 py-4" style={{ maxHeight: "310px" }}>
+            <div className="min-w-0 border-r border-gray-100 px-5 py-4">
               <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">
                 {activeService?.label ?? "Service"} Packages
               </p>
@@ -184,7 +183,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
               )}
             </div>
 
-            <div className="bg-gradient-to-b from-[#fff7ed] to-white px-4 py-5" style={{ maxHeight: "310px" }}>
+            <div className="bg-gradient-to-b from-[#fff7ed] to-white px-4 py-5">
               <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-400">Quick Actions</p>
               <p className="mb-3 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#f97316]">Location: Yashobhoomi</p>
               <Link href={requirementHref} onClick={onClose} className="mb-2.5 block w-full rounded-lg bg-[#f97316] px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-[#ea580c]">
@@ -203,7 +202,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
 
 function Panel({ title, icon, children }: { title: string; icon?: ReactNode; children: ReactNode }) {
   return (
-    <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-4 py-4" style={{ maxHeight: "310px" }}>
+    <div className="min-w-0 border-r border-gray-100 px-4 py-4">
       <p className="mb-3 px-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">
         {icon}
         {title}

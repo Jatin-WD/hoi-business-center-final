@@ -12,7 +12,7 @@ export function ServiceCard({ service, selectedVenues, selectedLocation }: { ser
         <span className="rounded-full bg-gray-50 px-2 py-1 text-xs font-semibold text-gray-500">{location}</span>
       </div>
       <h3 className="text-lg font-bold text-gray-900">{service.label}</h3>
-      <p className="mt-1 text-sm text-gray-500">{service.packages.length} package option{service.packages.length === 1 ? "" : "s"} available</p>
+      <p className="mt-2 text-sm leading-relaxed text-gray-500 line-clamp-3">{service.description || `${service.packages.length} package option${service.packages.length === 1 ? "" : "s"} available`}</p>
       <div className="mt-4 space-y-2">
         {service.packages.slice(0, 3).map((pkg) => <Link key={pkg.href} href={withLocation(pkg.href, location)} className="flex items-center justify-between rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-[#1a3a8f]"><span>{pkg.label}</span><ArrowRight size={13} /></Link>)}
       </div>

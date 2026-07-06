@@ -17,7 +17,7 @@ export default function ServiceDetailBySlug({ service, venues }: { service: Cata
             <span className="text-white">{service.label}</span>
           </div>
           <h1 className="text-4xl font-bold mb-3">{service.label}</h1>
-          <p className="text-orange-100 max-w-2xl">Explore package options and choose a venue where this service can be arranged.</p>
+          <p className="text-orange-100 max-w-2xl">{service.description || "Explore package options and choose a venue where this service can be arranged."}</p>
           {selectedLocation ? <p className="mt-4 inline-flex rounded-lg bg-yellow-400 px-3 py-1.5 text-sm font-bold text-gray-900">Selected location: {selectedLocation}</p> : null}
         </div>
       </div>
@@ -34,7 +34,7 @@ export default function ServiceDetailBySlug({ service, venues }: { service: Cata
                 </span>
               </Link>
             ))}
-            {!service.packages.length && <EmptyCard message="No packages are available for this service yet." />}
+            {!service.packages.length && <EmptyCard message="No package links are stored for this service yet, but the service record is available." />}
           </div>
         </section>
 

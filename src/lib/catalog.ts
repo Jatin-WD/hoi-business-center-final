@@ -8,6 +8,7 @@ export type CatalogPackage = {
 export type CatalogService = {
   id: string;
   label: string;
+  description?: string;
   packages: CatalogPackage[];
 };
 
@@ -33,6 +34,9 @@ export type CatalogVenue = {
 type ApiService = {
   service_id?: string;
   label?: string;
+  name?: string;
+  slug?: string;
+  description?: string;
   packages?: CatalogPackage[];
 };
 
@@ -60,7 +64,8 @@ const defaultVenueImage =
 
 export const normalizeService = (service: ApiService): CatalogService => ({
   id: service.service_id ?? "",
-  label: service.label ?? "Service",
+  label: service.label ?? service.name ?? service.slug ?? "Service",
+  description: service.description ?? "",
   packages: Array.isArray(service.packages) ? service.packages : [],
 });
 

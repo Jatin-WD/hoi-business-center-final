@@ -24,6 +24,11 @@ router.get('/', async (req, res) => {
         service_id,
         label,
         packages,
+        name,
+        slug,
+        description,
+        price,
+        status,
         created_at,
         updated_at
       FROM services
@@ -33,6 +38,8 @@ router.get('/', async (req, res) => {
     // Parse JSON fields
     const parsedServices = services.map((service) => ({
       ...service,
+      label: service.label || service.name || service.slug || 'Service',
+      description: service.description || '',
       packages: parseJsonArray(service.packages),
     }));
 
@@ -58,6 +65,11 @@ router.get('/:serviceId', async (req, res) => {
         service_id,
         label,
         packages,
+        name,
+        slug,
+        description,
+        price,
+        status,
         created_at,
         updated_at
       FROM services
@@ -74,6 +86,8 @@ router.get('/:serviceId', async (req, res) => {
     // Parse JSON fields
     const parsedService = {
       ...service,
+      label: service.label || service.name || service.slug || 'Service',
+      description: service.description || '',
       packages: parseJsonArray(service.packages),
     };
 

@@ -56,7 +56,7 @@ export default function Header() {
 
       <nav className="relative flex items-center justify-between px-4 lg:px-8 h-16 max-w-[1600px] mx-auto">
         <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-          <img src={hoiLogo} alt="HOI Business Center Logo" className="h-10 w-auto logo" data-testid="logo" />
+          <img src={hoiLogo} alt="HOI Business Center Logo" className="h-12 w-auto logo" data-testid="logo" />
         </Link>
 
         <div className="hidden lg:flex items-center gap-0 text-sm font-medium">

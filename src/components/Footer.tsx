@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="mx-auto max-w-[1600px] px-8 py-14">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
-            <img src={hoiLogo} alt="HOI Business Center Logo" className="mb-4 h-12 w-auto logo" />
+            <img src={hoiLogo} alt="HOI Business Center Logo" className="mb-4 h-14 w-auto logo" />
             <p className="text-sm leading-relaxed text-gray-600">
               HOI Business Center provides end-to-end exhibition and event services including booth reservation, design,
               installation, logistics, marketing, interpretation, and manpower services.

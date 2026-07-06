@@ -63,28 +63,30 @@ export default function ServiceMegaMenu({ onClose }: Props) {
         {error && <MenuState title="Could not load menu" detail={error} />}
 
         {!loading && !error && (
-          <div className="grid min-h-[290px] grid-cols-[290px_minmax(250px,260px)_minmax(300px,1fr)_180px]">
-            <div className="min-w-0 overflow-hidden border-r border-gray-100 px-4 py-4" style={{ maxHeight: "290px" }}>
+          <div className="grid min-h-[310px] grid-cols-[290px_minmax(250px,260px)_minmax(300px,1fr)_180px]">
+            <div className="min-w-0 overflow-hidden border-r border-gray-100 px-4 py-4" style={{ maxHeight: "310px" }}>
               <Link
                 href="/yashobhoomi"
                 onClick={onClose}
                 className="group flex h-full flex-col overflow-hidden rounded-2xl border border-orange-100 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
-                <div className="relative h-[122px] overflow-hidden bg-[#fff7ed]">
+                <div className="relative h-[142px] overflow-hidden bg-[#fff7ed]">
                   <img
                     src="/assets/yashobhoomi.png"
                     alt={yashobhoomiVenue?.name || "Yashobhoomi"}
                     className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-black/5" />
                   <div className="absolute left-3 top-3 inline-flex items-center gap-2 rounded-full bg-[#f97316] px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
                     <Sparkles size={12} /> Official Venue
                   </div>
                   <div className="absolute bottom-3 left-4 right-4 text-white">
-                    <h3 className="text-[18px] font-bold leading-tight drop-shadow-sm">
+                    <div className="inline-flex items-center rounded-full bg-white/15 px-2 py-1 text-[11px] font-medium tracking-wide text-white/90 backdrop-blur-sm">
+                      Dwarka, New Delhi
+                    </div>
+                    <h3 className="mt-2 text-[18px] font-bold leading-tight drop-shadow-sm">
                       {yashobhoomiVenue?.name || YASHOBHOOMI_LOCATION.label}
                     </h3>
-                    <p className="mt-1 text-xs font-medium text-white/90">Dwarka, New Delhi</p>
                   </div>
                 </div>
 
@@ -129,7 +131,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
               ))}
             </Panel>
 
-            <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-5 py-4" style={{ maxHeight: "290px" }}>
+            <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-5 py-4" style={{ maxHeight: "310px" }}>
               <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">
                 {activeService?.label ?? "Service"} Packages
               </p>
@@ -182,7 +184,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
               )}
             </div>
 
-            <div className="bg-gradient-to-b from-[#fff7ed] to-white px-4 py-5" style={{ maxHeight: "290px" }}>
+            <div className="bg-gradient-to-b from-[#fff7ed] to-white px-4 py-5" style={{ maxHeight: "310px" }}>
               <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-400">Quick Actions</p>
               <p className="mb-3 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#f97316]">Location: Yashobhoomi</p>
               <Link href={requirementHref} onClick={onClose} className="mb-2.5 block w-full rounded-lg bg-[#f97316] px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-[#ea580c]">
@@ -201,7 +203,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
 
 function Panel({ title, icon, children }: { title: string; icon?: ReactNode; children: ReactNode }) {
   return (
-    <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-4 py-4" style={{ maxHeight: "290px" }}>
+    <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-4 py-4" style={{ maxHeight: "310px" }}>
       <p className="mb-3 px-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">
         {icon}
         {title}

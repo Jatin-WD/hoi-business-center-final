@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 180" role="img" aria-labelledby="title desc">
+  <title id="title">HOI Business Center</title>
+  <desc id="desc">HOI wordmark with orange accent for Yashobhoomi Business Center.</desc>
+  <rect width="560" height="180" fill="none"/>
+  <text x="28" y="126" fill="#222222" font-family="Inter, Arial, sans-serif" font-size="108" font-weight="800" letter-spacing="-8">hoi</text>
+  <rect x="247" y="37" width="24" height="24" fill="#f97316" transform="rotate(45 259 49)"/>
+  <text x="32" y="156" fill="#f97316" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="2.2">YASHOBHOOMI BUSINESS CENTER</text>
+</svg>

@@ -65,7 +65,7 @@ export default function HomePage() {
       <StatsSection />
       <ServicesSection title="Our Services" description="Comprehensive exhibition solutions designed to make your presence unforgettable." services={services} />
       <LocationsSection title="Where We Operate" description="Venues loaded from the project database." venues={locations} />
-      <WhySection title="Why Choose KIL - HOI Business Center?" description="Our end-to-end services ensure your exhibition is seamless, professional, and impactful." />
+      <WhySection title="Why Choose HOI Business Center?" description="Our end-to-end services ensure your exhibition is seamless, professional, and impactful." />
       <section className="relative overflow-hidden bg-[#0f2460] py-16">
         <img src="/assets/hall.jpg" alt="Exhibition hall" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-[#0f2460]/80" />

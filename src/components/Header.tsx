@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { ChevronDown, LogIn, Menu, UserPlus, X } from "lucide-react";
-import kilLogo from "/assets/kil.png";
+import hoiLogo from "/assets/hoi-logo.svg";
 import HeaderMobileMenu from "./HeaderMobileMenu";
 import ServiceMegaMenu from "./ServiceMegaMenu";
 import { useAuth } from "@/hooks/useAuth";
@@ -42,7 +42,7 @@ export default function Header() {
   return (
     <header className="w-full bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="bg-[#1a3a8f] text-white text-xs py-1 px-4 flex justify-end gap-4">
-        <span>KIL - HOI Business Center</span>
+        <span>HOI Business Center</span>
         <span>|</span>
         <a href="tel:+919810097323" className="hover:text-yellow-300 transition-colors">+91 98100 97323</a>
         <span>|</span>
@@ -51,7 +51,7 @@ export default function Header() {
 
       <nav className="relative flex items-center justify-between px-4 lg:px-8 h-16 max-w-[1600px] mx-auto">
         <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-          <img src={kilLogo} alt="KIL Logo" className="h-10 w-auto logo" data-testid="logo" />
+          <img src={hoiLogo} alt="HOI Business Center Logo" className="h-10 w-auto logo" data-testid="logo" />
         </Link>
 
         <div className="hidden lg:flex items-center gap-0 text-sm font-medium">

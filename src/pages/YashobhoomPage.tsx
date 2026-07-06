@@ -17,7 +17,7 @@ export default function YashobhoomiPage() {
             India International Convention &amp; Expo Centre
           </p>
           <p className="text-blue-200 max-w-2xl">
-            India's largest and most modern MICE destination located in Dwarka, New Delhi — and KIL - HOI Business Center is its official service partner.
+            India's largest and most modern MICE destination located in Dwarka, New Delhi — and HOI Business Center is its official service partner.
           </p>
         </div>
       </div>
@@ -30,7 +30,7 @@ export default function YashobhoomiPage() {
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Role of HOI at Yashobhoomi</h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">
               <p>
-                KIL - HOI Business Center serves as the <strong>official service partner at Yashobhoomi</strong> — India's premiere convention and exhibition facility. Our role encompasses every aspect of exhibitor support within the venue.
+                HOI Business Center serves as the <strong>official service partner at Yashobhoomi</strong> — India's premiere convention and exhibition facility. Our role encompasses every aspect of exhibitor support within the venue.
               </p>
               <p>
                 As the designated HOI partner, we have exclusive access and established processes that allow us to serve exhibitors more efficiently than any other vendor. We bring pre-approved layouts, recognized vendor credentials, and deep-rooted venue relationships built over years of collaboration.

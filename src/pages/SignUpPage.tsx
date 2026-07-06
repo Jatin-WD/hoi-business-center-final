@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
-import kilLogo from "/assets/kil.png";
+import hoiLogo from "/assets/hoi-logo.svg";
 import { useAuth } from "@/hooks/useAuth";
 import { signupSchema, type SignUpValues } from "@/lib/validators";
 import { DetailsForm } from "./signup/SignUpForms";
@@ -55,7 +55,7 @@ export default function SignUpPage() {
         <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
           <div className="bg-gradient-to-r from-[#0f2460] to-[#1a3a8f] px-8 py-8 text-center">
             <Link href="/" className="inline-block mb-4">
-              <img src={kilLogo} alt="KIL Logo" className="h-12 w-auto mx-auto" />
+              <img src={hoiLogo} alt="HOI Business Center Logo" className="h-12 w-auto mx-auto" />
             </Link>
             <h1 className="text-2xl font-bold text-white">Create your account</h1>
             <p className="text-blue-200 text-sm mt-1">Join HOI Business Center to manage your exhibition needs</p>
@@ -71,7 +71,7 @@ export default function SignUpPage() {
           </div>
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">(c) KIL - HOI Business Center. All rights reserved.</p>
+        <p className="text-center text-xs text-gray-400 mt-6">© HOI Business Center. All rights reserved.</p>
       </div>
     </div>
   );

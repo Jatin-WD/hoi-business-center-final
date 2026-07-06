@@ -7,7 +7,7 @@ type PolicyType = "privacy" | "terms" | "support";
 const content = {
   privacy: {
     title: "Privacy Policy",
-    description: "How KIL - HOI Business Center collects, stores, and uses website and requirement data.",
+    description: "How HOI Business Center collects, stores, and uses website and requirement data.",
     sections: [
       ["Information We Collect", "We collect account details, contact information, company details, service requirements, booking details, manpower application details, and uploaded documents submitted through this website."],
       ["How We Use Data", "Your information is used to respond to inquiries, manage bookings, review manpower applications, send service notifications, and improve exhibition support operations."],
@@ -17,10 +17,10 @@ const content = {
   },
   terms: {
     title: "Terms of Service",
-    description: "Terms for using KIL - HOI Business Center website, services, booking inquiries, and manpower applications.",
+    description: "Terms for using HOI Business Center website, services, booking inquiries, and manpower applications.",
     sections: [
-      ["Service Requests", "Website submissions are treated as inquiries until the KIL - HOI team confirms pricing, scope, availability, and commercial terms in writing."],
-      ["User Accounts", "Users must provide accurate contact information and keep login credentials secure. KIL - HOI may contact users for verification or service coordination."],
+      ["Service Requests", "Website submissions are treated as inquiries until the HOI team confirms pricing, scope, availability, and commercial terms in writing."],
+      ["User Accounts", "Users must provide accurate contact information and keep login credentials secure. HOI may contact users for verification or service coordination."],
       ["Bookings and Applications", "Booking and manpower application decisions depend on venue availability, event schedules, role requirements, and internal review."],
       ["Support", "For help with services, login, submissions, or account access, use the support page or contact the team directly."],
     ],

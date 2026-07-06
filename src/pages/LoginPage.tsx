@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Eye, EyeOff, LogIn } from "lucide-react";
-import kilLogo from "/assets/kil.png";
+import hoiLogo from "/assets/hoi-logo.svg";
 import { useAuth } from "@/hooks/useAuth";
 import { loginSchema, type LoginValues } from "@/lib/validators";
 
@@ -49,7 +49,7 @@ export default function LoginPage() {
         <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
           <div className="bg-gradient-to-r from-[#0f2460] to-[#1a3a8f] px-8 py-8 text-center">
             <Link href="/" className="inline-block mb-4">
-              <img src={kilLogo} alt="KIL Logo" className="h-12 w-auto mx-auto" />
+              <img src={hoiLogo} alt="HOI Business Center Logo" className="h-12 w-auto mx-auto" />
             </Link>
             <h1 className="text-2xl font-bold text-white">Welcome back</h1>
             <p className="text-blue-200 text-sm mt-1">Sign in to your HOI Business Center account</p>
@@ -116,7 +116,7 @@ export default function LoginPage() {
             </p>
           </div>
         </div>
-        <p className="text-center text-xs text-gray-400 mt-6">© KIL - HOI Business Center. All rights reserved.</p>
+        <p className="text-center text-xs text-gray-400 mt-6">© HOI Business Center. All rights reserved.</p>
       </div>
     </div>
   )

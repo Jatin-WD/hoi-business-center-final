@@ -24,7 +24,7 @@ export default function AboutPage() {
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Who We Are</h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">
               <p>
-                KIL - HOI Business Center is the premier exhibition and event services provider at Yashobhoomi — India's largest MICE (Meetings, Incentives, Conferences & Exhibitions) venue, located in Dwarka, New Delhi.
+                HOI Business Center is the premier exhibition and event services provider at Yashobhoomi — India's largest MICE (Meetings, Incentives, Conferences & Exhibitions) venue, located in Dwarka, New Delhi.
               </p>
               <p>
                 Our team of seasoned professionals provides comprehensive end-to-end services for exhibitors, ensuring that every aspect of your exhibition journey — from initial booth reservation to final demolition — is handled with expertise and care.

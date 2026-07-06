@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 
 const THEME = {
-  primary: "#1a3a8f",
-  primaryDark: "#0f2460",
-  accent: "#facc15",
+  primary: "#f97316",
+  primaryDark: "#1f2937",
+  accent: "#fb923c",
   accentText: "#111827",
 };
 

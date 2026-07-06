@@ -3,38 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --hoi-primary: #1a3a8f;
-  --hoi-primary-dark: #0f2460;
-  --hoi-accent: #facc15;
+  --hoi-primary: #f97316;
+  --hoi-primary-dark: #1f2937;
+  --hoi-accent: #fb923c;
   --hoi-accent-text: #111827;
 }
 
 .logo {
-  filter: drop-shadow(0px 0px 3px black);
-  animation: bubbleGlow 3s ease-in-out infinite;
-}
-
-/* Light Bubble Animation */
-@keyframes bubbleGlow {
-  0% {
-    transform: scale(1);
-    filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.6));
-    opacity: 0.9;
-  }
-
-  50% {
-    transform: scale(1.01);
-    filter: 
-      drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.8))
-      drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.6));
-    opacity: 1;
-  }
-
-  100% {
-    transform: scale(1);
-    filter: drop-shadow(0px 0px 3px rgba(7, 7, 7, 0.6));
-    opacity: 0.9;
-  }
+  filter: drop-shadow(0px 2px 8px rgba(249, 115, 22, 0.14));
 }
 
 @layer base {
@@ -78,8 +54,44 @@
     background-color: var(--hoi-accent) !important;
   }
 
+  .bg-yellow-300 {
+    background-color: #fdba74 !important;
+  }
+
+  .bg-yellow-100 {
+    background-color: #fff7ed !important;
+  }
+
+  .bg-yellow-50 {
+    background-color: #fffaf4 !important;
+  }
+
+  .bg-yellow-500 {
+    background-color: #f97316 !important;
+  }
+
   .text-gray-900.bg-yellow-400,
   .bg-yellow-400.text-gray-900 {
     color: var(--hoi-accent-text) !important;
+  }
+
+  .text-yellow-300 {
+    color: var(--hoi-accent) !important;
+  }
+
+  .border-yellow-200 {
+    border-color: #fed7aa !important;
+  }
+
+  .border-yellow-300 {
+    border-color: #fdba74 !important;
+  }
+
+  .hover\:bg-yellow-300:hover {
+    background-color: #fdba74 !important;
+  }
+
+  .hover\:text-yellow-300:hover {
+    color: var(--hoi-accent) !important;
   }
 }

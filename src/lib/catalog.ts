@@ -142,7 +142,7 @@ type ApiVenue = {
 };
 
 const defaultVenueImage =
-  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1600&q=80";
+  "/assets/yashobhoomi.png";
 
 const slugify = (value: string) =>
   String(value || "")
@@ -209,7 +209,7 @@ export const normalizeVenue = (venue: ApiVenue): CatalogVenue => ({
   established: venue.established ?? "",
   website: venue.website ?? "",
   specialities: Array.isArray(venue.specialities) ? venue.specialities : [],
-  image: venue.image || defaultVenueImage,
+  image: (venue.location_id === "yashobhoomi" ? "/assets/yashobhoomi.png" : venue.image) || defaultVenueImage,
 });
 
 export async function loadCatalog() {

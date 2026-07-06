@@ -79,7 +79,7 @@ export const VENUE_DETAILS = [
     established: "2023",
     website: "https://www.yashobhoomi.org/",
     specialities: ["Priority HOI Venue", "Exhibition Services", "Convention Centre", "Business Events"],
-    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1600&q=80",
+    image: "/assets/yashobhoomi.png",
   },
   {
     locationId: "delhi",

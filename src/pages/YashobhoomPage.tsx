@@ -57,7 +57,7 @@ export default function YashobhoomiPage() {
 
           <div className="space-y-5">
             <img
-              src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80"
+              src="/assets/yashobhoomi.png"
               alt="Yashobhoomi Convention Centre"
               className="w-full h-60 object-cover rounded-2xl shadow-md"
             />

@@ -70,21 +70,21 @@ export default function ServiceMegaMenu({ onClose }: Props) {
                 onClick={onClose}
                 className="group flex h-full flex-col overflow-hidden rounded-2xl border border-orange-100 bg-[#fff8f1] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
-                <div className="relative h-[190px] overflow-hidden">
+                <div className="relative h-[188px] overflow-hidden">
                   <img
                     src="/assets/yashobhoomi.png"
                     alt={yashobhoomiVenue?.name || "Yashobhoomi"}
                     className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-black/5" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/72 via-black/28 to-black/5" />
                   <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-[#f97316] px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
                     <Sparkles size={12} /> Official Venue
                   </div>
                   <div className="absolute bottom-4 left-4 right-4 text-white">
-                    <div className="inline-flex items-center rounded-full bg-black/25 px-2.5 py-1 text-[11px] font-medium tracking-wide text-white/90 backdrop-blur-sm">
+                    <div className="inline-flex items-center rounded-full bg-black/30 px-2.5 py-1 text-[11px] font-medium tracking-wide text-white/90 backdrop-blur-sm">
                       Dwarka, New Delhi
                     </div>
-                    <h3 className="mt-2 text-[19px] font-bold leading-tight drop-shadow-sm">
+                    <h3 className="mt-2 max-w-[220px] text-[18px] font-bold leading-tight drop-shadow-sm">
                       {yashobhoomiVenue?.name || YASHOBHOOMI_LOCATION.label}
                     </h3>
                     <p className="mt-1 max-w-[90%] text-[12px] leading-5 text-white/90">
@@ -94,6 +94,10 @@ export default function ServiceMegaMenu({ onClose }: Props) {
                 </div>
 
                 <div className="flex flex-1 flex-col gap-3 p-4">
+                  <p className="text-sm leading-relaxed text-gray-600">
+                    HOI's primary exhibition base. All six services and packages are routed through Yashobhoomi for a focused, premium experience.
+                  </p>
+
                   <div className="flex flex-wrap gap-2">
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
                       <MapPin size={12} className="text-[#f97316]" />

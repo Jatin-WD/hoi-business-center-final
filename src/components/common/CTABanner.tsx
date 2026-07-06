@@ -21,10 +21,10 @@ export default function CTABanner({
   children,
 }: CTABannerProps) {
   return (
-    <div className="bg-[#1a3a8f] text-white rounded-3xl p-8 shadow-lg">
+    <div className="bg-[#f97316] text-white rounded-3xl p-8 shadow-lg">
       <div className="max-w-3xl">
         <h2 className="text-2xl font-bold mb-3">{title}</h2>
-        <p className="text-sm text-blue-100 mb-6 leading-relaxed">{description}</p>
+        <p className="text-sm text-orange-100 mb-6 leading-relaxed">{description}</p>
         {children}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <Link

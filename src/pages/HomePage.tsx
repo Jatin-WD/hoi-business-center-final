@@ -44,17 +44,17 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
-      <section className="relative overflow-hidden bg-[#0f2460] text-white">
+      <section className="relative overflow-hidden bg-[#9a3412] text-white">
         <img src={heroImage} alt="Yashobhoomi exhibition venue" className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0f2460]/95 via-[#1a3a8f]/75 to-[#0f2460]/20" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0f2460]/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#9a3412]/95 via-[#f97316]/80 to-[#9a3412]/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#9a3412]/70 to-transparent" />
         <div className="relative max-w-[1600px] mx-auto px-8 py-24 lg:py-32">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-sm mb-6">
               <span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />India's Premier Exhibition & Business Center Service
             </div>
             <h1 className="text-4xl lg:text-6xl font-bold leading-tight mb-6">Your Complete Exhibition Partner at HOI Business Center</h1>
-            <p className="text-xl text-blue-100 mb-8 leading-relaxed">From booth reservation to design, installation, logistics, marketing, and manpower services - we handle every aspect of your exhibition journey.</p>
+            <p className="text-xl text-orange-100 mb-8 leading-relaxed">From booth reservation to design, installation, logistics, marketing, and manpower services - we handle every aspect of your exhibition journey.</p>
             <div className="flex flex-wrap gap-4">
               <Link href="/service" className="inline-flex items-center gap-2 bg-yellow-400 text-gray-900 font-bold px-6 py-3.5 rounded-xl hover:bg-yellow-300 transition-colors text-base">Explore Services <ArrowRight size={18} /></Link>
               <Link href="/contact" className="inline-flex items-center gap-2 bg-white/10 border border-white/30 text-white font-semibold px-6 py-3.5 rounded-xl hover:bg-white/20 transition-colors text-base">Get a Quote</Link>
@@ -66,13 +66,13 @@ export default function HomePage() {
       <ServicesSection title="Our Services" description="Comprehensive exhibition solutions designed to make your presence unforgettable." services={services} />
       <LocationsSection title="Where We Operate" description="Venues loaded from the project database." venues={locations} />
       <WhySection title="Why Choose HOI Business Center?" description="Our end-to-end services ensure your exhibition is seamless, professional, and impactful." />
-      <section className="relative overflow-hidden bg-[#0f2460] py-16">
+      <section className="relative overflow-hidden bg-[#9a3412] py-16">
         <img src="/assets/hall.jpg" alt="Exhibition hall" className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-[#0f2460]/80" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0f2460]/95 via-[#1a3a8f]/70 to-[#0f2460]/70" />
+        <div className="absolute inset-0 bg-[#9a3412]/80" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#9a3412]/95 via-[#f97316]/70 to-[#9a3412]/70" />
         <div className="relative max-w-[1600px] mx-auto px-8 text-center">
           <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">Ready to Elevate Your Exhibition Presence?</h2>
-          <p className="text-blue-200 mb-8 max-w-xl mx-auto">Contact our team today and let us create an unforgettable exhibition experience for your brand.</p>
+          <p className="text-orange-100 mb-8 max-w-xl mx-auto">Contact our team today and let us create an unforgettable exhibition experience for your brand.</p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/contact" className="bg-yellow-400 text-gray-900 font-bold px-8 py-3.5 rounded-xl hover:bg-yellow-300 transition-colors">Contact Us Now</Link>
             <Link href="/service" className="bg-white/10 border border-white/30 text-white font-semibold px-8 py-3.5 rounded-xl hover:bg-white/20 transition-colors">View All Services</Link>
@@ -84,7 +84,7 @@ export default function HomePage() {
 }
 
 function StatsSection() {
-  return <section className="bg-white border-b border-gray-100"><div className="max-w-[1600px] mx-auto px-8 py-10"><div className="grid grid-cols-2 lg:grid-cols-4 gap-8">{stats.map((stat) => <div key={stat.label} className="flex items-center gap-4"><div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0"><stat.icon size={22} className="text-[#1a3a8f]" /></div><div><p className="text-2xl font-bold text-gray-900">{stat.value}</p><p className="text-sm text-gray-500">{stat.label}</p></div></div>)}</div></div></section>;
+  return <section className="bg-white border-b border-gray-100"><div className="max-w-[1600px] mx-auto px-8 py-10"><div className="grid grid-cols-2 lg:grid-cols-4 gap-8">{stats.map((stat) => <div key={stat.label} className="flex items-center gap-4"><div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0"><stat.icon size={22} className="text-[#f97316]" /></div><div><p className="text-2xl font-bold text-gray-900">{stat.value}</p><p className="text-sm text-gray-500">{stat.label}</p></div></div>)}</div></div></section>;
 }
 
 function ServicesSection({ title, description, services }: { title: string; description: string; services: CatalogService[] }) {
@@ -96,7 +96,7 @@ function LocationsSection({ title, description, venues }: { title: string; descr
 }
 
 function WhySection({ title, description }: { title: string; description: string }) {
-  return <section className="bg-gray-50 py-16 lg:py-20"><div className="max-w-[1600px] mx-auto px-8"><div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center"><div><h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">{title}</h2><p className="text-gray-500 mb-8 leading-relaxed">{description}</p><div className="space-y-4">{features.map((point) => <div key={point} className="flex items-start gap-3"><CheckCircle size={20} className="text-[#1a3a8f] flex-shrink-0 mt-0.5" /><span className="text-gray-700 text-sm">{point}</span></div>)}</div></div><div className="bg-[#1a3a8f] rounded-2xl p-8 text-white"><h3 className="text-xl font-bold mb-6">Process Flow</h3><p className="text-blue-100">Choose service, select location, pick package, confirm booking, and our team handles execution.</p></div></div></div></section>;
+  return <section className="bg-gray-50 py-16 lg:py-20"><div className="max-w-[1600px] mx-auto px-8"><div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center"><div><h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">{title}</h2><p className="text-gray-500 mb-8 leading-relaxed">{description}</p><div className="space-y-4">{features.map((point) => <div key={point} className="flex items-start gap-3"><CheckCircle size={20} className="text-[#f97316] flex-shrink-0 mt-0.5" /><span className="text-gray-700 text-sm">{point}</span></div>)}</div></div><div className="bg-[#f97316] rounded-2xl p-8 text-white"><h3 className="text-xl font-bold mb-6">Process Flow</h3><p className="text-orange-100">Choose service, select location, pick package, confirm booking, and our team handles execution.</p></div></div></div></section>;
 }
 
 function SectionTitle({ title, description }: { title: string; description: string }) {

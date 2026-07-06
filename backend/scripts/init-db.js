@@ -36,6 +36,10 @@ async function countRows(db, table) {
   return Number(row?.count || 0);
 }
 
+function countExpectedPackages() {
+  return Object.values(PACKAGE_DETAILS).reduce((total, subcategories) => total + Object.keys(subcategories).length, 0);
+}
+
 async function ensureDefaultAdmin(db) {
   const existing = await db.get('SELECT id FROM users WHERE lower(email) = ?', [DEFAULT_ADMIN.email]);
   if (existing) return;
@@ -135,9 +139,12 @@ async function seedDatabase({ resetEvents = true } = {}) {
 
 async function seedDatabaseIfEmpty() {
   const db = await initDatabase();
-  const hasCatalog = (await countRows(db, 'services')) > 0
-    && (await countRows(db, 'venues')) > 0
-    && (await countRows(db, 'packages')) > 0
+  const expectedServices = Object.keys(SERVICE_PACKAGES).length;
+  const expectedVenues = VENUE_DETAILS.length;
+  const expectedPackages = countExpectedPackages();
+  const hasCatalog = (await countRows(db, 'services')) >= expectedServices
+    && (await countRows(db, 'venues')) >= expectedVenues
+    && (await countRows(db, 'packages')) >= expectedPackages
     && (await countRows(db, 'events')) > 0;
 
   if (hasCatalog) return db;

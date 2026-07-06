@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "wouter";
-import { ArrowRight, Building2, ChevronRight, Info, MapPin } from "lucide-react";
+import { ArrowRight, ChevronRight, MapPin, Sparkles } from "lucide-react";
 import { loadCatalog, type CatalogService, type CatalogVenue } from "@/lib/catalog";
 
 interface Props {
@@ -16,29 +16,16 @@ const YASHOBHOOMI_LOCATION = { id: "yashobhoomi", label: "Yashobhoomi", state: "
 
 export default function ServiceMegaMenu({ onClose }: Props) {
   const [catalog, setCatalog] = useState<CatalogState>({ venues: [], services: [] });
-  const [activeLocation, setActiveLocation] = useState("");
-  const [activeVenueId, setActiveVenueId] = useState("");
   const [activeServiceId, setActiveServiceId] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  const locations = useMemo(() => {
-    const map = new Map<string, { id: string; label: string; state: string }>();
-    catalog.venues.forEach((venue) => {
-      if (!venue.locationId) return;
-      map.set(venue.locationId, { id: venue.locationId, label: venue.city || venue.state || venue.locationId, state: venue.state });
-    });
-    map.set(YASHOBHOOMI_LOCATION.id, map.get(YASHOBHOOMI_LOCATION.id) ?? YASHOBHOOMI_LOCATION);
-    return [YASHOBHOOMI_LOCATION, ...[...map.values()].filter((location) => location.id !== YASHOBHOOMI_LOCATION.id)];
-  }, [catalog.venues]);
-
-  const venues = catalog.venues.filter((venue) => venue.locationId === activeLocation);
-  const activeVenue = venues.find((venue) => venue.subVenueId === activeVenueId) ?? venues[0];
+  const yashobhoomiVenue =
+    catalog.venues.find((venue) => venue.locationId === YASHOBHOOMI_LOCATION.id)
+    ?? catalog.venues[0]
+    ?? null;
   const activeService = catalog.services.find((service) => service.id === activeServiceId) ?? catalog.services[0];
-  const isYashobhoomi = activeLocation === YASHOBHOOMI_LOCATION.id;
-  const selectedLocationName = isYashobhoomi ? "Yashobhoomi" : activeVenue?.name || activeVenue?.city || "";
   const selectedServiceName = activeService?.label || "";
-  const requirementHref = `/contact?type=Service%20Requirement&service=${encodeURIComponent(selectedServiceName)}&location=${encodeURIComponent(selectedLocationName)}`;
+  const requirementHref = `/contact?type=Service%20Requirement&service=${encodeURIComponent(selectedServiceName)}&location=Yashobhoomi`;
 
   useEffect(() => {
     let mounted = true;
@@ -46,8 +33,6 @@ export default function ServiceMegaMenu({ onClose }: Props) {
       .then((data) => {
         if (!mounted) return;
         setCatalog(data);
-        setActiveLocation(YASHOBHOOMI_LOCATION.id);
-        setActiveVenueId(data.venues[0]?.subVenueId ?? "");
         setActiveServiceId(data.services[0]?.id ?? "");
         setError("");
       })
@@ -58,54 +43,62 @@ export default function ServiceMegaMenu({ onClose }: Props) {
     };
   }, []);
 
-  const selectLocation = (locationId: string) => {
-    const firstVenue = catalog.venues.find((venue) => venue.locationId === locationId);
-    setActiveLocation(locationId);
-    setActiveVenueId(firstVenue?.subVenueId ?? "");
-  };
-
   return (
     <div className="w-full bg-white border-t-2 border-[#f97316]" style={{ boxShadow: "0 24px 60px rgba(0,0,0,0.12)" }}>
       <div className="mx-auto w-full max-w-[1600px] px-5">
-        <div className="flex items-center gap-0 py-3 border-b border-gray-100 overflow-x-auto">
-          <StepBadge n={1} label="Select Location" status="active" />
+        <div className="flex items-center gap-0 py-2.5 border-b border-gray-100 overflow-x-auto">
+          <StepBadge n={1} label="Yashobhoomi" status="active" />
           <StepArrow />
-          <StepBadge n={2} label="Select Venue" status={activeVenue ? "active" : "inactive"} />
+          <StepBadge n={2} label="Services" status={activeService ? "active" : "inactive"} />
           <StepArrow />
-          <StepBadge n={3} label="Select Service" status={activeService ? "active" : "inactive"} />
-          <StepArrow />
-          <StepBadge n={4} label="Select Package" status={activeService ? "active" : "inactive"} />
-          <div className="ml-auto pl-6 text-xs text-gray-400 hidden xl:flex items-center gap-1.5 whitespace-nowrap"><MapPin size={11} /><span className="font-semibold text-[#f97316]">{isYashobhoomi ? "Yashobhoomi" : activeVenue?.city}</span>{activeVenue && <><span>/</span><span>{activeVenue.name.split(",")[0]}</span></>}</div>
+          <StepBadge n={3} label="Packages" status={activeService ? "active" : "inactive"} />
+          <div className="ml-auto pl-6 text-xs text-gray-400 hidden xl:flex items-center gap-1.5 whitespace-nowrap">
+            <MapPin size={11} />
+            <span className="font-semibold text-[#f97316]">Yashobhoomi</span>
+          </div>
         </div>
 
         {loading && <MenuState title="Loading services..." />}
         {error && <MenuState title="Could not load menu" detail={error} />}
         {!loading && !error && (
           <div
-            className={`grid min-h-[420px] ${isYashobhoomi ? "grid-cols-[250px_280px_minmax(280px,1fr)_180px]" : "grid-cols-[250px_300px_280px_minmax(280px,1fr)_180px]"}`}
+            className="grid min-h-[340px] grid-cols-[280px_minmax(250px,260px)_minmax(300px,1fr)_180px]"
           >
-            <Panel title="Location" icon={<MapPin size={9} className="inline mr-1" />}>
-              {locations.map((location) => (
-                <button key={location.id} onMouseEnter={() => selectLocation(location.id)} onClick={() => selectLocation(location.id)} className={`w-full text-left flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-all mb-0.5 ${activeLocation === location.id ? "bg-[#f97316] text-white shadow-sm" : "text-gray-700 hover:bg-[#fff7ed] hover:text-[#f97316]"}`}>
-                  <span><span className="block leading-tight">{location.label}</span><span className="block text-[10px] opacity-70">{location.state}</span></span>
-                  <ChevronRight size={12} className="flex-shrink-0 opacity-70 ml-1" />
-                </button>
-              ))}
-            </Panel>
-
-            {!isYashobhoomi && <Panel title={`Venues ${activeVenue?.city ? `in ${activeVenue.city}` : ""}`} icon={<Building2 size={9} className="inline mr-1" />}>
-              {venues.map((venue) => (
-                <button key={venue.id} onClick={() => setActiveVenueId(venue.subVenueId)} className={`w-full text-left flex items-start justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all mb-0.5 gap-2 ${activeVenue?.id === venue.id ? "bg-[#fff7ed] text-[#f97316] border border-[#fed7aa]" : "text-gray-600 hover:bg-gray-50 hover:text-[#f97316]"}`}>
-                  <span className="leading-snug">{venue.name}</span>
-                  <ChevronRight size={12} className="flex-shrink-0 opacity-60 mt-0.5" />
-                </button>
-              ))}
-              {activeVenue && (
-                <Link href={`/venue/${activeVenue.locationId}/${activeVenue.subVenueId}`} onClick={onClose} className="mt-4 flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-3 text-sm font-semibold text-gray-700 hover:border-[#f97316] hover:bg-[#fff7ed] hover:text-[#f97316]">
-                  <Info size={15} /> Know more about {activeVenue.name.split(",")[0]}
-                </Link>
-              )}
-            </Panel>}
+            <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-4 py-4" style={{ maxHeight: "340px" }}>
+              <Link
+                href="/yashobhoomi"
+                onClick={onClose}
+                className="group relative block overflow-hidden rounded-2xl border border-orange-100 bg-gradient-to-br from-[#fff7ed] via-white to-[#fff1e8] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <div className="relative h-44">
+                  <img
+                    src={yashobhoomiVenue?.image || "/assets/yashobhoomi.png"}
+                    alt={yashobhoomiVenue?.name || "Yashobhoomi"}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-[#f97316] px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
+                    <Sparkles size={12} /> Official Venue
+                  </div>
+                  <div className="absolute bottom-4 left-4 right-4 text-white">
+                    <h3 className="text-lg font-bold leading-tight">{yashobhoomiVenue?.name || YASHOBHOOMI_LOCATION.label}</h3>
+                    <p className="mt-1 text-xs text-orange-50/90">Dwarka, New Delhi</p>
+                  </div>
+                </div>
+                <div className="space-y-3 p-4">
+                  <p className="text-sm leading-relaxed text-gray-600">
+                    HOI Business Center’s primary exhibition base. All six services and packages are routed through Yashobhoomi for a focused, premium experience.
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <MiniStat label="Priority" value="HOI Venue" />
+                    <MiniStat label="Focus" value="All 6 Services" />
+                  </div>
+                  <div className="inline-flex items-center gap-2 text-sm font-semibold text-[#f97316]">
+                    View Yashobhoomi <ArrowRight size={14} />
+                  </div>
+                </div>
+              </Link>
+            </div>
 
             <Panel title="Services Available">
               {catalog.services.map((service) => (
@@ -116,12 +109,12 @@ export default function ServiceMegaMenu({ onClose }: Props) {
               ))}
             </Panel>
 
-            <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-6 py-4" style={{ maxHeight: "460px" }}>
+            <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-5 py-4" style={{ maxHeight: "340px" }}>
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">{activeService?.label ?? "Service"} Packages</p>
               {activeService?.packages.length ? (
                 <div className="space-y-1.5">
                   {activeService.packages.map((pkg, idx) => (
-                    <Link key={`${activeService.id}-${idx}`} href={withLocation(pkg.href, selectedLocationName)} onClick={onClose} className="flex items-center justify-between px-4 py-3 rounded-xl border border-gray-100 hover:border-[#f97316] hover:bg-[#fff7ed] hover:shadow-sm transition-all group">
+                    <Link key={`${activeService.id}-${idx}`} href={withLocation(pkg.href, "Yashobhoomi")} onClick={onClose} className="flex items-center justify-between px-4 py-3 rounded-xl border border-gray-100 hover:border-[#f97316] hover:bg-[#fff7ed] hover:shadow-sm transition-all group">
                       <span className="text-sm text-gray-700 group-hover:text-[#f97316] font-medium">{pkg.label}</span>
                       <ArrowRight size={14} className="text-gray-300 group-hover:text-[#f97316]" />
                     </Link>
@@ -154,7 +147,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
 
             <div className="bg-gradient-to-b from-[#fff7ed] to-white px-4 py-6">
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Quick Actions</p>
-              {selectedLocationName ? <p className="mb-3 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#f97316]">Location: {selectedLocationName}</p> : null}
+              <p className="mb-3 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#f97316]">Location: Yashobhoomi</p>
               <Link href={requirementHref} onClick={onClose} className="block w-full text-center bg-[#f97316] text-white px-3 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#ea580c] transition-colors mb-2.5">Book Now</Link>
               <Link href={requirementHref} onClick={onClose} className="block w-full text-center border border-[#f97316] text-[#f97316] px-3 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#fff7ed] transition-colors">Get Quote</Link>
             </div>
@@ -166,7 +159,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
 }
 
 function Panel({ title, icon, children }: { title: string; icon?: ReactNode; children: ReactNode }) {
-  return <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-4 py-4" style={{ maxHeight: "460px" }}><p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">{icon}{title}</p>{children}</div>;
+  return <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-4 py-4" style={{ maxHeight: "340px" }}><p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">{icon}{title}</p>{children}</div>;
 }
 
 function MenuState({ title, detail }: { title: string; detail?: string }) {
@@ -183,6 +176,15 @@ function StepBadge({ n, label, status }: { n: number; label: string; status: Ste
 
 function StepArrow() {
   return <ChevronRight size={12} className="text-gray-300 flex-shrink-0 mx-1" />;
+}
+
+function MiniStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-orange-100 bg-white px-3 py-2 shadow-sm">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-400">{label}</p>
+      <p className="mt-0.5 text-sm font-bold text-gray-900">{value}</p>
+    </div>
+  );
 }
 
 function withLocation(href: string, location: string) {

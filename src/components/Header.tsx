@@ -7,7 +7,6 @@ import ServiceMegaMenu from "./ServiceMegaMenu";
 import { useAuth } from "@/hooks/useAuth";
 
 const NAV_LINKS = [
-  { href: "/exhibition-staff", label: "Apply for Man Power Service" },
   { href: "/event-calendar", label: "Event Calendar" },
   { href: "/about", label: "About Us" },
   { href: "/contact", label: "Contact Us" },
@@ -39,6 +38,11 @@ export default function Header() {
       location === href ? "text-[#f97316] bg-[#fff7ed]" : "text-gray-700 hover:text-[#f97316] hover:bg-[#fff7ed]"
     }`;
 
+  const yashobhoomiClass = () =>
+    `px-3 py-2 rounded-md text-sm font-semibold transition-colors whitespace-nowrap ${
+      location === "/yashobhoomi" ? "text-gray-900 bg-gray-100" : "text-gray-900 hover:text-gray-900 hover:bg-gray-50"
+    }`;
+
   return (
     <header className="w-full bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="bg-[#f97316] text-white text-xs py-1 px-4 flex justify-end gap-4">
@@ -68,11 +72,7 @@ export default function Header() {
           </div>
           <Link
             href="/yashobhoomi"
-            className={`px-3 py-2 rounded-md text-sm font-semibold transition-colors whitespace-nowrap ${
-              location === "/yashobhoomi"
-                ? "text-[#f97316] bg-[#fff7ed]"
-                : "text-[#f97316] hover:text-[#ea580c] hover:bg-[#fff7ed]"
-            }`}
+            className={yashobhoomiClass()}
           >
             Yashobhoomi
           </Link>

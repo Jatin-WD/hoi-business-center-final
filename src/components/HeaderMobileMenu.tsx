@@ -48,7 +48,6 @@ export default function HeaderMobileMenu({ onClose, user, logout }: Props) {
           )}
         </div>
         <NavLink href="/yashobhoomi" onClose={onClose}>Yashobhoomi</NavLink>
-        <NavLink href="/exhibition-staff" onClose={onClose}>Apply for Man Power Service</NavLink>
         <NavLink href="/event-calendar" onClose={onClose}>Event Calendar</NavLink>
         <NavLink href="/about" onClose={onClose}>About Us</NavLink>
         <NavLink href="/contact" onClose={onClose}>Contact Us</NavLink>
@@ -61,7 +60,8 @@ export default function HeaderMobileMenu({ onClose, user, logout }: Props) {
 }
 
 function NavLink({ href, onClose, children }: { href: string; onClose: () => void; children: ReactNode }) {
-  return <Link href={href} onClick={onClose} className="block py-2.5 text-gray-700 font-medium border-b border-gray-100">{children}</Link>;
+  const isYashobhoomi = href === "/yashobhoomi";
+  return <Link href={href} onClick={onClose} className={`block py-2.5 border-b border-gray-100 ${isYashobhoomi ? "text-gray-900 font-semibold" : "text-gray-700 font-medium"}`}>{children}</Link>;
 }
 
 function AuthLinks({ onClose }: { onClose: () => void }) {

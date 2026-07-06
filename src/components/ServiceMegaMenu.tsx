@@ -63,37 +63,47 @@ export default function ServiceMegaMenu({ onClose }: Props) {
         {error && <MenuState title="Could not load menu" detail={error} />}
 
         {!loading && !error && (
-          <div className="grid min-h-[320px] grid-cols-[280px_minmax(250px,260px)_minmax(300px,1fr)_180px]">
-            <div className="min-w-0 overflow-hidden border-r border-gray-100 px-4 py-4" style={{ maxHeight: "320px" }}>
+          <div className="grid min-h-[300px] grid-cols-[290px_minmax(250px,260px)_minmax(300px,1fr)_180px]">
+            <div className="min-w-0 overflow-hidden border-r border-gray-100 px-4 py-4" style={{ maxHeight: "300px" }}>
               <Link
                 href="/yashobhoomi"
                 onClick={onClose}
-                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-orange-100 bg-gradient-to-br from-[#fff7ed] via-white to-[#fff1e8] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-orange-100 bg-[#fff8f1] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
-                <div className="relative h-28 overflow-hidden">
+                <div className="relative h-24 overflow-hidden bg-white">
                   <img
                     src="/assets/yashobhoomi.png"
                     alt={yashobhoomiVenue?.name || "Yashobhoomi"}
-                    className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                    className="h-full w-full object-contain object-center p-2 transition-transform duration-500 group-hover:scale-[1.02]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-[#f97316] px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
+                  <div className="absolute left-3 top-3 inline-flex items-center gap-2 rounded-full bg-[#f97316] px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
                     <Sparkles size={12} /> Official Venue
-                  </div>
-                  <div className="absolute bottom-3 left-4 right-4 text-white">
-                    <h3 className="text-lg font-bold leading-tight">{yashobhoomiVenue?.name || YASHOBHOOMI_LOCATION.label}</h3>
-                    <p className="mt-1 text-xs text-orange-50/90">Dwarka, New Delhi</p>
                   </div>
                 </div>
 
                 <div className="flex flex-1 flex-col gap-3 p-4">
-                  <p className="line-clamp-3 text-sm leading-relaxed text-gray-600">
-                    HOI Business Center's primary exhibition base. All six services and packages are routed through Yashobhoomi for a focused, premium experience.
-                  </p>
-                  <div className="grid grid-cols-1 gap-2">
-                    <MiniStat label="Priority" value="HOI's exhibition base" />
-                    <MiniStat label="Focus" value="6 services, 1 venue" />
+                  <div>
+                    <h3 className="text-[17px] font-bold leading-tight text-gray-900">
+                      {yashobhoomiVenue?.name || YASHOBHOOMI_LOCATION.label}
+                    </h3>
+                    <p className="mt-1 text-xs font-medium text-gray-500">Dwarka, New Delhi</p>
                   </div>
+
+                  <p className="text-sm leading-relaxed text-gray-600">
+                    HOI's primary exhibition base. All six services and packages are routed through Yashobhoomi for a focused premium experience.
+                  </p>
+
+                  <div className="grid grid-cols-1 gap-2 rounded-2xl border border-orange-100 bg-white px-3 py-3">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-gray-800">
+                      <MapPin size={14} className="text-[#f97316]" />
+                      <span>Primary exhibition base</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm font-semibold text-gray-800">
+                      <Sparkles size={14} className="text-[#f97316]" />
+                      <span>6 services, 1 venue</span>
+                    </div>
+                  </div>
+
                   <div className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-[#f97316]">
                     View Yashobhoomi <ArrowRight size={14} />
                   </div>
@@ -119,7 +129,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
               ))}
             </Panel>
 
-            <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-5 py-4" style={{ maxHeight: "320px" }}>
+            <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-5 py-4" style={{ maxHeight: "300px" }}>
               <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">
                 {activeService?.label ?? "Service"} Packages
               </p>
@@ -172,7 +182,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
               )}
             </div>
 
-            <div className="bg-gradient-to-b from-[#fff7ed] to-white px-4 py-5">
+            <div className="bg-gradient-to-b from-[#fff7ed] to-white px-4 py-5" style={{ maxHeight: "300px" }}>
               <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-400">Quick Actions</p>
               <p className="mb-3 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#f97316]">Location: Yashobhoomi</p>
               <Link href={requirementHref} onClick={onClose} className="mb-2.5 block w-full rounded-lg bg-[#f97316] px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-[#ea580c]">
@@ -191,7 +201,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
 
 function Panel({ title, icon, children }: { title: string; icon?: ReactNode; children: ReactNode }) {
   return (
-    <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-4 py-4" style={{ maxHeight: "320px" }}>
+    <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-4 py-4" style={{ maxHeight: "300px" }}>
       <p className="mb-3 px-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">
         {icon}
         {title}
@@ -235,15 +245,6 @@ function StepBadge({ n, label, status }: { n: number; label: string; status: Ste
 
 function StepArrow() {
   return <ChevronRight size={12} className="mx-1 flex-shrink-0 text-gray-300" />;
-}
-
-function MiniStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl border border-orange-100 bg-white px-3 py-2 shadow-sm">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-400">{label}</p>
-      <p className="mt-0.5 text-sm font-bold text-gray-900">{value}</p>
-    </div>
-  );
 }
 
 function withLocation(href: string, location: string) {

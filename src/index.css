@@ -14,6 +14,70 @@
 }
 
 @layer base {
+  .bg-blue-50 {
+    background-color: #fff7ed !important;
+  }
+
+  .bg-blue-100 {
+    background-color: #ffedd5 !important;
+  }
+
+  .bg-blue-200 {
+    background-color: #fed7aa !important;
+  }
+
+  .bg-blue-800 {
+    background-color: #9a3412 !important;
+  }
+
+  .text-blue-100 {
+    color: #ffedd5 !important;
+  }
+
+  .text-blue-200 {
+    color: #fed7aa !important;
+  }
+
+  .text-blue-300 {
+    color: #fdba74 !important;
+  }
+
+  .border-blue-50 {
+    border-color: #fff7ed !important;
+  }
+
+  .border-blue-100 {
+    border-color: #ffedd5 !important;
+  }
+
+  .border-blue-200 {
+    border-color: #fed7aa !important;
+  }
+
+  .border-blue-800 {
+    border-color: #9a3412 !important;
+  }
+
+  .ring-blue-100 {
+    --tw-ring-color: rgb(253 186 116 / 0.35) !important;
+  }
+
+  .hover\:bg-blue-50:hover {
+    background-color: #fff7ed !important;
+  }
+
+  .hover\:bg-blue-100:hover {
+    background-color: #ffedd5 !important;
+  }
+
+  .hover\:text-blue-100:hover {
+    color: #ffedd5 !important;
+  }
+
+  .hover\:text-blue-200:hover {
+    color: #fed7aa !important;
+  }
+
   .bg-\[\#1a3a8f\] {
     background-color: var(--hoi-primary) !important;
   }
@@ -48,6 +112,60 @@
 
   .border-\[\#1a3a8f\] {
     border-color: var(--hoi-primary) !important;
+  }
+
+  .border-slate-200 {
+    border-color: #fde68a !important;
+  }
+
+  .border-slate-300 {
+    border-color: #fdba74 !important;
+  }
+
+  .text-slate-600 {
+    color: #9a3412 !important;
+  }
+
+  .text-slate-500 {
+    color: #c2410c !important;
+  }
+
+  .text-slate-400 {
+    color: #fdba74 !important;
+  }
+
+  .text-slate-300 {
+    color: #fecaca !important;
+  }
+
+  .bg-slate-50 {
+    background-color: #fffaf4 !important;
+  }
+
+  .bg-slate-100 {
+    background-color: #fff7ed !important;
+  }
+
+  .hover\:bg-slate-50:hover {
+    background-color: #fff7ed !important;
+  }
+
+  .hover\:border-blue-300:hover,
+  .hover\:border-blue-200:hover {
+    border-color: #fdba74 !important;
+  }
+
+  .hover\:border-slate-200:hover,
+  .hover\:border-slate-300:hover {
+    border-color: #fdba74 !important;
+  }
+
+  .focus\:ring-\[\#1a3a8f\]:focus {
+    --tw-ring-color: rgb(249 115 22 / 0.35) !important;
+  }
+
+  .focus\:border-\[\#1a3a8f\]:focus {
+    border-color: #f97316 !important;
   }
 
   .bg-yellow-400 {
@@ -93,5 +211,9 @@
 
   .hover\:text-yellow-300:hover {
     color: var(--hoi-accent) !important;
+  }
+
+  .animate-spin.border-t-\[\#1a3a8f\] {
+    border-top-color: #f97316 !important;
   }
 }

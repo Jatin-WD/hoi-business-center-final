@@ -9,6 +9,11 @@ export type CatalogService = {
   id: string;
   label: string;
   description?: string;
+  price?: string;
+  durationType?: string;
+  durationValue?: string;
+  features?: string[];
+  images?: string[];
   packages: CatalogPackage[];
 };
 
@@ -37,6 +42,13 @@ type ApiService = {
   name?: string;
   slug?: string;
   description?: string;
+  price?: string;
+  duration_type?: string;
+  durationType?: string;
+  duration_value?: string;
+  durationValue?: string;
+  features?: string[] | string;
+  images?: string[] | string;
   packages?: CatalogPackage[];
 };
 
@@ -69,10 +81,26 @@ const slugify = (value: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
+const parseArray = (value: string[] | string | undefined) => {
+  if (Array.isArray(value)) return value;
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
+
 export const normalizeService = (service: ApiService): CatalogService => ({
   id: service.service_id ?? "",
   label: service.label ?? service.name ?? service.slug ?? "Service",
   description: service.description ?? "",
+  price: service.price ?? "",
+  durationType: service.duration_type ?? service.durationType ?? "",
+  durationValue: service.duration_value ?? service.durationValue ?? "",
+  features: parseArray(service.features),
+  images: parseArray(service.images),
   packages: Array.isArray(service.packages) ? service.packages : [],
 });
 

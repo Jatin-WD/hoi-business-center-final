@@ -118,7 +118,38 @@ export default function ServiceMegaMenu({ onClose }: Props) {
 
             <div className="min-w-0 overflow-y-auto border-r border-gray-100 px-6 py-4" style={{ maxHeight: "460px" }}>
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">{activeService?.label ?? "Service"} Packages</p>
-              <div className="space-y-1.5">{activeService?.packages.map((pkg, idx) => <Link key={`${activeService.id}-${idx}`} href={withLocation(pkg.href, selectedLocationName)} onClick={onClose} className="flex items-center justify-between px-4 py-3 rounded-xl border border-gray-100 hover:border-[#f97316] hover:bg-[#fff7ed] hover:shadow-sm transition-all group"><span className="text-sm text-gray-700 group-hover:text-[#f97316] font-medium">{pkg.label}</span><ArrowRight size={14} className="text-gray-300 group-hover:text-[#f97316]" /></Link>)}</div>
+              {activeService?.packages.length ? (
+                <div className="space-y-1.5">
+                  {activeService.packages.map((pkg, idx) => (
+                    <Link key={`${activeService.id}-${idx}`} href={withLocation(pkg.href, selectedLocationName)} onClick={onClose} className="flex items-center justify-between px-4 py-3 rounded-xl border border-gray-100 hover:border-[#f97316] hover:bg-[#fff7ed] hover:shadow-sm transition-all group">
+                      <span className="text-sm text-gray-700 group-hover:text-[#f97316] font-medium">{pkg.label}</span>
+                      <ArrowRight size={14} className="text-gray-300 group-hover:text-[#f97316]" />
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-sm leading-relaxed text-gray-600">{activeService?.description || "Service details are available, but no package links are stored for this row yet."}</p>
+                  {activeService?.price || activeService?.durationType || activeService?.durationValue ? (
+                    <div className="grid grid-cols-1 gap-2 rounded-2xl border border-[#fed7aa] bg-[#fff7ed] p-4">
+                      {activeService.price ? <p className="text-sm font-semibold text-gray-900">Price: <span className="text-[#f97316]">{activeService.price}</span></p> : null}
+                      {activeService.durationType || activeService.durationValue ? <p className="text-sm text-gray-700">Duration: {activeService.durationType || "duration"} {activeService.durationValue ? `- ${activeService.durationValue}` : ""}</p> : null}
+                    </div>
+                  ) : null}
+                  {activeService?.features?.length ? (
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Features</p>
+                      <div className="flex flex-wrap gap-2">
+                        {activeService.features.slice(0, 12).map((feature) => (
+                          <span key={feature} className="rounded-full border border-[#fed7aa] bg-white px-3 py-1 text-xs font-medium text-gray-700">
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              )}
             </div>
 
             <div className="bg-gradient-to-b from-[#fff7ed] to-white px-4 py-6">

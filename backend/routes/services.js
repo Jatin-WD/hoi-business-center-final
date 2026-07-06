@@ -19,18 +19,7 @@ router.get('/', async (req, res) => {
   try {
     const db = await getDb();
     const services = await db.prepare(`
-      SELECT
-        id,
-        service_id,
-        label,
-        packages,
-        name,
-        slug,
-        description,
-        price,
-        status,
-        created_at,
-        updated_at
+      SELECT *
       FROM services
       ORDER BY service_id
     `).all();
@@ -41,6 +30,11 @@ router.get('/', async (req, res) => {
       label: service.label || service.name || service.slug || 'Service',
       description: service.description || '',
       packages: parseJsonArray(service.packages),
+      features: parseJsonArray(service.features),
+      images: parseJsonArray(service.images),
+      price: service.price || '',
+      durationType: service.duration_type || service.durationType || '',
+      durationValue: service.duration_value || service.durationValue || '',
     }));
 
     res.json({
@@ -60,18 +54,7 @@ router.get('/:serviceId', async (req, res) => {
     const db = await getDb();
 
     const service = await db.prepare(`
-      SELECT
-        id,
-        service_id,
-        label,
-        packages,
-        name,
-        slug,
-        description,
-        price,
-        status,
-        created_at,
-        updated_at
+      SELECT *
       FROM services
       WHERE service_id = ?
     `).get(serviceId);
@@ -89,6 +72,11 @@ router.get('/:serviceId', async (req, res) => {
       label: service.label || service.name || service.slug || 'Service',
       description: service.description || '',
       packages: parseJsonArray(service.packages),
+      features: parseJsonArray(service.features),
+      images: parseJsonArray(service.images),
+      price: service.price || '',
+      durationType: service.duration_type || service.durationType || '',
+      durationValue: service.duration_value || service.durationValue || '',
     };
 
     res.json({

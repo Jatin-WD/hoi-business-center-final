@@ -1,5 +1,6 @@
 import express from 'express';
 import { getDb } from '../config/database.js';
+import { SERVICE_PACKAGES } from '../data/seed-data.js';
 
 const router = express.Router();
 const CANONICAL_SERVICE_ORDER = [
@@ -11,6 +12,9 @@ const CANONICAL_SERVICE_ORDER = [
   'interpretation-protocol',
 ];
 const CANONICAL_SERVICE_IDS = new Set(CANONICAL_SERVICE_ORDER);
+const CANONICAL_SERVICE_MAP = new Map(
+  CANONICAL_SERVICE_ORDER.map((serviceId) => [serviceId, SERVICE_PACKAGES[serviceId]])
+);
 
 function parseJsonArray(value) {
   if (Array.isArray(value)) return value;
@@ -23,6 +27,30 @@ function parseJsonArray(value) {
   }
 }
 
+function mergeCanonicalServices(rows) {
+  const rowsById = new Map(rows.map((row) => [row.service_id, row]));
+
+  return CANONICAL_SERVICE_ORDER
+    .map((serviceId) => {
+      const fallback = CANONICAL_SERVICE_MAP.get(serviceId);
+      if (!fallback) return null;
+      const row = rowsById.get(serviceId);
+      const parsedPackages = parseJsonArray(row?.packages);
+      return {
+        service_id: serviceId,
+        label: row?.label || fallback.label,
+        description: row?.description || '',
+        packages: parsedPackages.length ? parsedPackages : fallback.packages,
+        features: parseJsonArray(row?.features),
+        images: parseJsonArray(row?.images),
+        price: row?.price || '',
+        durationType: row?.duration_type || row?.durationType || '',
+        durationValue: row?.duration_value || row?.durationValue || '',
+      };
+    })
+    .filter(Boolean);
+}
+
 // Get all services
 router.get('/', async (req, res) => {
   try {
@@ -33,21 +61,9 @@ router.get('/', async (req, res) => {
       ORDER BY service_id
     `).all();
 
-    // Parse JSON fields
-    const parsedServices = services
-      .filter((service) => CANONICAL_SERVICE_IDS.has(service.service_id))
-      .sort((a, b) => CANONICAL_SERVICE_ORDER.indexOf(a.service_id) - CANONICAL_SERVICE_ORDER.indexOf(b.service_id))
-      .map((service) => ({
-      ...service,
-      label: service.label || service.name || service.slug || 'Service',
-      description: service.description || '',
-      packages: parseJsonArray(service.packages),
-      features: parseJsonArray(service.features),
-      images: parseJsonArray(service.images),
-      price: service.price || '',
-      durationType: service.duration_type || service.durationType || '',
-      durationValue: service.duration_value || service.durationValue || '',
-    }));
+    const parsedServices = mergeCanonicalServices(
+      services.filter((service) => CANONICAL_SERVICE_IDS.has(service.service_id))
+    );
 
     res.json({
       success: true,
@@ -72,31 +88,40 @@ router.get('/:serviceId', async (req, res) => {
     `).get(serviceId);
 
     if (!service) {
+      const fallback = CANONICAL_SERVICE_MAP.get(serviceId);
+      if (!fallback) {
+        return res.status(404).json({
+          success: false,
+          message: 'Service not found'
+        });
+      }
+
+      return res.json({
+        success: true,
+        data: {
+          service: {
+            service_id: serviceId,
+            label: fallback.label,
+            description: '',
+            packages: fallback.packages,
+            features: [],
+            images: [],
+            price: '',
+            durationType: '',
+            durationValue: '',
+          },
+        },
+      });
+    }
+
+    if (!CANONICAL_SERVICE_IDS.has(service.service_id)) {
       return res.status(404).json({
         success: false,
         message: 'Service not found'
       });
     }
 
-    // Parse JSON fields
-    const parsedService = {
-      ...service,
-      label: service.label || service.name || service.slug || 'Service',
-      description: service.description || '',
-      packages: parseJsonArray(service.packages),
-      features: parseJsonArray(service.features),
-      images: parseJsonArray(service.images),
-      price: service.price || '',
-      durationType: service.duration_type || service.durationType || '',
-      durationValue: service.duration_value || service.durationValue || '',
-    };
-
-    if (!CANONICAL_SERVICE_IDS.has(parsedService.service_id)) {
-      return res.status(404).json({
-        success: false,
-        message: 'Service not found'
-      });
-    }
+    const parsedService = mergeCanonicalServices([service])[0];
 
     res.json({
       success: true,

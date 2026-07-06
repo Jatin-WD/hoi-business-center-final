@@ -1,68 +1,55 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarCheck, MapPin, PackageCheck } from "lucide-react";
 import HeroSection from "@/components/common/HeroSection";
 import CTABanner from "@/components/common/CTABanner";
-import { loadCatalog, type CatalogVenue } from "@/lib/catalog";
-import { LocationCard, ServiceCard, VenueGroup, locationName } from "./service/ServiceCards";
+import { loadCatalog } from "@/lib/catalog";
+import { ServiceCard, VenueGroup } from "./service/ServiceCards";
 
 export default function ServicePage() {
-  const [selectedLocation, setSelectedLocation] = useState("");
   const { data: catalog = { venues: [], services: [] }, isLoading, error, refetch } = useQuery({
     queryKey: ["service-catalog"],
     queryFn: loadCatalog,
   });
 
-  const groupedVenues = useMemo(() => groupVenues(catalog.venues), [catalog.venues]);
-  const venueGroups = useMemo(() => prioritizedVenueGroups(groupedVenues), [groupedVenues]);
-  const selectedVenues = selectedLocation ? groupedVenues[selectedLocation] ?? [] : [];
+  const yashobhoomiVenue =
+    catalog.venues.find((venue) => venue.locationId === "yashobhoomi")
+    ?? catalog.venues[0]
+    ?? null;
+  const selectedVenues = yashobhoomiVenue ? [yashobhoomiVenue] : [];
   const packageCount = catalog.services.reduce((total, service) => total + service.packages.length, 0);
-
-  useEffect(() => {
-    if (!selectedLocation && groupedVenues.yashobhoomi?.length) setSelectedLocation("yashobhoomi");
-  }, [groupedVenues, selectedLocation]);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <HeroSection breadcrumbs={[{ label: "Home", href: "/" }, { label: "Service" }]} title="Exhibition Services" description="Explore booth reservation, booth design, booth install & demolition, logistics, marketing, and interpretation & protocol services loaded from the database.">
+      <HeroSection breadcrumbs={[{ label: "Home", href: "/" }, { label: "Yashobhoomi" }]} title="Yashobhoomi Exhibition Services" description="All six HOI services are centered on Yashobhoomi, our primary exhibition venue in Dwarka, New Delhi.">
         <div className="grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
           <Stat icon={PackageCheck} label="Services" value={catalog.services.length} />
           <Stat icon={CalendarCheck} label="Packages" value={packageCount} />
-          <Stat icon={MapPin} label="Venues" value={catalog.venues.length} />
+          <Stat icon={MapPin} label="Venue" value={yashobhoomiVenue ? 1 : 0} />
         </div>
       </HeroSection>
 
       <main className="mx-auto max-w-[1600px] space-y-10 px-6 py-12 sm:px-8">
         {isLoading ? <StateCard title="Loading services..." detail="Fetching the latest service catalog from the database." /> : null}
         {error ? <StateCard title="Could not load services" detail={error instanceof Error ? error.message : "Failed to load services"} onRetry={() => refetch()} /> : null}
+        {!isLoading && !error && !yashobhoomiVenue ? <StateCard title="Yashobhoomi not found" detail="The venue data is missing, but the service catalog is still available." /> : null}
 
         {!isLoading && !error ? (
           <>
             <section>
-              <SectionHeader eyebrow="Step 1" title="Choose Your Exhibition Location" description="Yashobhoomi is preselected as the primary HOI venue. Change the location to see services and quote links for another venue." />
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-                {venueGroups.map(([locationId, venues]) => (
-                  <LocationCard key={locationId} locationId={locationId} venues={venues} active={selectedLocation === locationId} onSelect={() => setSelectedLocation(locationId)} />
-                ))}
+              <SectionHeader eyebrow="Yashobhoomi" title="Our Primary Exhibition Venue" description="HOI Business Center is built around Yashobhoomi. Every service, package, and execution plan revolves around this venue." />
+              {yashobhoomiVenue ? <VenueGroup locationId="yashobhoomi" venues={selectedVenues} serviceCount={catalog.services.length} featured /> : null}
+            </section>
+
+            <section>
+              <SectionHeader eyebrow="Services" title="Services at Yashobhoomi" description="All six services are available through Yashobhoomi with package links and quote flows attached to this venue." />
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {catalog.services.map((service) => <ServiceCard key={service.id} service={service} selectedVenues={selectedVenues} selectedLocation="yashobhoomi" />)}
+                {!catalog.services.length ? <StateCard title="No services found" detail="Seed the database to show service packages here." /> : null}
               </div>
             </section>
 
-            {selectedLocation ? (
-              <>
-                <VenueGroup locationId={selectedLocation} venues={selectedVenues} serviceCount={catalog.services.length} featured={selectedLocation === "yashobhoomi"} />
-                <section>
-                  <SectionHeader eyebrow="Step 2" title={`Services at ${locationName(selectedLocation, selectedVenues)}`} description="Choose a service or package. Every quote and package link will continue with this selected location." />
-                  <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-                    {catalog.services.map((service) => <ServiceCard key={service.id} service={service} selectedVenues={selectedVenues} selectedLocation={selectedLocation} />)}
-                    {!catalog.services.length ? <StateCard title="No services found" detail="Seed the database to show service packages here." /> : null}
-                  </div>
-                </section>
-              </>
-            ) : (
-              <StateCard title="Select a location to view services" detail="Yashobhoomi is listed first because it is the primary HOI service location." />
-            )}
-
-            <CTABanner title="Need a custom exhibition requirement?" description="Share your service, package, venue, and timeline. The HOI team will respond with pricing and next steps." primaryLabel="Request Quote" primaryHref={selectedLocation ? `/contact?location=${encodeURIComponent(locationName(selectedLocation, selectedVenues))}` : "/contact"} secondaryLabel="Apply for Man Power" secondaryHref="/manpower" />
+            <CTABanner title="Need a Yashobhoomi exhibition requirement?" description="Share your service, package, and timeline. The HOI team will respond with pricing and next steps." primaryLabel="Request Quote" primaryHref="/contact?location=Yashobhoomi" secondaryLabel="View Yashobhoomi" secondaryHref="/yashobhoomi" />
           </>
         ) : null}
       </main>
@@ -91,20 +78,4 @@ function Stat({ icon: Icon, label, value }: { icon: typeof PackageCheck; label: 
 
 function StateCard({ title, detail, onRetry }: { title: string; detail?: string; onRetry?: () => void }) {
   return <div className="rounded-lg border border-gray-100 bg-white p-8 text-center"><p className="font-semibold text-gray-900">{title}</p>{detail ? <p className="mt-2 text-sm text-gray-500">{detail}</p> : null}{onRetry ? <button type="button" onClick={onRetry} className="mt-4 rounded-lg bg-[#f97316] px-4 py-2 text-sm font-semibold text-white">Retry</button> : null}</div>;
-}
-
-function groupVenues(venues: CatalogVenue[]) {
-  return venues.reduce<Record<string, CatalogVenue[]>>((groups, venue) => {
-    const key = venue.locationId || venue.city || "venues";
-    groups[key] = [...(groups[key] ?? []), venue];
-    return groups;
-  }, {});
-}
-
-function prioritizedVenueGroups(groups: Record<string, CatalogVenue[]>) {
-  return Object.entries(groups).sort(([a], [b]) => {
-    if (a === "yashobhoomi") return -1;
-    if (b === "yashobhoomi") return 1;
-    return a.localeCompare(b);
-  });
 }

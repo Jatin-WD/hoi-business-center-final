@@ -63,14 +63,14 @@ export default function ServiceMegaMenu({ onClose }: Props) {
         {error && <MenuState title="Could not load menu" detail={error} />}
 
         {!loading && !error && (
-          <div className="grid min-h-[430px] grid-cols-[290px_minmax(250px,260px)_minmax(300px,1fr)_180px]">
+          <div className="grid min-h-[410px] grid-cols-[270px_minmax(250px,260px)_minmax(300px,1fr)_180px]">
             <div className="min-w-0 border-r border-gray-100 px-4 py-4">
               <Link
                 href="/yashobhoomi"
                 onClick={onClose}
                 className="group flex h-full flex-col overflow-hidden rounded-2xl border border-orange-100 bg-[#fff8f1] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
-                <div className="relative h-[188px] overflow-hidden">
+                <div className="relative h-[168px] overflow-hidden">
                   <img
                     src="/assets/yashobhoomi.png"
                     alt={yashobhoomiVenue?.name || "Yashobhoomi"}
@@ -84,34 +84,34 @@ export default function ServiceMegaMenu({ onClose }: Props) {
                     <div className="inline-flex items-center rounded-full bg-black/30 px-2.5 py-1 text-[11px] font-medium tracking-wide text-white/90 backdrop-blur-sm">
                       Dwarka, New Delhi
                     </div>
-                    <h3 className="mt-2 max-w-[220px] text-[18px] font-bold leading-tight drop-shadow-sm">
+                    <h3 className="mt-2 max-w-[210px] text-[17px] font-bold leading-tight drop-shadow-sm">
                       {yashobhoomiVenue?.name || YASHOBHOOMI_LOCATION.label}
                     </h3>
-                    <p className="mt-1 max-w-[90%] text-[12px] leading-5 text-white/90">
+                    <p className="mt-1 max-w-[90%] text-[11px] leading-5 text-white/90">
                       HOI's primary exhibition base for focused, premium service delivery.
                     </p>
                   </div>
                 </div>
                 <div className="-mt-6 h-6 bg-gradient-to-b from-black/20 to-transparent" />
 
-                <div className="flex flex-1 flex-col gap-3 p-4">
-                  <p className="text-sm leading-relaxed text-gray-600">
+                <div className="flex flex-1 flex-col gap-2.5 p-4">
+                  <p className="text-[13px] leading-6 text-gray-600">
                     HOI's primary exhibition base. All six services and packages are routed through Yashobhoomi for a focused, premium experience.
                   </p>
 
                   <div className="flex flex-wrap gap-2">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1.5 text-[11px] font-semibold text-gray-700 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
                       <MapPin size={12} className="text-[#f97316]" />
                       Primary HOI venue
                     </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1.5 text-[11px] font-semibold text-gray-700 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
                       <Sparkles size={12} className="text-[#f97316]" />
                       6 services, 1 venue
                     </span>
                   </div>
 
-                  <div className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-[#f97316]">
-                    View Yashobhoomi <ArrowRight size={14} />
+                  <div className="mt-auto inline-flex items-center gap-2 text-[13px] font-semibold text-[#f97316]">
+                    View Yashobhoomi <ArrowRight size={13} />
                   </div>
                 </div>
               </Link>

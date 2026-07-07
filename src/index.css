@@ -4,9 +4,9 @@
 
 :root {
   --hoi-primary: #f97316;
-  --hoi-primary-dark: #1f2937;
-  --hoi-accent: #fb923c;
-  --hoi-accent-text: #111827;
+  --hoi-primary-dark: #111111;
+  --hoi-accent: #f59e0b;
+  --hoi-accent-text: #111111;
 }
 
 .logo {
@@ -15,67 +15,67 @@
 
 @layer base {
   .bg-blue-50 {
-    background-color: #fff7ed !important;
+    background-color: #f8fafc !important;
   }
 
   .bg-blue-100 {
-    background-color: #ffedd5 !important;
+    background-color: #f1f5f9 !important;
   }
 
   .bg-blue-200 {
-    background-color: #fed7aa !important;
+    background-color: #e2e8f0 !important;
   }
 
   .bg-blue-800 {
-    background-color: #9a3412 !important;
+    background-color: #111827 !important;
   }
 
   .text-blue-100 {
-    color: #ffedd5 !important;
+    color: #e2e8f0 !important;
   }
 
   .text-blue-200 {
-    color: #fed7aa !important;
+    color: #cbd5e1 !important;
   }
 
   .text-blue-300 {
-    color: #fdba74 !important;
+    color: #94a3b8 !important;
   }
 
   .border-blue-50 {
-    border-color: #fff7ed !important;
+    border-color: #f8fafc !important;
   }
 
   .border-blue-100 {
-    border-color: #ffedd5 !important;
+    border-color: #e2e8f0 !important;
   }
 
   .border-blue-200 {
-    border-color: #fed7aa !important;
+    border-color: #cbd5e1 !important;
   }
 
   .border-blue-800 {
-    border-color: #9a3412 !important;
+    border-color: #111827 !important;
   }
 
   .ring-blue-100 {
-    --tw-ring-color: rgb(253 186 116 / 0.35) !important;
+    --tw-ring-color: rgb(15 23 42 / 0.12) !important;
   }
 
   .hover\:bg-blue-50:hover {
-    background-color: #fff7ed !important;
+    background-color: #f8fafc !important;
   }
 
   .hover\:bg-blue-100:hover {
-    background-color: #ffedd5 !important;
+    background-color: #f1f5f9 !important;
   }
 
   .hover\:text-blue-100:hover {
-    color: #ffedd5 !important;
+    color: #e2e8f0 !important;
   }
 
   .hover\:text-blue-200:hover {
-    color: #fed7aa !important;
+    color: #cbd5e1 !important;
   }
 
   .bg-\[\#1a3a8f\] {
@@ -115,49 +115,49 @@
   }
 
   .border-slate-200 {
-    border-color: #fde68a !important;
+    border-color: #e5e7eb !important;
   }
 
   .border-slate-300 {
-    border-color: #fdba74 !important;
+    border-color: #d1d5db !important;
   }
 
   .text-slate-600 {
-    color: #9a3412 !important;
+    color: #475569 !important;
   }
 
   .text-slate-500 {
-    color: #c2410c !important;
+    color: #64748b !important;
   }
 
   .text-slate-400 {
-    color: #fdba74 !important;
+    color: #94a3b8 !important;
   }
 
   .text-slate-300 {
-    color: #fecaca !important;
+    color: #cbd5e1 !important;
   }
 
   .bg-slate-50 {
-    background-color: #fffaf4 !important;
+    background-color: #f8fafc !important;
   }
 
   .bg-slate-100 {
-    background-color: #fff7ed !important;
+    background-color: #f1f5f9 !important;
   }
 
   .hover\:bg-slate-50:hover {
-    background-color: #fff7ed !important;
+    background-color: #f8fafc !important;
   }
 
   .hover\:border-blue-300:hover,
   .hover\:border-blue-200:hover {
-    border-color: #fdba74 !important;
+    border-color: #cbd5e1 !important;
   }
 
   .hover\:border-slate-200:hover,
   .hover\:border-slate-300:hover {
-    border-color: #fdba74 !important;
+    border-color: #d1d5db !important;
   }
 
   .focus\:ring-\[\#1a3a8f\]:focus {
@@ -173,7 +173,7 @@
   }
 
   .bg-yellow-300 {
-    background-color: #fdba74 !important;
+    background-color: #fbbf24 !important;
   }
 
   .bg-yellow-100 {
@@ -181,11 +181,11 @@
   }
 
   .bg-yellow-50 {
-    background-color: #fffaf4 !important;
+    background-color: #fffbeb !important;
   }
 
   .bg-yellow-500 {
-    background-color: #f97316 !important;
+    background-color: #f59e0b !important;
   }
 
   .text-gray-900.bg-yellow-400,
@@ -198,15 +198,15 @@
   }
 
   .border-yellow-200 {
-    border-color: #fed7aa !important;
+    border-color: #fde68a !important;
   }
 
   .border-yellow-300 {
-    border-color: #fdba74 !important;
+    border-color: #fbbf24 !important;
   }
 
   .hover\:bg-yellow-300:hover {
-    background-color: #fdba74 !important;
+    background-color: #fbbf24 !important;
   }
 
   .hover\:text-yellow-300:hover {

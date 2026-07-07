@@ -11,7 +11,7 @@ interface PageBreadcrumbProps {
 
 export default function PageBreadcrumb({ items }: PageBreadcrumbProps) {
   return (
-    <div className="flex flex-wrap items-center gap-2 text-sm text-[#ffedd5] mb-4">
+    <div className="mb-4 flex flex-wrap items-center gap-2 text-sm text-zinc-300">
       {items.map((item, index) => (
         <span key={item.label} className="flex items-center gap-2">
           {item.href ? (
@@ -21,7 +21,7 @@ export default function PageBreadcrumb({ items }: PageBreadcrumbProps) {
           ) : (
             <span>{item.label}</span>
           )}
-          {index < items.length - 1 && <span className="text-[#ffedd5]">/</span>}
+          {index < items.length - 1 && <span className="text-zinc-400">/</span>}
         </span>
       ))}
     </div>

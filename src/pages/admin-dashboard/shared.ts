@@ -89,9 +89,9 @@ export const RESOURCE_LABELS: Record<ResourceKey, { title: string; hint: string;
 };
 
 export const THEME_PRESETS = [
-  { name: "Light Classic", primary: "#1a3a8f", primaryDark: "#0f2460", accent: "#facc15", accentText: "#111827" },
-  { name: "Dark Corporate", primary: "#111827", primaryDark: "#030712", accent: "#38bdf8", accentText: "#082f49" },
-  { name: "Clean Green", primary: "#0f766e", primaryDark: "#134e4a", accent: "#f59e0b", accentText: "#111827" },
+  { name: "Orange Noir", primary: "#f97316", primaryDark: "#111111", accent: "#f59e0b", accentText: "#111111" },
+  { name: "Charcoal Luxe", primary: "#111111", primaryDark: "#030712", accent: "#f97316", accentText: "#ffffff" },
+  { name: "Warm Minimal", primary: "#ea580c", primaryDark: "#1c1917", accent: "#fafaf9", accentText: "#111111" },
 ];
 
 export const DEFAULT_THEME = THEME_PRESETS[0];

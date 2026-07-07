@@ -4,63 +4,50 @@ import { ChevronRight, Building2, Users, Globe, Award } from "lucide-react";
 export default function YashobhoomiPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero */}
-      <div className="bg-gradient-to-r from-[#0f2460] to-[#1a3a8f] text-white py-16 px-8">
-        <div className="max-w-[1600px] mx-auto">
-          <div className="flex items-center gap-2 text-blue-200 text-sm mb-4">
+      <div className="bg-gradient-to-r from-[#111111] via-[#1f1f1f] to-[#f97316] px-8 py-16 text-white">
+        <div className="mx-auto max-w-[1600px]">
+          <div className="mb-4 flex items-center gap-2 text-sm text-zinc-200">
             <Link href="/" className="hover:text-white">Home</Link>
             <ChevronRight size={14} />
             <span className="text-white">Yashobhoomi</span>
           </div>
-          <h1 className="text-4xl font-bold mb-3">Yashobhoomi</h1>
-          <p className="text-xl text-yellow-300 font-semibold mb-3">
+          <h1 className="mb-3 text-4xl font-bold">Yashobhoomi</h1>
+          <p className="mb-3 text-xl font-semibold text-zinc-200">
             India International Convention &amp; Expo Centre
           </p>
-          <p className="text-blue-200 max-w-2xl">
-            India's largest and most modern MICE destination located in Dwarka, New Delhi — and HOI Business Center is its official service partner.
+          <p className="max-w-2xl text-zinc-200">
+            India's largest and most modern MICE destination located in Dwarka, New Delhi, and HOI Business Center is its official service partner.
           </p>
         </div>
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-8 py-14">
-
-        {/* Role of HOI */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 mb-16">
+      <div className="mx-auto max-w-[1600px] px-8 py-14">
+        <div className="mb-16 grid grid-cols-1 gap-14 lg:grid-cols-2">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Role of HOI at Yashobhoomi</h2>
-            <div className="space-y-4 text-gray-600 leading-relaxed">
+            <h2 className="mb-6 text-3xl font-bold text-gray-900">Role of HOI at Yashobhoomi</h2>
+            <div className="space-y-4 leading-relaxed text-gray-600">
               <p>
-                HOI Business Center serves as the <strong>official service partner at Yashobhoomi</strong> — India's premiere convention and exhibition facility. Our role encompasses every aspect of exhibitor support within the venue.
+                HOI Business Center serves as the <strong>official service partner at Yashobhoomi</strong> - India's premier convention and exhibition facility. Our role encompasses every aspect of exhibitor support within the venue.
               </p>
               <p>
                 As the designated HOI partner, we have exclusive access and established processes that allow us to serve exhibitors more efficiently than any other vendor. We bring pre-approved layouts, recognized vendor credentials, and deep-rooted venue relationships built over years of collaboration.
               </p>
               <p>
-                From the moment an exhibitor reserves their booth space to the final demolition and clearance, HOI is present — coordinating, problem-solving, and ensuring everything runs according to schedule. We are the single point of contact for all exhibition support needs.
+                From the moment an exhibitor reserves their booth space to the final demolition and clearance, HOI is present - coordinating, problem-solving, and ensuring everything runs according to schedule. We are the single point of contact for all exhibition support needs.
               </p>
             </div>
-            <div className="mt-8 flex gap-3 flex-wrap">
-              <Link
-                href="/service/yashobhoomi"
-                className="inline-block bg-[#1a3a8f] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#152e75] transition-colors"
-              >
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/service/yashobhoomi" className="inline-block rounded-xl bg-[#111111] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#f97316]">
                 View Services at Yashobhoomi
               </Link>
-              <Link
-                href="/contact"
-                className="inline-block border border-[#1a3a8f] text-[#1a3a8f] px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-colors"
-              >
+              <Link href="/contact" className="inline-block rounded-xl border border-[#111111] px-6 py-3 font-semibold text-[#111111] transition-colors hover:bg-gray-50">
                 Contact Us
               </Link>
             </div>
           </div>
 
           <div className="space-y-5">
-            <img
-              src="/assets/yashobhoomi.png"
-              alt="Yashobhoomi Convention Centre"
-              className="w-full h-60 object-cover rounded-2xl shadow-md"
-            />
+            <img src="/assets/yashobhoomi.png" alt="Yashobhoomi Convention Centre" className="h-60 w-full rounded-2xl object-cover shadow-md" />
             <div className="grid grid-cols-2 gap-4">
               {[
                 { label: "Total Area", value: "89,000 sq m" },
@@ -68,24 +55,23 @@ export default function YashobhoomiPage() {
                 { label: "Capacity", value: "11,000+ delegates" },
                 { label: "Location", value: "Dwarka, New Delhi" },
               ].map((stat, i) => (
-                <div key={i} className="bg-white rounded-xl border border-gray-100 p-5 hover:border-[#1a3a8f] transition-colors">
-                  <p className="text-2xl font-bold text-[#1a3a8f]">{stat.value}</p>
-                  <p className="text-sm text-gray-500 mt-1">{stat.label}</p>
+                <div key={i} className="rounded-xl border border-gray-100 bg-white p-5 transition-colors hover:border-[#f97316]">
+                  <p className="text-2xl font-bold text-[#f97316]">{stat.value}</p>
+                  <p className="mt-1 text-sm text-gray-500">{stat.label}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* What HOI provides */}
         <div className="mb-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">What HOI Provides at Yashobhoomi</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <h2 className="mb-8 text-2xl font-bold text-gray-900">What HOI Provides at Yashobhoomi</h2>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
                 icon: Building2,
                 title: "Booth Services",
-                desc: "Reservation, design, fabrication, installation and demolition — end-to-end booth management from a single partner.",
+                desc: "Reservation, design, fabrication, installation and demolition - end-to-end booth management from a single partner.",
               },
               {
                 icon: Globe,
@@ -103,34 +89,27 @@ export default function YashobhoomiPage() {
                 desc: "Pre-event digital promotions, signage, branded materials, hotel room blocks, and transportation arrangements.",
               },
             ].map((item, idx) => (
-              <div key={idx} className="bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-md hover:border-[#1a3a8f] transition-all">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
-                  <item.icon size={22} className="text-[#1a3a8f]" />
+              <div key={idx} className="rounded-2xl border border-gray-100 bg-white p-6 transition-all hover:border-[#f97316] hover:shadow-md">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100">
+                  <item.icon size={22} className="text-[#f97316]" />
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+                <h3 className="mb-2 font-bold text-gray-900">{item.title}</h3>
+                <p className="text-sm leading-relaxed text-gray-500">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="bg-gradient-to-r from-[#0f2460] to-[#1a3a8f] rounded-3xl p-10 text-white text-center">
-          <h2 className="text-2xl font-bold mb-3">Ready to exhibit at Yashobhoomi?</h2>
-          <p className="text-blue-200 mb-6 max-w-xl mx-auto">
-            Let HOI Business Center handle every detail of your exhibition — from booth booking to teardown.
+        <div className="rounded-3xl bg-gradient-to-r from-[#111111] via-[#1f1f1f] to-[#f97316] p-10 text-center text-white">
+          <h2 className="mb-3 text-2xl font-bold">Ready to exhibit at Yashobhoomi?</h2>
+          <p className="mx-auto mb-6 max-w-xl text-zinc-200">
+            Let HOI Business Center handle every detail of your exhibition - from booth booking to teardown.
           </p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <Link
-              href="/service/yashobhoomi"
-              className="bg-yellow-400 text-gray-900 px-6 py-3 rounded-xl font-semibold hover:bg-yellow-300 transition-colors"
-            >
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link href="/service/yashobhoomi" className="rounded-xl bg-[#f97316] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#ea580c]">
               Explore Services
             </Link>
-            <Link
-              href="/contact"
-              className="border border-white/40 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/10 transition-colors"
-            >
+            <Link href="/contact" className="rounded-xl border border-white/30 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/10">
               Get in Touch
             </Link>
           </div>

@@ -4,20 +4,20 @@ const hoiLogo = "/assets/hoi.png";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#fff7ed] text-gray-800 border-t border-orange-200">
+    <footer className="bg-[#111111] text-zinc-200 border-t border-white/10">
       <div className="mx-auto max-w-[1600px] px-8 py-14">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <img src={hoiLogo} alt="HOI Business Center Logo" className="mb-4 h-14 w-auto logo" />
-            <p className="text-sm leading-relaxed text-gray-600">
+            <p className="text-sm leading-relaxed text-zinc-400">
               HOI Business Center provides end-to-end exhibition and event services including booth reservation, design,
               installation, logistics, marketing, interpretation, and manpower services.
             </p>
           </div>
 
           <div>
-            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-900">Services</h4>
-            <ul className="space-y-2.5 text-sm text-gray-600">
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide text-white">Services</h4>
+            <ul className="space-y-2.5 text-sm text-zinc-400">
               <li><Link href="/service/booth-reservation" className="transition-colors hover:text-[#f97316]">Booth Reservation</Link></li>
               <li><Link href="/service/booth-design" className="transition-colors hover:text-[#f97316]">Booth Design</Link></li>
               <li><Link href="/service/booth-install-demolition" className="transition-colors hover:text-[#f97316]">Booth Install & Demolition</Link></li>
@@ -28,8 +28,8 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-900">Company</h4>
-            <ul className="space-y-2.5 text-sm text-gray-600">
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide text-white">Company</h4>
+            <ul className="space-y-2.5 text-sm text-zinc-400">
               <li><Link href="/about/hoi" className="transition-colors hover:text-[#f97316]">About HOI</Link></li>
               <li><Link href="/yashobhoomi" className="transition-colors hover:text-[#f97316]">Role of HOI at Yashobhoomi</Link></li>
               <li><Link href="/event-calendar" className="transition-colors hover:text-[#f97316]">Event Calendar</Link></li>
@@ -39,18 +39,18 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-900">Get in Touch</h4>
-            <div className="space-y-3 text-sm text-gray-600">
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide text-white">Get in Touch</h4>
+            <div className="space-y-3 text-sm text-zinc-400">
               <p>
-                <span className="mb-0.5 block font-medium text-gray-900">Address</span>
+                <span className="mb-0.5 block font-medium text-white">Address</span>
                 Yashobhoomi, Dwarka, New Delhi, India
               </p>
               <p>
-                <span className="mb-0.5 block font-medium text-gray-900">Phone</span>
+                <span className="mb-0.5 block font-medium text-white">Phone</span>
                 +91 98100 97323
               </p>
               <p>
-                <span className="mb-0.5 block font-medium text-gray-900">Email</span>
+                <span className="mb-0.5 block font-medium text-white">Email</span>
                 thlim@kilindia.in
               </p>
             </div>
@@ -64,7 +64,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-orange-200 pt-6 text-xs text-gray-500 md:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-zinc-500 md:flex-row">
           <p>Copyright 2026 HOI Business Center. All rights reserved.</p>
           <div className="flex gap-6">
             <Link href="/privacy-policy" className="transition-colors hover:text-[#f97316]">Privacy Policy</Link>

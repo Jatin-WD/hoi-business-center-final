@@ -45,7 +45,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
   }, []);
 
   return (
-    <div className="w-full border-t-2 border-[#f97316] bg-white" style={{ boxShadow: "0 18px 40px rgba(0,0,0,0.10)" }}>
+    <div className="w-full border-t-2 border-[#f97316] bg-white" style={{ boxShadow: "0 18px 40px rgba(0,0,0,0.16)" }}>
       <div className="mx-auto w-full max-w-[1600px] px-5">
         <div className="flex items-center gap-0 overflow-x-auto border-b border-gray-100 py-2.5">
           <StepBadge n={1} label="Yashobhoomi" status="active" />
@@ -68,7 +68,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
               <Link
                 href="/yashobhoomi"
                 onClick={onClose}
-                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-orange-100 bg-[#fff8f1] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
                 <div className="relative h-[168px] overflow-hidden">
                   <img
@@ -77,7 +77,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
                     className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/72 via-black/28 to-black/5" />
-                  <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-[#f97316] px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
+                  <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-[#111111] px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
                     <Sparkles size={12} /> Official Venue
                   </div>
                 </div>
@@ -169,13 +169,13 @@ export default function ServiceMegaMenu({ onClose }: Props) {
               )}
             </div>
 
-            <div className="bg-gradient-to-b from-[#fff7ed] to-white px-4 py-5">
+            <div className="bg-gradient-to-b from-gray-50 to-white px-4 py-5">
               <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-400">Quick Actions</p>
-              <p className="mb-3 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#f97316]">Location: Yashobhoomi</p>
-              <Link href={requirementHref} onClick={onClose} className="mb-2.5 block w-full rounded-lg bg-[#f97316] px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-[#ea580c]">
+              <p className="mb-3 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#111111]">Location: Yashobhoomi</p>
+              <Link href={requirementHref} onClick={onClose} className="mb-2.5 block w-full rounded-lg bg-[#111111] px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-[#f97316]">
                 Book Now
               </Link>
-              <Link href={requirementHref} onClick={onClose} className="block w-full rounded-lg border border-[#f97316] px-3 py-2.5 text-center text-sm font-semibold text-[#f97316] transition-colors hover:bg-[#fff7ed]">
+              <Link href={requirementHref} onClick={onClose} className="block w-full rounded-lg border border-[#111111] px-3 py-2.5 text-center text-sm font-semibold text-[#111111] transition-colors hover:bg-gray-50">
                 Get Quote
               </Link>
             </div>
@@ -212,15 +212,15 @@ type StepStatus = "active" | "done" | "inactive";
 function StepBadge({ n, label, status }: { n: number; label: string; status: StepStatus }) {
   const circleClass =
     status === "active"
-      ? "bg-[#f97316] text-white"
+      ? "bg-[#111111] text-white"
       : status === "done"
-        ? "bg-[#fb923c] text-white opacity-85"
+        ? "bg-[#f97316] text-white opacity-90"
         : "bg-gray-200 text-gray-500";
   const textClass =
     status === "active"
-      ? "text-[#f97316] font-semibold"
+      ? "text-[#111111] font-semibold"
       : status === "done"
-        ? "text-[#c2410c] font-medium opacity-85"
+        ? "text-[#f97316] font-medium opacity-90"
         : "text-gray-400";
   return (
     <div className={`flex items-center gap-1.5 whitespace-nowrap ${textClass}`}>

@@ -2,9 +2,9 @@ import { useEffect } from "react";
 
 const THEME = {
   primary: "#f97316",
-  primaryDark: "#1f2937",
-  accent: "#fb923c",
-  accentText: "#111827",
+  primaryDark: "#111111",
+  accent: "#f59e0b",
+  accentText: "#111111",
 };
 
 export function useSiteTheme() {

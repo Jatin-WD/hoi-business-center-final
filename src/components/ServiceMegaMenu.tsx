@@ -70,15 +70,20 @@ export default function ServiceMegaMenu({ onClose }: Props) {
                 onClick={onClose}
                 className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
-                <div className="relative h-[168px] overflow-hidden">
+                <div className="relative h-[192px] overflow-hidden bg-gray-200">
                   <img
                     src="/assets/yashobhoomi.png"
                     alt={yashobhoomiVenue?.name || "Yashobhoomi"}
-                    className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
+                    className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/72 via-black/28 to-black/5" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/10" />
+                  <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/65 to-transparent" />
                   <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-[#111111] px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
                     <Sparkles size={12} /> Official Venue
+                  </div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <p className="text-sm font-semibold text-white drop-shadow">Yashobhoomi Convention Centre</p>
+                    <p className="mt-1 text-xs text-zinc-200/90">India International Convention and Expo Centre</p>
                   </div>
                 </div>
                 <div className="-mt-6 h-6 bg-gradient-to-b from-black/20 to-transparent" />

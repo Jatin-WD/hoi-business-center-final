@@ -152,6 +152,7 @@ function ServicesSection({ title, description, services }: { title: string; desc
 }
 
 function LocationsSection({ title, description, venues }: { title: string; description: string; venues: CatalogVenue[] }) {
+  const spotlightImage = "/assets/yashobhoomi.png";
   const yashobhoomi =
     venues.find((venue) => venue.locationId === "yashobhoomi")
     ?? venues[0]
@@ -208,9 +209,11 @@ function LocationsSection({ title, description, venues }: { title: string; descr
 
           <Link href={`/venue/${yashobhoomi.locationId}/${yashobhoomi.subVenueId}`} className="group relative block min-h-[420px] h-full overflow-hidden rounded-[2rem] shadow-[0_24px_70px_rgba(0,0,0,0.12)]">
             <img
-              src={yashobhoomi.image || "/assets/yashobhoomi.png"}
+              src={spotlightImage}
               alt={yashobhoomi.name}
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              loading="eager"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/88 via-black/38 to-black/10" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_45%)]" />

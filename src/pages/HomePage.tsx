@@ -206,7 +206,7 @@ function LocationsSection({ title, description, venues }: { title: string; descr
             </div>
           </div>
 
-          <Link href={`/venue/${yashobhoomi.locationId}/${yashobhoomi.subVenueId}`} className="group relative min-h-[420px] overflow-hidden rounded-[2rem] shadow-[0_24px_70px_rgba(0,0,0,0.12)]">
+          <Link href={`/venue/${yashobhoomi.locationId}/${yashobhoomi.subVenueId}`} className="group relative block min-h-[420px] h-full overflow-hidden rounded-[2rem] shadow-[0_24px_70px_rgba(0,0,0,0.12)]">
             <img
               src={yashobhoomi.image || "/assets/yashobhoomi.png"}
               alt={yashobhoomi.name}

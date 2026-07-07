@@ -218,15 +218,18 @@ function LocationsSection({ title, description, venues }: { title: string; descr
             <div className="absolute inset-0 bg-gradient-to-t from-black/88 via-black/38 to-black/10" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_45%)]" />
             <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/25 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 p-7 text-white lg:p-8">
-              <div className="mb-4 inline-flex rounded-full bg-white/12 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-100 backdrop-blur-sm">
-                Yashobhoomi Spotlight
+            <div className="absolute inset-0 flex flex-col justify-between p-5 text-white lg:p-8">
+              <div className="max-w-[360px] rounded-[1.5rem] border border-white/15 bg-black/40 p-5 backdrop-blur-md">
+                <div className="mb-3 inline-flex rounded-full bg-white/12 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-100">
+                  Yashobhoomi Spotlight
+                </div>
+                <h4 className="text-2xl font-bold leading-tight lg:text-3xl">{yashobhoomi.name}</h4>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-100/90 lg:text-base">
+                  {yashobhoomi.description}
+                </p>
               </div>
-              <h4 className="text-2xl font-bold lg:text-3xl">{yashobhoomi.name}</h4>
-              <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-200/90 lg:text-base">
-                {yashobhoomi.description}
-              </p>
-              <div className="mt-5 flex flex-wrap gap-3 text-sm">
+
+              <div className="flex flex-wrap gap-3 text-sm">
                 {[
                   yashobhoomi.city && yashobhoomi.state ? `${yashobhoomi.city}, ${yashobhoomi.state}` : "New Delhi",
                   yashobhoomi.capacity || "Large-scale business events",

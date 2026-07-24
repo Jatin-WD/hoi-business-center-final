@@ -59,7 +59,22 @@ const TABLES = [
   },
   {
     name: 'events',
-    columns: [['id', 'pk'], ['name', 'varchar(220) not null'], ['date', 'varchar(120) not null'], ['venue', 'varchar(220) not null'], ['location_id', 'varchar(120) not null'], ['category', 'varchar(120)'], ['status', "varchar(40) default 'Upcoming'"], ['created_at', 'timestamp default current_timestamp'], ['updated_at', 'timestamp default current_timestamp']],
+    columns: [
+      ['id', 'pk'],
+      ['name', 'varchar(220) not null'],
+      ['date', 'varchar(120) not null'],
+      ['venue', 'varchar(220) not null'],
+      ['location_id', 'varchar(120) not null'],
+      ['category', 'varchar(120)'],
+      ['status', "varchar(40) default 'Upcoming'"],
+      ['source_provider', 'varchar(80)'],
+      ['source_key', 'varchar(255)'],
+      ['source_url', 'varchar(500)'],
+      ['source_synced_at', 'timestamp null'],
+      ['created_at', 'timestamp default current_timestamp'],
+      ['updated_at', 'timestamp default current_timestamp'],
+    ],
+    uniqueKeys: [{ name: 'unique_events_source_key', columns: ['source_key'] }],
   },
   {
     name: 'bookings',

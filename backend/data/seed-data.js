@@ -486,21 +486,4 @@ export const PACKAGE_DETAILS = {
   },
 };
 
-export const EVENTS = [
-  ["India International Trade Fair 2026", "November 14 - 27, 2026", "Yashobhoomi, Dwarka, New Delhi", "yashobhoomi", "Trade Fair"],
-  ["Auto Expo 2026", "January 15 - 20, 2026", "Yashobhoomi, Dwarka, New Delhi", "yashobhoomi", "Industry Expo"],
-  ["National Engineering Expo", "February 8 - 12, 2026", "Yashobhoomi, Dwarka, New Delhi", "yashobhoomi", "Engineering"],
-  ["FoodPro India 2026", "April 20 - 23, 2026", "Yashobhoomi, Dwarka, New Delhi", "yashobhoomi", "Food & Beverage"],
-  ["PLASTINDIA 2026", "February 1 - 5, 2026", "Pragati Maidan (ITPO), New Delhi", "delhi", "Plastics & Rubber"],
-  ["India Pharma Expo 2026", "March 10 - 13, 2026", "Pragati Maidan (ITPO), New Delhi", "delhi", "Pharmaceuticals"],
-  ["Bombay Exhibition World Fair", "May 5 - 9, 2026", "Bombay Exhibition Centre, Mumbai", "mumbai", "Multi-Industry"],
-  ["Jio World Jewellery Show 2026", "June 12 - 15, 2026", "Jio World Convention Centre, Mumbai", "mumbai", "Jewellery & Gems"],
-  ["Auto Cluster Motor Show 2026", "March 20 - 23, 2026", "Auto Cluster Exhibition Centre, Pune", "pune", "Automotive"],
-  ["Chennai Trade Expo 2026", "April 3 - 6, 2026", "Chennai Trade Centre, Nandambakkam", "chennai", "Trade & Commerce"],
-  ["BIEC Agriculture & Tech Expo", "August 10 - 13, 2026", "BIEC, Tumkur Road, Bangalore", "bangalore", "Agriculture & Tech"],
-  ["Hitex Industrial Fair 2026", "September 15 - 18, 2026", "Hitex Exhibition Centre, Hyderabad", "hyderabad", "Industrial"],
-  ["Kolkata Book Fair 2026", "January 28 - February 9, 2026", "Milan Mela Ground, Kolkata", "kolkata", "Books & Culture"],
-  ["Vibrant Gujarat Summit", "January 10 - 12, 2026", "Helipad Exhibition Ground, Ahmedabad", "ahmedabad", "Investment Summit"],
-  ["Cochin International Marine Expo", "October 5 - 8, 2026", "CIAL Cochin Conventions, Kochi", "kochi", "Marine & Ports"],
-  ["JECC Handicraft Mela 2026", "November 1 - 10, 2026", "JECC Sitapura, Jaipur", "jaipur", "Handicrafts"],
-];
+export { IICC_EVENTS as EVENTS } from './iicc-events.js';

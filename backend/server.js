@@ -15,6 +15,7 @@ import adminRoutes from './routes/admin.js';
 import cmsRoutes from './routes/cms.js';
 import { seedDatabaseIfEmpty } from './scripts/init-db.js';
 import { getDatabaseConfigStatus } from './config/database.js';
+import { scheduleIiccEventSync, syncIiccEvents } from './services/iicc-event-sync.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import './config/env.js';
 
@@ -90,6 +91,9 @@ async function initializeDatabase(attempt = 1) {
     databaseStatus.ready = true;
     databaseStatus.lastError = '';
     console.log('Database initialized');
+    void syncIiccEvents({ pruneMissing: true }).catch((error) => {
+      console.error('Initial IICC event sync failed:', error);
+    });
   } catch (error) {
     databaseStatus.ready = false;
     databaseStatus.lastError = error.message;
@@ -108,5 +112,6 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`Backend server running on port ${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/api/health`);
   console.log('Database config:', getDatabaseConfigStatus());
+  scheduleIiccEventSync({ runImmediately: false });
   initializeDatabase();
 });

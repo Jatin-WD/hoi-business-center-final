@@ -1,6 +1,7 @@
 import { initDatabase } from '../config/database.js';
 import { pathToFileURL } from 'url';
 import { EVENTS, PACKAGE_DETAILS, SERVICE_PACKAGES, VENUE_DETAILS } from '../data/seed-data.js';
+import { buildSourceKey, fetchIiccEvents } from '../services/iicc-event-sync.js';
 
 const CANONICAL_SERVICE_IDS = Object.keys(SERVICE_PACKAGES);
 const CANONICAL_PACKAGE_CATEGORIES = Object.keys(PACKAGE_DETAILS);
@@ -37,6 +38,50 @@ async function upsertByKeys(db, table, keys, values) {
 async function countRows(db, table) {
   const row = await db.get(`SELECT COUNT(*) AS count FROM ${table}`);
   return Number(row?.count || 0);
+}
+
+function normalizeEventSeed(event) {
+  if (Array.isArray(event)) {
+    const [name, date, venue, locationId, category] = event;
+    return {
+      name,
+      date,
+      venue,
+      locationId,
+      category,
+      status: 'Upcoming',
+      sourceProvider: '',
+      sourceKey: '',
+      sourceUrl: '',
+    };
+  }
+
+  return {
+    name: event.name,
+    date: event.date,
+    venue: event.venue,
+    locationId: event.locationId || event.location_id || 'yashobhoomi',
+    category: event.category || 'Event',
+    status: event.status || 'Upcoming',
+    sourceProvider: event.sourceProvider || 'IICC',
+    sourceKey: event.sourceKey || buildSourceKey({
+      sourceUrl: event.sourceUrl || '',
+      name: event.name,
+      date: event.date,
+      venue: event.venue,
+      category: event.category || 'Event',
+    }),
+    sourceUrl: event.sourceUrl || '',
+  };
+}
+
+async function loadEventSeeds() {
+  try {
+    return (await fetchIiccEvents()).map(normalizeEventSeed);
+  } catch (error) {
+    console.warn('IICC live event fetch failed, using bundled snapshot:', error.message);
+    return EVENTS.map(normalizeEventSeed);
+  }
 }
 
 function countExpectedPackages() {
@@ -147,10 +192,26 @@ async function seedDatabase({ resetEvents = true } = {}) {
     if (shouldSeedEvents) {
       console.log('Seeding events...');
       if (resetEvents) await db.run('DELETE FROM events');
-      for (const [name, date, venue, locationId, category] of EVENTS) {
+      const eventSeeds = await loadEventSeeds();
+      for (const event of eventSeeds) {
         await db.run(
-          'INSERT INTO events (name, date, venue, location_id, category, status) VALUES (?, ?, ?, ?, ?, ?)',
-          [name, date, venue, locationId, category, 'Upcoming']
+          `
+            INSERT INTO events (
+              name, date, venue, location_id, category, status,
+              source_provider, source_key, source_url, source_synced_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+          `,
+          [
+            event.name,
+            event.date,
+            event.venue,
+            event.locationId,
+            event.category,
+            event.status,
+            event.sourceProvider,
+            event.sourceKey,
+            event.sourceUrl,
+          ]
         );
       }
     }

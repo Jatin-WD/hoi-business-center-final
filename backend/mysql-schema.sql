@@ -101,8 +101,13 @@ CREATE TABLE IF NOT EXISTS events (
   location_id varchar(120) not null,
   category varchar(120),
   status varchar(40) default 'Upcoming',
+  source_provider varchar(80),
+  source_key varchar(255),
+  source_url varchar(500),
+  source_synced_at timestamp null,
   created_at timestamp default current_timestamp,
-  updated_at timestamp default current_timestamp
+  updated_at timestamp default current_timestamp,
+  unique key unique_events_source_key (source_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS bookings (

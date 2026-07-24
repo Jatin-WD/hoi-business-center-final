@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { getDb } from '../config/database.js';
 import { databaseTables } from '../config/schema.js';
+import { syncIiccEvents } from '../services/iicc-event-sync.js';
 import { requireAdmin, signToken } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -328,6 +329,22 @@ router.get('/dashboard', requireAdmin, async (req, res) => {
   } catch (error) {
     console.error('Admin dashboard error:', error);
     res.status(500).json({ success: false, message: 'Failed to load admin dashboard' });
+  }
+});
+
+router.post('/events/sync', requireAdmin, async (req, res) => {
+  try {
+    const result = await syncIiccEvents({ pruneMissing: true });
+    res.json({
+      success: true,
+      message: `Synced ${result.count} IICC events`,
+      data: {
+        count: result.count,
+      },
+    });
+  } catch (error) {
+    console.error('IICC event sync error:', error);
+    res.status(500).json({ success: false, message: 'Failed to sync IICC events' });
   }
 });
 

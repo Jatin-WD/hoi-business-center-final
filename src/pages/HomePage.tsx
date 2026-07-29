@@ -1,14 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
-import { ArrowRight, BadgeInfo, CalendarDays, CheckCircle2, Clock3, MapPin, ShieldCheck, Sparkles, Users } from "lucide-react";
+import { ArrowRight, CalendarDays, CheckCircle2, Clock3, MapPin, ShieldCheck, Sparkles, Users } from "lucide-react";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { loadCatalog, type CatalogService, type CatalogVenue } from "@/lib/catalog";
-
-const publicNotices = [
-  "Public information portal for HOI Business Center at Yashobhoomi",
-  "Six canonical services only: booth reservation, booth design, booth install & demolition, logistics, marketing, and interpretation & protocol",
-  "Manpower remains a separate application flow, not a core service card",
-];
 
 const processSteps = [
   { title: "Select service", body: "Open the service catalog and choose the required service card." },
@@ -148,19 +142,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-black/5 bg-white">
-        <div className="mx-auto max-w-[1600px] px-6 py-5 sm:px-8">
-          <div className="grid gap-3 lg:grid-cols-3">
-            {publicNotices.map((notice) => (
-              <div key={notice} className="flex items-start gap-3 rounded-2xl border border-black/5 bg-[#f8f5ee] px-4 py-3.5">
-                <BadgeInfo size={16} className="mt-0.5 flex-shrink-0 text-[#f97316]" />
-                <p className="text-sm leading-6 text-slate-700">{notice}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="border-b border-black/5 bg-[#f6f1e7]">
         <div className="mx-auto max-w-[1600px] px-6 py-10 sm:px-8">
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -172,38 +153,39 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-white py-14 lg:py-18">
+      <section className="bg-[#111111] py-14 text-white lg:py-18">
         <div className="mx-auto max-w-[1600px] px-6 sm:px-8">
           <SectionHeading
             eyebrow="Services"
             title={cms("home.services.title")}
             description={cms("home.services.description")}
             align="left"
+            tone="light"
           />
           <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {canonicalServices.map((service, index) => (
               <Link
                 key={service.id}
                 href={`/services/${service.id}`}
-                className="group rounded-[1.75rem] border border-black/5 bg-[#fcfaf5] p-6 shadow-[0_14px_40px_rgba(17,17,17,0.04)] transition-all hover:-translate-y-0.5 hover:border-[#f97316]/35 hover:shadow-[0_18px_50px_rgba(17,17,17,0.08)]"
+                className="group rounded-[1.75rem] border border-white/10 bg-gradient-to-br from-[#171717] via-[#202020] to-[#111111] p-6 text-white shadow-[0_18px_50px_rgba(0,0,0,0.28)] transition-all hover:-translate-y-0.5 hover:border-[#f97316]/30 hover:shadow-[0_24px_70px_rgba(0,0,0,0.38)]"
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#111111] text-white">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#111111] shadow-sm">
                     <span className="text-sm font-black">{String(index + 1).padStart(2, "0")}</span>
                   </div>
-                  <span className="rounded-full border border-[#f97316]/15 bg-[#fff2e8] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-[#9a4a12]">
+                  <span className="rounded-full border border-white/15 bg-white/8 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/75 backdrop-blur">
                     Booking ready
                   </span>
                 </div>
 
-                <h3 className="mt-5 text-2xl font-black text-[#111111] transition-colors group-hover:text-[#f97316]">
+                <h3 className="mt-5 text-2xl font-black text-white transition-colors group-hover:text-[#ffb37a]">
                   {service.label}
                 </h3>
-                <p className="mt-3 line-clamp-3 text-sm leading-7 text-slate-600">
+                <p className="mt-3 line-clamp-3 text-sm leading-7 text-white/72">
                   {service.description || "Official service description available on the detail page."}
                 </p>
 
-                <div className="mt-5 flex items-center gap-2 text-sm font-bold text-[#f97316]">
+                <div className="mt-5 flex items-center gap-2 text-sm font-bold text-[#ff9d5c]">
                   Open service detail
                   <ArrowRight size={15} />
                 </div>

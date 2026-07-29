@@ -69,7 +69,7 @@ npm run dev
 
 Frontend: `http://localhost:5173`
 
-Backend health: `http://localhost:5000/api/health`
+Backend health: `http://localhost:3000/api/health`
 
 ## Quality Checks
 

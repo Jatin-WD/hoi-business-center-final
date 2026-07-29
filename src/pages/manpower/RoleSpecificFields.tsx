@@ -44,9 +44,9 @@ function RoleField({ field, values, onChange, onToggle }: { field: FieldConfig }
                 key={option}
                 type="button"
                 onClick={() => onToggle(field.key, option)}
-                className={`rounded-lg border px-3 py-2.5 text-left text-sm transition-all ${active ? "border-[#1a3a8f] bg-blue-50 text-[#1a3a8f]" : "border-gray-200 text-gray-600 hover:border-blue-300"}`}
+                className={`rounded-lg border px-3 py-2.5 text-left text-sm transition-all ${active ? "border-[#f97316] bg-orange-50 text-[#f97316]" : "border-gray-200 text-gray-600 hover:border-orange-300"}`}
               >
-                <span className={`mr-2 inline-flex h-4 w-4 items-center justify-center rounded border text-[10px] ${active ? "border-[#1a3a8f] bg-[#1a3a8f] text-white" : "border-gray-300"}`}>
+                <span className={`mr-2 inline-flex h-4 w-4 items-center justify-center rounded border text-[10px] ${active ? "border-[#f97316] bg-[#f97316] text-white" : "border-gray-300"}`}>
                   {active ? "✓" : ""}
                 </span>
                 {option}
@@ -68,7 +68,7 @@ function RoleField({ field, values, onChange, onToggle }: { field: FieldConfig }
           placeholder={field.placeholder}
           value={(value as string) || ""}
           onChange={(event) => onChange(field.key, event.target.value)}
-          className="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-[#1a3a8f] focus:outline-none"
+          className="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-[#f97316] focus:outline-none"
         />
       </label>
     );
@@ -82,7 +82,7 @@ function RoleField({ field, values, onChange, onToggle }: { field: FieldConfig }
           required={field.required}
           value={(value as string) || ""}
           onChange={(event) => onChange(field.key, event.target.value)}
-          className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-[#1a3a8f] focus:outline-none"
+          className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-[#f97316] focus:outline-none"
         >
           <option value="">Select</option>
           {(field.options || []).map((option) => <option key={option}>{option}</option>)}
@@ -99,7 +99,7 @@ function RoleField({ field, values, onChange, onToggle }: { field: FieldConfig }
         placeholder={field.placeholder}
         value={(value as string) || ""}
         onChange={(event) => onChange(field.key, event.target.value)}
-        className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-[#1a3a8f] focus:outline-none"
+        className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-[#f97316] focus:outline-none"
       />
     </label>
   );
@@ -115,7 +115,7 @@ function FieldLabel({ field }: { field: FieldConfig }) {
 
 export function StepNumber({ value }: { value: number }) {
   return (
-    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#1a3a8f] text-sm font-bold text-white">
+    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#f97316] text-sm font-bold text-white">
       {value}
     </span>
   );

@@ -127,10 +127,10 @@ export default function ManPowerPage() {
           <p className="mb-5 ml-9 text-sm text-gray-400">Choose one role. The next section will show fields for that role.</p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {roles.map((item) => (
-              <button key={item.id} type="button" onClick={() => handleRoleChange(item.id)} className={`rounded-xl border-2 px-4 py-3 text-left text-sm font-semibold transition-all ${role === item.id ? "border-[#1a3a8f] bg-blue-50 text-[#1a3a8f]" : "border-gray-200 text-gray-600 hover:border-[#1a3a8f]"}`}>
-                {item.label}
-              </button>
-            ))}
+                <button key={item.id} type="button" onClick={() => handleRoleChange(item.id)} className={`rounded-xl border-2 px-4 py-3 text-left text-sm font-semibold transition-all ${role === item.id ? "border-[#f97316] bg-orange-50 text-[#f97316]" : "border-gray-200 text-gray-600 hover:border-[#f97316]"}`}>
+                  {item.label}
+                </button>
+              ))}
           </div>
         </section>
 
@@ -152,7 +152,7 @@ export default function ManPowerPage() {
 
         {message && <div className={`flex gap-3 rounded-xl border p-4 text-sm ${status === "success" ? "border-green-100 bg-green-50 text-green-700" : "border-red-100 bg-red-50 text-red-600"}`}>{status === "success" ? <CheckCircle size={18} /> : <AlertCircle size={18} />}{message}</div>}
         {role && (
-          <button disabled={status === "submitting"} className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#1a3a8f] py-4 font-bold text-white transition-colors hover:bg-[#152e75] disabled:opacity-60">
+          <button disabled={status === "submitting"} className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#f97316] py-4 font-bold text-white transition-colors hover:bg-[#ea580c] disabled:opacity-60">
             <FileText size={18} /> {status === "submitting" ? "Submitting Application..." : "Submit Application"}
           </button>
         )}
@@ -163,15 +163,15 @@ export default function ManPowerPage() {
 
 function Hero({ title, description }: { title: string; description: string }) {
   return (
-    <div className="bg-gradient-to-r from-[#0f2460] to-[#1a3a8f] px-8 py-16 text-white">
+    <div className="bg-gradient-to-r from-[#111111] via-[#1f1f1f] to-[#f97316] px-8 py-16 text-white">
       <div className="mx-auto max-w-[1100px]">
-        <div className="mb-4 flex items-center gap-2 text-sm text-blue-200">
+        <div className="mb-4 flex items-center gap-2 text-sm text-zinc-200">
           <Link href="/" className="hover:text-white">Home</Link>
           <ChevronRight size={14} />
           <span className="text-white">Apply for Manpower Service</span>
         </div>
         <h1 className="mb-3 text-4xl font-bold">{title}</h1>
-        <p className="max-w-2xl text-blue-200">{description}</p>
+        <p className="max-w-2xl text-zinc-200">{description}</p>
       </div>
     </div>
   );

@@ -33,7 +33,7 @@ export function PersonalDetails({ form, errors, onChange }: { form: ManpowerForm
         <SelectField label="Previously worked at exhibitions or trade fairs?" name="prevExhibition" value={form.prevExhibition} onChange={onChange} options={["yes", "no"]} />
         <label className="block sm:col-span-2">
           <span className="mb-1.5 block text-sm font-semibold text-gray-700">Additional skills / notes</span>
-          <textarea name="notes" value={form.notes} onChange={onChange} rows={4} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-[#1a3a8f] focus:outline-none" />
+          <textarea name="notes" value={form.notes} onChange={onChange} rows={4} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-[#f97316] focus:outline-none" />
         </label>
       </div>
     </section>
@@ -44,7 +44,7 @@ export function CvUpload({ fileRef, cv, onChange }: { fileRef: RefObject<HTMLInp
   return (
     <section className="rounded-2xl border border-gray-100 bg-white p-7 shadow-sm">
       <h2 className="mb-2 flex items-center gap-2 text-lg font-bold text-gray-900"><StepNumber value={4} /> Attach Your CV / Resume <span className="text-red-500">*</span></h2>
-      <button type="button" onClick={() => fileRef.current?.click()} className={`w-full rounded-2xl border-2 border-dashed p-8 text-center ${cv ? "border-green-400 bg-green-50 text-green-700" : "border-gray-300 text-gray-500 hover:border-[#1a3a8f]"}`}>
+      <button type="button" onClick={() => fileRef.current?.click()} className={`w-full rounded-2xl border-2 border-dashed p-8 text-center ${cv ? "border-green-400 bg-green-50 text-green-700" : "border-gray-300 text-gray-500 hover:border-[#f97316]"}`}>
         {cv ? <CheckCircle className="mx-auto mb-2" /> : <Upload className="mx-auto mb-2" />}
         {cv ? cv.name : "Click to upload PDF, DOC, or DOCX under 5 MB"}
       </button>
@@ -54,9 +54,9 @@ export function CvUpload({ fileRef, cv, onChange }: { fileRef: RefObject<HTMLInp
 }
 
 function TextField({ label, error, ...props }: { label: string; error?: string } & InputHTMLAttributes<HTMLInputElement>) {
-  return <label className="block"><span className="mb-1.5 block text-sm font-semibold text-gray-700">{label}{props.required ? " *" : ""}</span><input {...props} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-[#1a3a8f] focus:outline-none" />{error ? <p className="mt-2 text-sm text-red-600">{error}</p> : null}</label>;
+  return <label className="block"><span className="mb-1.5 block text-sm font-semibold text-gray-700">{label}{props.required ? " *" : ""}</span><input {...props} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-[#f97316] focus:outline-none" />{error ? <p className="mt-2 text-sm text-red-600">{error}</p> : null}</label>;
 }
 
 function SelectField({ label, options, ...props }: { label: string; options: string[] } & SelectHTMLAttributes<HTMLSelectElement>) {
-  return <label className="block"><span className="mb-1.5 block text-sm font-semibold text-gray-700">{label}</span><select {...props} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-[#1a3a8f] focus:outline-none">{options.map((option) => <option key={option} value={option}>{option ? option === "yes" ? "Yes" : option === "no" ? "No" : option : "Select"}</option>)}</select></label>;
+  return <label className="block"><span className="mb-1.5 block text-sm font-semibold text-gray-700">{label}</span><select {...props} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-[#f97316] focus:outline-none">{options.map((option) => <option key={option} value={option}>{option ? option === "yes" ? "Yes" : option === "no" ? "No" : option : "Select"}</option>)}</select></label>;
 }

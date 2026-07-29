@@ -48,12 +48,12 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-          <div className="bg-gradient-to-r from-[#0f2460] to-[#1a3a8f] px-8 py-8 text-center">
+          <div className="bg-gradient-to-r from-[#111111] via-[#1f1f1f] to-[#f97316] px-8 py-8 text-center">
             <Link href="/" className="inline-block mb-4">
               <img src={hoiLogo} alt="HOI Business Center Logo" className="h-14 w-auto mx-auto" />
             </Link>
             <h1 className="text-2xl font-bold text-white">Welcome back</h1>
-            <p className="text-blue-200 text-sm mt-1">Sign in to your HOI Business Center account</p>
+            <p className="text-zinc-200 text-sm mt-1">Sign in to your HOI Business Center account</p>
           </div>
           <div className="px-8 py-8">
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -64,7 +64,7 @@ export default function LoginPage() {
                   required
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a3a8f] focus:border-transparent transition"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316] focus:border-transparent transition"
                   placeholder="you@company.com"
                   data-testid="input-email"
                 />
@@ -73,7 +73,7 @@ export default function LoginPage() {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="block text-sm font-medium text-gray-700">Password</label>
-                  <Link href="#" className="text-xs text-[#1a3a8f] hover:underline">
+                  <Link href="#" className="text-xs text-[#f97316] hover:underline">
                     Forgot password?
                   </Link>
                 </div>
@@ -83,7 +83,7 @@ export default function LoginPage() {
                     required
                     value={form.password}
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    className="w-full px-4 py-3 pr-11 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a3a8f] focus:border-transparent transition"
+                    className="w-full px-4 py-3 pr-11 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316] focus:border-transparent transition"
                     placeholder="Enter your password"
                     data-testid="input-password"
                   />
@@ -101,7 +101,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="w-full flex items-center justify-center gap-2 bg-[#1a3a8f] text-white py-3 rounded-xl font-semibold hover:bg-[#152e75] transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                className="w-full flex items-center justify-center gap-2 bg-[#f97316] text-white py-3 rounded-xl font-semibold hover:bg-[#ea580c] transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 data-testid="btn-submit-login"
               >
                 <LogIn size={18} />
@@ -111,7 +111,7 @@ export default function LoginPage() {
 
             <p className="text-center text-sm text-gray-500 mt-6">
               Don't have an account?{" "}
-              <Link href="/signup" className="text-[#1a3a8f] font-semibold hover:underline">
+              <Link href="/signup" className="text-[#f97316] font-semibold hover:underline">
                 Sign Up
               </Link>
             </p>

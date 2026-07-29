@@ -50,7 +50,7 @@ export default function PolicyPage({ type }: { type: PolicyType }) {
               <p className="mt-2 leading-relaxed text-gray-600">{body}</p>
             </section>
           ))}
-          <Link href="/contact" className="inline-flex rounded-lg bg-[#1a3a8f] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#152e75]">Contact Support</Link>
+          <Link href="/contact" className="inline-flex rounded-lg bg-[#f97316] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#ea580c]">Contact Support</Link>
         </div>
       </main>
       <div className="mx-auto max-w-[1600px] px-8 pb-10">

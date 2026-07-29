@@ -3,7 +3,7 @@ import type { SignUpValues } from "@/lib/validators";
 
 type FieldErrors = Record<string, string>;
 
-const inputClass = "w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a3a8f] focus:border-transparent transition";
+const inputClass = "w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316] focus:border-transparent transition";
 
 export function DetailsForm({
   form,
@@ -58,7 +58,7 @@ function TextField({ label, error, testId, ...inputProps }: React.InputHTMLAttri
 
 function SubmitButton({ loading, label, loadingLabel, testId }: { loading: boolean; label: string; loadingLabel: string; testId?: string }) {
   return (
-    <button type="submit" disabled={loading} className="w-full flex items-center justify-center gap-2 bg-[#1a3a8f] text-white py-3 rounded-xl font-semibold hover:bg-[#152e75] transition-colors mt-2 disabled:cursor-not-allowed disabled:opacity-60" data-testid={testId}>
+    <button type="submit" disabled={loading} className="w-full flex items-center justify-center gap-2 bg-[#f97316] text-white py-3 rounded-xl font-semibold hover:bg-[#ea580c] transition-colors mt-2 disabled:cursor-not-allowed disabled:opacity-60" data-testid={testId}>
       <UserPlus size={18} />
       {loading ? loadingLabel : label}
     </button>

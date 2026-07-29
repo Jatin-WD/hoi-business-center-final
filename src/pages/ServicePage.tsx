@@ -2,10 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { CalendarCheck, MapPin, PackageCheck } from "lucide-react";
 import HeroSection from "@/components/common/HeroSection";
 import CTABanner from "@/components/common/CTABanner";
+import { useCmsContent } from "@/hooks/useCmsContent";
 import { loadCatalog } from "@/lib/catalog";
 import { ServiceCard, VenueGroup } from "./service/ServiceCards";
 
 export default function ServicePage() {
+  const cms = useCmsContent({
+    "service.hero.title": "Exhibition Services",
+    "service.hero.description": "All six HOI services are centered on Yashobhoomi, our primary exhibition venue in Dwarka, New Delhi.",
+    "service.overview.title": "Services at Yashobhoomi",
+    "service.overview.description": "All six services are available through Yashobhoomi with package links and quote flows attached to this venue.",
+  });
   const { data: catalog = { venues: [], services: [] }, isLoading, error, refetch } = useQuery({
     queryKey: ["service-catalog"],
     queryFn: loadCatalog,
@@ -20,7 +27,7 @@ export default function ServicePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <HeroSection breadcrumbs={[{ label: "Home", href: "/" }, { label: "Yashobhoomi" }]} title="Yashobhoomi Exhibition Services" description="All six HOI services are centered on Yashobhoomi, our primary exhibition venue in Dwarka, New Delhi.">
+      <HeroSection breadcrumbs={[{ label: "Home", href: "/" }, { label: "Yashobhoomi" }]} title={cms("service.hero.title")} description={cms("service.hero.description")}>
         <div className="grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
           <Stat icon={PackageCheck} label="Services" value={catalog.services.length} />
           <Stat icon={CalendarCheck} label="Packages" value={packageCount} />
@@ -41,7 +48,7 @@ export default function ServicePage() {
             </section>
 
             <section>
-              <SectionHeader eyebrow="Services" title="Services at Yashobhoomi" description="All six services are available through Yashobhoomi with package links and quote flows attached to this venue." />
+              <SectionHeader eyebrow="Services" title={cms("service.overview.title")} description={cms("service.overview.description")} />
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                 {catalog.services.map((service) => <ServiceCard key={service.id} service={service} selectedVenues={selectedVenues} selectedLocation="yashobhoomi" />)}
                 {!catalog.services.length ? <StateCard title="No services found" detail="Seed the database to show service packages here." /> : null}
@@ -59,7 +66,7 @@ export default function ServicePage() {
 function SectionHeader({ eyebrow, title, description }: { eyebrow?: string; title: string; description: string }) {
   return (
     <div className="mb-6">
-      {eyebrow ? <p className="mb-2 text-xs font-bold uppercase tracking-wide text-[#1a3a8f]">{eyebrow}</p> : null}
+      {eyebrow ? <p className="mb-2 text-xs font-bold uppercase tracking-wide text-[#f97316]">{eyebrow}</p> : null}
       <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
       <p className="mt-2 max-w-3xl text-sm leading-relaxed text-gray-500">{description}</p>
     </div>

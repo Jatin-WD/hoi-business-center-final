@@ -56,9 +56,9 @@ export default function CategoryPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-gradient-to-r from-[#0f2460] to-[#1a3a8f] text-white py-14 px-8">
+      <div className="bg-gradient-to-r from-[#111111] via-[#1f1f1f] to-[#f97316] text-white py-14 px-8">
         <div className="max-w-[1600px] mx-auto">
-          <div className="flex items-center gap-2 text-blue-200 text-sm mb-4 flex-wrap">
+          <div className="flex items-center gap-2 text-zinc-200 text-sm mb-4 flex-wrap">
             <Link href="/" className="hover:text-white">Home</Link>
             <ChevronRight size={14} />
             <Link href="/service" className="hover:text-white">Service</Link>
@@ -68,7 +68,7 @@ export default function CategoryPage({ params }: Props) {
           </div>
           <h1 className="text-4xl font-bold mb-3">{title}</h1>
           {activeVenue && <p className="text-yellow-300 font-semibold text-lg mb-2">{activeVenue.name}</p>}
-          <p className="text-blue-200 max-w-xl">Select a venue below, then choose from available services and packages.</p>
+          <p className="text-zinc-200 max-w-xl">Select a venue below, then choose from available services and packages.</p>
         </div>
       </div>
 
@@ -89,7 +89,7 @@ export default function CategoryPage({ params }: Props) {
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Venues in {title}</h3>
               <div className="flex flex-wrap gap-2">
                 {venues.map((venue) => (
-                  <button key={venue.id} onClick={() => setActiveVenueId(venue.subVenueId)} className={`px-4 py-2.5 rounded-xl text-sm font-medium border transition-all ${activeVenue?.id === venue.id ? "bg-[#1a3a8f] text-white border-[#1a3a8f] shadow-md" : "bg-white text-gray-700 border-gray-200 hover:border-[#1a3a8f] hover:text-[#1a3a8f]"}`}>
+                  <button key={venue.id} onClick={() => setActiveVenueId(venue.subVenueId)} className={`px-4 py-2.5 rounded-xl text-sm font-medium border transition-all ${activeVenue?.id === venue.id ? "bg-[#f97316] text-white border-[#f97316] shadow-md" : "bg-white text-gray-700 border-gray-200 hover:border-[#f97316] hover:text-[#f97316]"}`}>
                     {venue.name.split(",")[0]}
                   </button>
                 ))}
@@ -122,15 +122,15 @@ function ServiceCard({ service, venueName }: { service: CatalogService; venueNam
       </div>
       <div className="p-5 space-y-2">
         {service.packages.map((pkg, idx) => (
-          <Link key={`${service.id}-${idx}`} href={`${pkg.href}${locationParam}`} className="flex items-center justify-between px-4 py-2.5 rounded-xl border border-gray-100 hover:border-[#1a3a8f] hover:bg-blue-50 transition-all group">
-            <span className="text-sm text-gray-700 group-hover:text-[#1a3a8f] font-medium">{pkg.label}</span>
-            <ArrowRight size={14} className="text-gray-300 group-hover:text-[#1a3a8f] transition-colors flex-shrink-0" />
+          <Link key={`${service.id}-${idx}`} href={`${pkg.href}${locationParam}`} className="flex items-center justify-between px-4 py-2.5 rounded-xl border border-gray-100 hover:border-[#f97316] hover:bg-orange-50 transition-all group">
+            <span className="text-sm text-gray-700 group-hover:text-[#f97316] font-medium">{pkg.label}</span>
+            <ArrowRight size={14} className="text-gray-300 group-hover:text-[#f97316] transition-colors flex-shrink-0" />
           </Link>
         ))}
       </div>
       <div className="px-5 pb-5 flex gap-2">
-        <Link href={requirementHref} className="flex-1 text-center bg-[#1a3a8f] text-white py-2 rounded-lg text-sm font-semibold hover:bg-[#152e75] transition-colors">Book Now</Link>
-        <Link href={requirementHref} className="flex-1 text-center border border-[#1a3a8f] text-[#1a3a8f] py-2 rounded-lg text-sm font-semibold hover:bg-blue-50 transition-colors">Get Quote</Link>
+        <Link href={requirementHref} className="flex-1 text-center bg-[#f97316] text-white py-2 rounded-lg text-sm font-semibold hover:bg-[#ea580c] transition-colors">Book Now</Link>
+        <Link href={requirementHref} className="flex-1 text-center border border-[#f97316] text-[#f97316] py-2 rounded-lg text-sm font-semibold hover:bg-orange-50 transition-colors">Get Quote</Link>
       </div>
     </div>
   );
@@ -141,7 +141,7 @@ function NotFound() {
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Location Not Found</h1>
-        <Link href="/service" className="text-[#1a3a8f] hover:underline">Back to Services</Link>
+        <Link href="/service" className="text-[#f97316] hover:underline">Back to Services</Link>
       </div>
     </div>
   );
@@ -154,7 +154,7 @@ function StateCard({ title, detail }: { title: string; detail?: string }) {
 type StepStatus = "active" | "done" | "inactive";
 
 function StepItem({ n, label, status }: { n: number; label: string; status: StepStatus }) {
-  const circleClass = status === "active" ? "bg-[#1a3a8f] text-white" : status === "done" ? "bg-[#1a3a8f] text-white opacity-70" : "bg-gray-200 text-gray-500";
-  const textClass = status === "active" ? "text-[#1a3a8f] font-semibold" : status === "done" ? "text-[#1a3a8f] font-medium opacity-80" : "text-gray-400";
+  const circleClass = status === "active" ? "bg-[#f97316] text-white" : status === "done" ? "bg-[#f97316] text-white opacity-70" : "bg-gray-200 text-gray-500";
+  const textClass = status === "active" ? "text-[#f97316] font-semibold" : status === "done" ? "text-[#f97316] font-medium opacity-80" : "text-gray-400";
   return <div className={`flex items-center gap-1.5 whitespace-nowrap flex-shrink-0 ${textClass}`}><span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${circleClass}`}>{n}</span>{label}</div>;
 }

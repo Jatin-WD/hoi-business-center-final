@@ -37,10 +37,10 @@ export default class ErrorBoundary extends Component<{ children: ReactNode }, St
               {this.state.errorMessage ?? "An unexpected error occurred while rendering the page."}
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              <button type="button" onClick={this.reset} className="inline-flex items-center justify-center rounded-xl border border-[#1a3a8f] px-6 py-3 font-semibold text-[#1a3a8f] transition-colors hover:bg-blue-50">
+              <button type="button" onClick={this.reset} className="inline-flex items-center justify-center rounded-xl border border-[#f97316] px-6 py-3 font-semibold text-[#f97316] transition-colors hover:bg-orange-50">
                 Try again
               </button>
-              <Link href="/" className="inline-flex items-center justify-center rounded-xl bg-[#1a3a8f] px-6 py-3 text-white font-semibold hover:bg-[#152e75] transition-colors">
+              <Link href="/" className="inline-flex items-center justify-center rounded-xl bg-[#f97316] px-6 py-3 text-white font-semibold hover:bg-[#ea580c] transition-colors">
                 Return to Home
               </Link>
             </div>

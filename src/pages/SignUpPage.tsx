@@ -54,12 +54,12 @@ export default function SignUpPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-          <div className="bg-gradient-to-r from-[#0f2460] to-[#1a3a8f] px-8 py-8 text-center">
+          <div className="bg-gradient-to-r from-[#111111] via-[#1f1f1f] to-[#f97316] px-8 py-8 text-center">
             <Link href="/" className="inline-block mb-4">
               <img src={hoiLogo} alt="HOI Business Center Logo" className="h-14 w-auto mx-auto" />
             </Link>
             <h1 className="text-2xl font-bold text-white">Create your account</h1>
-            <p className="text-blue-200 text-sm mt-1">Join HOI Business Center to manage your exhibition needs</p>
+            <p className="text-zinc-200 text-sm mt-1">Join HOI Business Center to manage your exhibition needs</p>
           </div>
 
           <div className="px-8 py-8">
@@ -67,7 +67,7 @@ export default function SignUpPage() {
 
             <p className="text-center text-sm text-gray-500 mt-6">
               Already have an account?{" "}
-              <Link href="/login" className="text-[#1a3a8f] font-semibold hover:underline">Sign In</Link>
+              <Link href="/login" className="text-[#f97316] font-semibold hover:underline">Sign In</Link>
             </p>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
 import { ArrowRight, ChevronRight, Building2, LayoutGrid, MapPin, Sparkles } from "lucide-react";
 import { Link } from "wouter";
+import { useCmsContent } from "@/hooks/useCmsContent";
 
 const coreValues = [
   { title: "Excellence", desc: "We deliver the highest standards in every service." },
@@ -19,6 +20,11 @@ const serviceHighlights = [
 ];
 
 export default function AboutPage() {
+  const cms = useCmsContent({
+    "about.hero.title": "About HOI Business Center",
+    "about.hero.description": "Your trusted exhibition service partner for booth reservation, booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol.",
+  });
+
   return (
     <div className="min-h-screen bg-[#f7f4ef]">
       <section
@@ -49,16 +55,16 @@ export default function AboutPage() {
                 About HOI
               </p>
               <h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight sm:text-5xl">
-                HOI Business Center, presented in a style that feels closer to the Yashobhoomi experience.
+                {cms("about.hero.title")}
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">
-                Learn about our mission, values, and our role at India's premier business and exhibition center.
+                {cms("about.hero.description")}
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3 rounded-[1.75rem] border border-white/10 bg-white/10 p-4 backdrop-blur">
               <StatCard icon={<Building2 size={16} />} label="Primary venue" value="Yashobhoomi" />
-              <StatCard icon={<MapPin size={16} />} label="Coverage" value="India + Dubai" />
+              <StatCard icon={<MapPin size={16} />} label="Coverage" value="Yashobhoomi" />
               <StatCard icon={<LayoutGrid size={16} />} label="Core services" value="6" />
               <StatCard icon={<Sparkles size={16} />} label="Approach" value="End-to-end" />
             </div>

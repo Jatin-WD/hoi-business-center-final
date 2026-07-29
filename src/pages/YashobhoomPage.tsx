@@ -1,7 +1,46 @@
 import { Link } from "wouter";
-import { ChevronRight, Building2, Users, Globe, Award } from "lucide-react";
+import { ChevronRight, Building2, Boxes, Languages, Megaphone, PanelTop, Truck } from "lucide-react";
+import { useCmsContent } from "@/hooks/useCmsContent";
 
 export default function YashobhoomiPage() {
+  const cms = useCmsContent({
+    "yashobhoomi.hero.title": "Yashobhoomi Exhibition Services",
+    "yashobhoomi.hero.description": "Manage your exhibition presence at India International Convention and Expo Centre, Dwarka with our complete service support.",
+  });
+
+  const services = [
+    {
+      icon: Boxes,
+      title: "Booth Reservation",
+      desc: "Reserve the right exhibition space at Yashobhoomi with HOI handling the process end to end.",
+    },
+    {
+      icon: PanelTop,
+      title: "Booth Design",
+      desc: "Create booth concepts and layouts that fit the venue and the brand story.",
+    },
+    {
+      icon: Building2,
+      title: "Booth Install & Demolition",
+      desc: "Manage installation, execution, and teardown around the event schedule.",
+    },
+    {
+      icon: Truck,
+      title: "Logistics Services",
+      desc: "Coordinate movement, handling, and on-site support for exhibition materials.",
+    },
+    {
+      icon: Megaphone,
+      title: "Marketing Services",
+      desc: "Support visibility, promotions, and exhibition marketing before the event opens.",
+    },
+    {
+      icon: Languages,
+      title: "Interpretation & Protocol",
+      desc: "Provide language support and protocol coordination for guests and exhibitors.",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-gradient-to-r from-[#111111] via-[#1f1f1f] to-[#f97316] px-8 py-16 text-white">
@@ -11,12 +50,12 @@ export default function YashobhoomiPage() {
             <ChevronRight size={14} />
             <span className="text-white">Yashobhoomi</span>
           </div>
-          <h1 className="mb-3 text-4xl font-bold">Yashobhoomi</h1>
+          <h1 className="mb-3 text-4xl font-bold">{cms("yashobhoomi.hero.title")}</h1>
           <p className="mb-3 text-xl font-semibold text-zinc-200">
             India International Convention &amp; Expo Centre
           </p>
           <p className="max-w-2xl text-zinc-200">
-            India's largest and most modern MICE destination located in Dwarka, New Delhi, and HOI Business Center is its official service partner.
+            {cms("yashobhoomi.hero.description")}
           </p>
         </div>
       </div>
@@ -66,29 +105,8 @@ export default function YashobhoomiPage() {
 
         <div className="mb-16">
           <h2 className="mb-8 text-2xl font-bold text-gray-900">What HOI Provides at Yashobhoomi</h2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                icon: Building2,
-                title: "Booth Services",
-                desc: "Reservation, design, fabrication, installation and demolition - end-to-end booth management from a single partner.",
-              },
-              {
-                icon: Globe,
-                title: "Logistics & Freight",
-                desc: "Inward and outward cargo handling, customs clearance assistance, bonded warehousing, and on-site freight movement.",
-              },
-              {
-                icon: Users,
-                title: "Exhibition Staff",
-                desc: "Trained interpreters, protocol officers, information desk executives, and guide staff fluent in multiple languages.",
-              },
-              {
-                icon: Award,
-                title: "Marketing & Hotels",
-                desc: "Pre-event digital promotions, signage, branded materials, hotel room blocks, and transportation arrangements.",
-              },
-            ].map((item, idx) => (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {services.map((item, idx) => (
               <div key={idx} className="rounded-2xl border border-gray-100 bg-white p-6 transition-all hover:border-[#f97316] hover:shadow-md">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100">
                   <item.icon size={22} className="text-[#f97316]" />

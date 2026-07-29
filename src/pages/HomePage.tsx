@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { ArrowRight, Award, Calendar, CheckCircle, MapPin, Users } from "lucide-react";
+import { useCmsContent } from "@/hooks/useCmsContent";
 import { loadCatalog, type CatalogService, type CatalogVenue } from "@/lib/catalog";
 
 const stats = [
@@ -20,6 +21,19 @@ const features = [
 ];
 
 export default function HomePage() {
+  const cms = useCmsContent({
+    "home.hero.badge": "India's Premier Exhibition & Business Center Service",
+    "home.hero.title": "Your Complete Exhibition Partner at HOI Business Center",
+    "home.hero.description": "From booth reservation to booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol - we handle every aspect of your exhibition journey.",
+    "home.services.title": "Our Services",
+    "home.services.description": "Comprehensive exhibition solutions designed to make your presence unforgettable.",
+    "home.locations.title": "Where We Operate",
+    "home.locations.description": "Yashobhoomi is our primary showcase venue and the only public venue highlighted on this website.",
+    "home.why.title": "Why Choose HOI Business Center?",
+    "home.why.description": "Our end-to-end services ensure your exhibition is seamless, professional, and impactful.",
+    "home.cta.title": "Ready to Elevate Your Exhibition Presence?",
+    "home.cta.description": "Contact our team today and let us create an unforgettable exhibition experience for your brand.",
+  });
   const [services, setServices] = useState<CatalogService[]>([]);
   const [venues, setVenues] = useState<CatalogVenue[]>([]);
 
@@ -54,13 +68,13 @@ export default function HomePage() {
           <div className="max-w-3xl">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm backdrop-blur-sm">
               <span className="h-2 w-2 animate-pulse rounded-full bg-[#f97316]" />
-              India's Premier Exhibition & Business Center Service
+              {cms("home.hero.badge")}
             </div>
             <h1 className="mb-6 text-4xl font-bold leading-tight lg:text-6xl">
-              Your Complete Exhibition Partner at HOI Business Center
+              {cms("home.hero.title")}
             </h1>
             <p className="mb-8 text-xl leading-relaxed text-zinc-200">
-              From booth reservation to booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol - we handle every aspect of your exhibition journey.
+              {cms("home.hero.description")}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href="/service" className="inline-flex items-center gap-2 rounded-xl bg-[#f97316] px-6 py-3.5 text-base font-bold text-white transition-colors hover:bg-[#ea580c]">
@@ -75,18 +89,18 @@ export default function HomePage() {
       </section>
 
       <StatsSection />
-      <ServicesSection title="Our Services" description="Comprehensive exhibition solutions designed to make your presence unforgettable." services={services} />
-      <LocationsSection title="Where We Operate" description="Yashobhoomi is our primary showcase venue and the place where HOI makes its strongest impact." venues={venues} />
-      <WhySection title="Why Choose HOI Business Center?" description="Our end-to-end services ensure your exhibition is seamless, professional, and impactful." />
+      <ServicesSection title={cms("home.services.title")} description={cms("home.services.description")} services={services} />
+      <LocationsSection title={cms("home.locations.title")} description={cms("home.locations.description")} venues={venues} />
+      <WhySection title={cms("home.why.title")} description={cms("home.why.description")} />
 
       <section className="relative overflow-hidden bg-[#111111] py-16">
         <img src="/assets/hall.jpg" alt="Exhibition hall" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-black/75" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-[#111111]/75 to-[#f97316]/40" />
         <div className="relative mx-auto max-w-[1600px] px-8 text-center">
-          <h2 className="mb-4 text-3xl font-bold text-white lg:text-4xl">Ready to Elevate Your Exhibition Presence?</h2>
+          <h2 className="mb-4 text-3xl font-bold text-white lg:text-4xl">{cms("home.cta.title")}</h2>
           <p className="mx-auto mb-8 max-w-xl text-zinc-200">
-            Contact our team today and let us create an unforgettable exhibition experience for your brand.
+            {cms("home.cta.description")}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/contact" className="rounded-xl bg-[#f97316] px-8 py-3.5 font-bold text-white transition-colors hover:bg-[#ea580c]">

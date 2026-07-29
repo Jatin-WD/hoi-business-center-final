@@ -35,7 +35,7 @@ export default function SubmissionPopup({ open, type, title, message, onClose }:
         <button
           type="button"
           onClick={onClose}
-          className="mt-6 w-full rounded-xl bg-[#1a3a8f] px-4 py-3 text-sm font-semibold text-white hover:bg-[#152e75]"
+          className="mt-6 w-full rounded-xl bg-[#f97316] px-4 py-3 text-sm font-semibold text-white hover:bg-[#ea580c]"
         >
           OK
         </button>

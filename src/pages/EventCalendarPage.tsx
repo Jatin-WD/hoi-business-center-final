@@ -10,6 +10,7 @@ import {
   X,
 } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
+import { useCmsContent } from "@/hooks/useCmsContent";
 
 type EventItem = {
   id: number | string;
@@ -42,6 +43,10 @@ const LOCATION_LABELS: Record<string, string> = {
 };
 
 export default function EventCalendarPage() {
+  const cms = useCmsContent({
+    "events.hero.title": "Event Calendar",
+    "events.hero.description": "Explore upcoming exhibitions and trade shows across key venues.",
+  });
   const [events, setEvents] = useState<EventItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
@@ -120,18 +125,15 @@ export default function EventCalendarPage() {
                 Event Calendar
               </p>
               <h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight sm:text-5xl">
-                Upcoming exhibitions and trade fairs, presented as clean, clickable event cards.
+                {cms("events.hero.title")}
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">
-                Browse the latest events, open any card for details, and move through the list with simple pagination when there is more content.
+                {cms("events.hero.description")}
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 rounded-[1.75rem] border border-white/10 bg-white/10 p-4 backdrop-blur">
+            <div className="rounded-[1.75rem] border border-white/10 bg-white/10 p-4 backdrop-blur">
               <StatCard label="Total events" value={totalEvents} />
-              <StatCard label="Per page" value={PAGE_SIZE} />
-              <StatCard label="Current page" value={currentPage} />
-              <StatCard label="Theme" value="HOI Orange" />
             </div>
           </div>
         </div>

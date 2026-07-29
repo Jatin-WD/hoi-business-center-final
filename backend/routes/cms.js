@@ -31,8 +31,8 @@ const DEFAULT_CONTENT = [
   ['yashobhoomi.hero.description', 'Yashobhoomi hero description', 'Manage your exhibition presence at India International Convention and Expo Centre, Dwarka with our complete service support.'],
   ['events.hero.title', 'Event calendar hero title', 'Event Calendar'],
   ['events.hero.description', 'Event calendar hero description', 'Explore upcoming exhibitions and trade shows across key venues.'],
-  ['theme.primary', 'Website primary color', '#1a3a8f'],
-  ['theme.primaryDark', 'Website dark color', '#0f2460'],
+  ['theme.primary', 'Website primary color', '#f97316'],
+  ['theme.primaryDark', 'Website dark color', '#111111'],
   ['theme.accent', 'Website accent color', '#facc15'],
   ['theme.accentText', 'Website accent text color', '#111827'],
   ['manpower.roles', 'Manpower roles JSON', JSON.stringify([

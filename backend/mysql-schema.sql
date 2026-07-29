@@ -292,8 +292,8 @@ INSERT INTO cms_content (content_key, label, value, type) VALUES
   ('yashobhoomi.hero.description', 'Yashobhoomi hero description', 'Manage your exhibition presence at India International Convention and Expo Centre, Dwarka with our complete service support.', 'text'),
   ('events.hero.title', 'Event calendar hero title', 'Event Calendar', 'text'),
   ('events.hero.description', 'Event calendar hero description', 'Explore upcoming exhibitions and trade shows across key venues.', 'text'),
-  ('theme.primary', 'Website primary color', '#1a3a8f', 'text'),
-  ('theme.primaryDark', 'Website dark color', '#0f2460', 'text'),
+  ('theme.primary', 'Website primary color', '#f97316', 'text'),
+  ('theme.primaryDark', 'Website dark color', '#111111', 'text'),
   ('theme.accent', 'Website accent color', '#facc15', 'text'),
   ('theme.accentText', 'Website accent text color', '#111827', 'text'),
   ('manpower.roles', 'Manpower roles JSON', '[{"id":"translator","label":"Translator / Interpreter","enabled":true},{"id":"helper","label":"Helper","enabled":true},{"id":"host","label":"Host / Hostess","enabled":true},{"id":"promoter","label":"Promoter","enabled":true},{"id":"protocol","label":"Protocol Officer","enabled":true},{"id":"info-desk","label":"Information Desk Executive","enabled":true}]', 'text')

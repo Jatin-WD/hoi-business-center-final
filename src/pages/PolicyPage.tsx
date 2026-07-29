@@ -1,6 +1,8 @@
 import { Link } from "wouter";
 import HeroSection from "@/components/common/HeroSection";
 import CTABanner from "@/components/common/CTABanner";
+import { useSiteLanguage } from "@/hooks/useSiteLanguage";
+import { translateSiteText } from "@/lib/site-translations";
 
 type PolicyType = "privacy" | "terms" | "support";
 
@@ -38,10 +40,12 @@ const content = {
 } satisfies Record<PolicyType, { title: string; description: string; sections: string[][] }>;
 
 export default function PolicyPage({ type }: { type: PolicyType }) {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const page = content[type];
   return (
     <div className="min-h-screen bg-gray-50">
-      <HeroSection breadcrumbs={[{ label: "Home", href: "/" }, { label: page.title }]} title={page.title} description={page.description} />
+      <HeroSection breadcrumbs={[{ label: t("nav.home", "Home"), href: "/" }, { label: page.title }]} title={page.title} description={page.description} />
       <main className="mx-auto max-w-4xl px-6 py-12 sm:px-8">
         <div className="space-y-5 rounded-lg border border-gray-100 bg-white p-8 shadow-sm">
           {page.sections.map(([title, body]) => (
@@ -50,11 +54,11 @@ export default function PolicyPage({ type }: { type: PolicyType }) {
               <p className="mt-2 leading-relaxed text-gray-600">{body}</p>
             </section>
           ))}
-          <Link href="/contact" className="inline-flex rounded-lg bg-[#f97316] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#ea580c]">Contact Support</Link>
+          <Link href="/contact" className="inline-flex rounded-lg bg-[#f97316] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#ea580c]">{t("common.contactSupport", "Contact Support")}</Link>
         </div>
       </main>
       <div className="mx-auto max-w-[1600px] px-8 pb-10">
-        <CTABanner title="Need direct help?" description="Share your requirement with the HOI team and we will respond with next steps." primaryLabel="Contact Us" primaryHref="/contact" secondaryLabel="Browse Services" secondaryHref="/services" />
+        <CTABanner title={t("policy.cta.title", "Need direct help?")} description={t("policy.cta.description", "Share your requirement with the HOI team and we will respond with next steps.")} primaryLabel={t("nav.contactUs", "Contact Us")} primaryHref="/contact" secondaryLabel={t("common.browseServices", "Browse Services")} secondaryHref="/services" />
       </div>
     </div>
   );

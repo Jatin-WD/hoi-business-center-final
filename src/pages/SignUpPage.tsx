@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
+import { useSiteLanguage } from "@/hooks/useSiteLanguage";
+import { translateSiteText } from "@/lib/site-translations";
 import { signupSchema, type SignUpValues } from "@/lib/validators";
 import { DetailsForm } from "./signup/SignUpForms";
 
 const hoiLogo = "/assets/hoi.png";
 
 export default function SignUpPage() {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const { user, loading, register } = useAuth();
   const [, setLocation] = useLocation();
   const [showPassword, setShowPassword] = useState(false);
@@ -43,7 +47,7 @@ export default function SignUpPage() {
       await register(result.data);
       setLocation("/");
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Unable to create account. Please try again.");
+      setSubmitError(error instanceof Error ? error.message : t("signup.failed", "Unable to create account. Please try again."));
       setStatus("error");
     } finally {
       setStatus("idle");
@@ -58,21 +62,32 @@ export default function SignUpPage() {
             <Link href="/" className="inline-block mb-4">
               <img src={hoiLogo} alt="HOI Business Center Logo" className="h-14 w-auto mx-auto" />
             </Link>
-            <h1 className="text-2xl font-bold text-white">Create your account</h1>
-            <p className="text-zinc-200 text-sm mt-1">Join HOI Business Center to manage your exhibition needs</p>
+            <h1 className="text-2xl font-bold text-white">{t("signup.title", "Create your account")}</h1>
+            <p className="text-zinc-200 text-sm mt-1">{t("signup.subtitle", "Join HOI Business Center to manage your exhibition needs")}</p>
           </div>
 
           <div className="px-8 py-8">
-            <DetailsForm form={form} fieldErrors={fieldErrors} submitError={submitError} status={status} showPassword={showPassword} onChange={handleChange} onSubmit={handleSubmit} onTogglePassword={() => setShowPassword((value) => !value)} />
+            <DetailsForm
+              form={form}
+              fieldErrors={fieldErrors}
+              submitError={submitError}
+              status={status}
+              showPassword={showPassword}
+              onChange={handleChange}
+              onSubmit={handleSubmit}
+              onTogglePassword={() => setShowPassword((value) => !value)}
+            />
 
             <p className="text-center text-sm text-gray-500 mt-6">
-              Already have an account?{" "}
-              <Link href="/login" className="text-[#f97316] font-semibold hover:underline">Sign In</Link>
+              {t("signup.haveAccount", "Already have an account?")}{" "}
+              <Link href="/login" className="text-[#f97316] font-semibold hover:underline">
+                {t("auth.login", "Sign In")}
+              </Link>
             </p>
           </div>
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">© HOI Business Center. All rights reserved.</p>
+        <p className="text-center text-xs text-gray-400 mt-6">{t("footer.copyright", "© HOI Business Center. All rights reserved.")}</p>
       </div>
     </div>
   );

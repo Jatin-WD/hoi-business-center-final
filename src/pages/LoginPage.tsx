@@ -2,11 +2,15 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useSiteLanguage } from "@/hooks/useSiteLanguage";
+import { translateSiteText } from "@/lib/site-translations";
 import { loginSchema, type LoginValues } from "@/lib/validators";
 
 const hoiLogo = "/assets/hoi.png";
 
 export default function LoginPage() {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const { user, loading, login } = useAuth();
   const [, setLocation] = useLocation();
   const redirectParam = new URLSearchParams(window.location.search).get("redirect");
@@ -27,9 +31,7 @@ export default function LoginPage() {
     setSubmitError("");
     const result = loginSchema.safeParse(form);
     if (!result.success) {
-      setFieldErrors(
-        Object.fromEntries(result.error.errors.map((error) => [error.path[0] as string, error.message]))
-      );
+      setFieldErrors(Object.fromEntries(result.error.errors.map((error) => [error.path[0] as string, error.message])));
       return;
     }
     setStatus("loading");
@@ -37,7 +39,7 @@ export default function LoginPage() {
       await login(result.data);
       setLocation(redirectTo);
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Unable to sign in. Please try again.");
+      setSubmitError(error instanceof Error ? error.message : t("login.failed", "Unable to sign in. Please try again."));
       setStatus("error");
     } finally {
       setStatus("idle");
@@ -52,29 +54,29 @@ export default function LoginPage() {
             <Link href="/" className="inline-block mb-4">
               <img src={hoiLogo} alt="HOI Business Center Logo" className="h-14 w-auto mx-auto" />
             </Link>
-            <h1 className="text-2xl font-bold text-white">Welcome back</h1>
-            <p className="text-zinc-200 text-sm mt-1">Sign in to your HOI Business Center account</p>
+            <h1 className="text-2xl font-bold text-white">{t("login.title", "Welcome back")}</h1>
+            <p className="text-zinc-200 text-sm mt-1">{t("login.subtitle", "Sign in to your HOI Business Center account")}</p>
           </div>
           <div className="px-8 py-8">
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t("common.emailAddress", "Email address")}</label>
                 <input
                   type="email"
                   required
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316] focus:border-transparent transition"
-                  placeholder="you@company.com"
+                  placeholder={t("login.emailPlaceholder", "you@company.com")}
                   data-testid="input-email"
                 />
                 {fieldErrors.email ? <p className="mt-2 text-sm text-red-600">{fieldErrors.email}</p> : null}
               </div>
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-sm font-medium text-gray-700">Password</label>
+                  <label className="block text-sm font-medium text-gray-700">{t("login.password", "Password")}</label>
                   <Link href="#" className="text-xs text-[#f97316] hover:underline">
-                    Forgot password?
+                    {t("login.forgotPassword", "Forgot password?")}
                   </Link>
                 </div>
                 <div className="relative">
@@ -84,7 +86,7 @@ export default function LoginPage() {
                     value={form.password}
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
                     className="w-full px-4 py-3 pr-11 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316] focus:border-transparent transition"
-                    placeholder="Enter your password"
+                    placeholder={t("login.passwordPlaceholder", "Enter your password")}
                     data-testid="input-password"
                   />
                   <button
@@ -105,20 +107,20 @@ export default function LoginPage() {
                 data-testid="btn-submit-login"
               >
                 <LogIn size={18} />
-                {status === "loading" ? "Signing In..." : "Sign In"}
+                {status === "loading" ? t("login.signingIn", "Signing In...") : t("auth.login", "Sign In")}
               </button>
             </form>
 
             <p className="text-center text-sm text-gray-500 mt-6">
-              Don't have an account?{" "}
+              {t("login.noAccount", "Don't have an account?")}{" "}
               <Link href="/signup" className="text-[#f97316] font-semibold hover:underline">
-                Sign Up
+                {t("auth.signup", "Sign Up")}
               </Link>
             </p>
           </div>
         </div>
-        <p className="text-center text-xs text-gray-400 mt-6">© HOI Business Center. All rights reserved.</p>
+        <p className="text-center text-xs text-gray-400 mt-6">{t("footer.copyright", "© HOI Business Center. All rights reserved.")}</p>
       </div>
     </div>
-  )
+  );
 }

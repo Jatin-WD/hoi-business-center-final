@@ -1,14 +1,19 @@
 import { Mail, MapPin, Phone } from "lucide-react";
+import { useSiteLanguage } from "@/hooks/useSiteLanguage";
+import { translateSiteText } from "@/lib/site-translations";
 
 export function ContactInfo() {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
+
   return (
     <div className="space-y-6">
       <div className="rounded-[1.75rem] border border-black/5 bg-white p-6 shadow-sm">
-        <h2 className="mb-5 text-lg font-black text-slate-900">Get in Touch</h2>
+        <h2 className="mb-5 text-lg font-black text-slate-900">{t("common.getInTouch", "Get in Touch")}</h2>
         <div className="space-y-5">
-          <ContactItem icon={MapPin} label="Office Address" text="Yashobhoomi, Dwarka, New Delhi, India" />
-          <ContactItem icon={Phone} label="Phone" text="+91 98100 97323" href="tel:+919810097323" />
-          <ContactItem icon={Mail} label="Email" text="thlim@kilindia.in" href="mailto:thlim@kilindia.in" />
+          <ContactItem icon={MapPin} label={t("common.officeAddress", "Office Address")} text={t("footer.address", "Yashobhoomi, Dwarka, New Delhi, India")} />
+          <ContactItem icon={Phone} label={t("footer.phone", "Phone")} text="+91 98100 97323" href="tel:+919810097323" />
+          <ContactItem icon={Mail} label={t("common.emailAddress", "Email")} text="thlim@kilindia.in" href="mailto:thlim@kilindia.in" />
         </div>
       </div>
       <BusinessHours />
@@ -37,13 +42,16 @@ function ContactItem({ icon: Icon, label, text, href }: { icon: typeof Mail; lab
 }
 
 function BusinessHours() {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
+
   return (
     <div className="rounded-[1.75rem] bg-[#111111] p-6 text-white shadow-sm">
-      <h3 className="mb-3 text-lg font-black">Business Hours</h3>
+      <h3 className="mb-3 text-lg font-black">{t("common.businessHours", "Business Hours")}</h3>
       <div className="space-y-2 text-sm text-white/80">
-        <HourRow day="Monday - Friday" time="9:00 AM - 6:00 PM" />
-        <HourRow day="Saturday" time="10:00 AM - 4:00 PM" />
-        <HourRow day="Sunday" time="Closed" />
+        <HourRow day={t("common.mondayFriday", "Monday - Friday")} time="9:00 AM - 6:00 PM" />
+        <HourRow day={t("common.saturday", "Saturday")} time="10:00 AM - 4:00 PM" />
+        <HourRow day={t("common.sunday", "Sunday")} time={t("common.closed", "Closed")} />
       </div>
     </div>
   );

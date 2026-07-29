@@ -3,6 +3,8 @@ import { Link } from "wouter";
 import { ArrowRight, CalendarDays, CheckCircle2, Clock3, MapPin, ShieldCheck, Sparkles, Users } from "lucide-react";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { loadCatalog, type CatalogService, type CatalogVenue } from "@/lib/catalog";
+import { useSiteLanguage } from "@/hooks/useSiteLanguage";
+import { translateServiceLabel, translateSiteText } from "@/lib/site-translations";
 
 const processSteps = [
   { title: "Select service", body: "Open the service catalog and choose the required service card." },
@@ -12,6 +14,8 @@ const processSteps = [
 ];
 
 export default function HomePage() {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const cms = useCmsContent({
     "home.hero.badge": "Public information portal",
     "home.hero.title": "HOI Business Center at Yashobhoomi",
@@ -64,7 +68,7 @@ export default function HomePage() {
       image: "/assets/yashobhoomi.png",
     } satisfies CatalogVenue);
 
-  const canonicalServices = services.slice(0, 6);
+  const canonicalServices = services.slice(0, 6).map((service) => ({ ...service, label: translateServiceLabel(service.id, language) }));
 
   return (
     <div className="min-h-screen bg-[#f6f1e7] text-[#111111]">
@@ -104,11 +108,11 @@ export default function HomePage() {
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/services" className="inline-flex items-center gap-2 rounded-xl bg-[#111111] px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-[#2a2018]">
-                Browse Services
+                {t("common.browseServices", "Browse Services")}
                 <ArrowRight size={16} />
               </Link>
               <Link href="/contact" className="inline-flex items-center gap-2 rounded-xl border border-[#111111]/15 bg-white px-6 py-3.5 text-sm font-bold text-[#111111] transition-colors hover:bg-[#faf8f2]">
-                Contact Team
+                {t("common.contactTeam", "Contact Team")}
               </Link>
             </div>
           </div>
@@ -126,14 +130,14 @@ export default function HomePage() {
               <div className="absolute inset-x-0 bottom-0 h-52 bg-gradient-to-t from-[#111111]/82 via-[#f97316]/18 to-transparent" />
               <div className="absolute inset-0 p-6 text-white">
                 <div className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-white/80 backdrop-blur-sm">
-                  Yashobhoomi
+                  {t("nav.yashobhoomi", "Yashobhoomi")}
                 </div>
                 <div className="mt-auto flex h-full flex-col justify-end">
                   <div className="max-w-md rounded-[1.5rem] border border-white/15 bg-black/38 p-5 backdrop-blur-md">
-                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/75">Venue focus</p>
-                    <h2 className="mt-2 text-2xl font-black leading-tight">Official exhibition venue for every public service flow</h2>
+                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/75">{t("common.venueFocus", "Venue focus")}</p>
+                    <h2 className="mt-2 text-2xl font-black leading-tight">{t("home.hero.focusTitle", "Official exhibition venue for every public service flow")}</h2>
                     <p className="mt-3 text-sm leading-6 text-white/80">
-                      The homepage stays centered on one venue so users do not have to decode multiple locations or mixed service models.
+                      {t("home.hero.focusDesc", "The homepage stays centered on one venue so users do not have to decode multiple locations or mixed service models.")}
                     </p>
                   </div>
                 </div>
@@ -146,10 +150,10 @@ export default function HomePage() {
       <section className="border-b border-black/5 bg-[#f6f1e7]">
         <div className="mx-auto max-w-[1600px] px-6 py-10 sm:px-8">
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <MetricCard icon={CalendarDays} label="Events managed" value="500+" />
-            <MetricCard icon={Users} label="Booths delivered" value="1,200+" />
-            <MetricCard icon={MapPin} label="Venue model" value="Yashobhoomi" />
-            <MetricCard icon={ShieldCheck} label="Service model" value="6 services" />
+            <MetricCard icon={CalendarDays} label={t("home.metric.events", "Events managed")} value="500+" />
+            <MetricCard icon={Users} label={t("home.metric.booths", "Booths delivered")} value="1,200+" />
+            <MetricCard icon={MapPin} label={t("home.metric.venue", "Venue model")} value={t("nav.yashobhoomi", "Yashobhoomi")} />
+            <MetricCard icon={ShieldCheck} label={t("home.metric.services", "Service model")} value={t("home.metric.six", "6 services")} />
           </div>
         </div>
       </section>
@@ -157,7 +161,7 @@ export default function HomePage() {
       <section className="bg-[#111111] py-14 text-white lg:py-18">
         <div className="mx-auto max-w-[1600px] px-6 sm:px-8">
           <SectionHeading
-            eyebrow="Services"
+              eyebrow={t("nav.services", "Services")}
             title={cms("home.services.title")}
             description={cms("home.services.description")}
             align="left"
@@ -175,7 +179,7 @@ export default function HomePage() {
                     <span className="text-sm font-black">{String(index + 1).padStart(2, "0")}</span>
                   </div>
                   <span className="rounded-full border border-white/15 bg-white/8 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/75 backdrop-blur">
-                    Booking ready
+                    {t("common.bookingReady", "Booking ready")}
                   </span>
                 </div>
 
@@ -187,7 +191,7 @@ export default function HomePage() {
                 </p>
 
                 <div className="mt-5 flex items-center gap-2 text-sm font-bold text-[#ff9d5c]">
-                  Open service detail
+                  {t("common.openServiceDetail", "Open service detail")}
                   <ArrowRight size={15} />
                 </div>
               </Link>
@@ -200,7 +204,7 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-[1600px] gap-6 px-6 sm:px-8 lg:grid-cols-[1.02fr_0.98fr]">
           <div className="rounded-[2rem] border border-black/5 bg-white p-7 shadow-[0_18px_50px_rgba(17,17,17,0.05)] lg:p-8">
             <SectionHeading
-              eyebrow="Venue"
+              eyebrow={t("nav.yashobhoomi", "Venue")}
               title={cms("home.locations.title")}
               description={cms("home.locations.description")}
               align="left"
@@ -210,10 +214,10 @@ export default function HomePage() {
                 {yashobhoomi.about || yashobhoomi.description}
               </p>
               <div className="grid gap-3 sm:grid-cols-2">
-                <Fact label="Location" value={`${yashobhoomi.city}, ${yashobhoomi.state}`} />
-                <Fact label="Scale" value={yashobhoomi.totalArea || "Major exhibition venue"} />
-                <Fact label="Facilities" value={yashobhoomi.halls || "Convention and expo halls"} />
-                <Fact label="Established" value={yashobhoomi.established || "2023"} />
+                <Fact label={t("home.fact.location", "Location")} value={`${yashobhoomi.city}, ${yashobhoomi.state}`} />
+                <Fact label={t("home.fact.scale", "Scale")} value={yashobhoomi.totalArea || t("home.fact.major", "Major exhibition venue")} />
+                <Fact label={t("home.fact.facilities", "Facilities")} value={yashobhoomi.halls || t("home.fact.halls", "Convention and expo halls")} />
+                <Fact label={t("home.fact.established", "Established")} value={yashobhoomi.established || "2023"} />
               </div>
             </div>
           </div>
@@ -228,7 +232,7 @@ export default function HomePage() {
             <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#111111]/88 via-[#f97316]/25 to-transparent" />
             <div className="absolute inset-0 flex flex-col justify-end p-7 text-white lg:p-8">
               <span className="inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/75">
-                Official venue spotlight
+                {t("common.officialVenueSpotlight", "Official venue spotlight")}
               </span>
               <h3 className="mt-4 max-w-xl text-3xl font-black leading-tight">{yashobhoomi.name}</h3>
               <p className="mt-3 max-w-xl text-sm leading-7 text-white/82">
@@ -244,9 +248,9 @@ export default function HomePage() {
           <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="rounded-[2rem] border border-black/5 bg-[#111111] p-7 text-white shadow-[0_18px_50px_rgba(17,17,17,0.08)]">
               <SectionHeading
-                eyebrow="How it works"
-                title="Simple booking sequence"
-                description="The homepage now guides users in a straight line from service discovery to booking."
+              eyebrow={t("common.howItWorks", "How it works")}
+              title={t("home.process.title", "Simple booking sequence")}
+              description={t("common.howItWorksDesc", "The homepage now guides users in a straight line from service discovery to booking.")}
                 align="left"
                 tone="light"
               />
@@ -267,7 +271,7 @@ export default function HomePage() {
 
             <div className="rounded-[2rem] border border-black/5 bg-[#f6f1e7] p-7 shadow-[0_18px_50px_rgba(17,17,17,0.05)] lg:p-8">
               <SectionHeading
-                eyebrow="Why HOI"
+              eyebrow={t("common.whyHoi", "Why HOI")}
                 title={cms("home.why.title")}
                 description={cms("home.why.description")}
                 align="left"
@@ -286,9 +290,9 @@ export default function HomePage() {
                 ))}
               </div>
               <div className="mt-6 rounded-[1.5rem] border border-black/5 bg-white p-5">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#6b4b2d]">Note</p>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#6b4b2d]">{t("common.note", "Note")}</p>
                 <p className="mt-2 text-sm leading-7 text-slate-700">
-                  This homepage keeps the public information model strict and simple, which makes it easier for users to understand what HOI offers and where each path leads.
+                  {t("home.note.body", "This homepage keeps the public information model strict and simple, which makes it easier for users to understand what HOI offers and where each path leads.")}
                 </p>
               </div>
             </div>
@@ -302,18 +306,18 @@ export default function HomePage() {
             <div className="max-w-3xl">
               <p className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-white/75">
                 <Clock3 size={14} />
-                Ready to move forward
+                {t("common.readyToMoveForward", "Ready to move forward")}
               </p>
               <h2 className="mt-4 text-3xl font-black leading-tight sm:text-4xl">{cms("home.cta.title")}</h2>
               <p className="mt-4 max-w-2xl text-base leading-8 text-white/78">{cms("home.cta.description")}</p>
             </div>
             <div className="flex flex-wrap gap-3">
               <Link href="/contact" className="inline-flex items-center gap-2 rounded-xl bg-[#f97316] px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-[#ea580c]">
-                Contact Us
+                {t("nav.contactUs", "Contact Us")}
                 <ArrowRight size={16} />
               </Link>
               <Link href="/services" className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-white/10">
-                Browse Services
+                {t("common.browseServices", "Browse Services")}
               </Link>
             </div>
           </div>

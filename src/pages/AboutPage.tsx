@@ -2,28 +2,31 @@ import { type ReactNode } from "react";
 import { ArrowRight, ChevronRight, Building2, LayoutGrid, MapPin, Sparkles } from "lucide-react";
 import { Link } from "wouter";
 import { useCmsContent } from "@/hooks/useCmsContent";
-
-const coreValues = [
-  { title: "Excellence", desc: "We deliver the highest standards in every service." },
-  { title: "Reliability", desc: "Your timeline is our commitment. We never miss a deadline." },
-  { title: "Innovation", desc: "Creative booth designs and marketing strategies that stand out." },
-  { title: "Partnership", desc: "We treat every client as a long-term partner, not a transaction." },
-];
-
-const serviceHighlights = [
-  "Booth Reservation",
-  "Booth Design",
-  "Booth Install & Demolition",
-  "Logistics Services",
-  "Marketing Services",
-  "Interpretation & Protocol",
-];
+import { useSiteLanguage } from "@/hooks/useSiteLanguage";
+import { translateSiteText } from "@/lib/site-translations";
 
 export default function AboutPage() {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const cms = useCmsContent({
     "about.hero.title": "About HOI Business Center",
     "about.hero.description": "Your trusted exhibition service partner for booth reservation, booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol.",
   });
+  const coreValues = [
+    { title: t("about.values.excellence", "Excellence"), desc: t("about.values.excellenceDesc", "We deliver the highest standards in every service.") },
+    { title: t("about.values.reliability", "Reliability"), desc: t("about.values.reliabilityDesc", "Your timeline is our commitment. We never miss a deadline.") },
+    { title: t("about.values.innovation", "Innovation"), desc: t("about.values.innovationDesc", "Creative booth designs and marketing strategies that stand out.") },
+    { title: t("about.values.partnership", "Partnership"), desc: t("about.values.partnershipDesc", "We treat every client as a long-term partner, not a transaction.") },
+  ];
+
+  const serviceHighlights = [
+    t("service.booth-reservation", "Booth Reservation"),
+    t("service.booth-design", "Booth Design"),
+    t("service.booth-install-demolition", "Booth Install & Demolition"),
+    t("service.logistics", "Logistics Services"),
+    t("service.marketing", "Marketing Services"),
+    t("service.interpretation-protocol", "Interpretation & Protocol"),
+  ];
 
   return (
     <div className="min-h-screen bg-[#f7f4ef]">
@@ -43,16 +46,16 @@ export default function AboutPage() {
 
         <div className="relative mx-auto max-w-[1600px] px-5 py-14 sm:px-8 sm:py-16 lg:py-20">
           <div className="flex items-center gap-2 text-white/70 text-sm">
-            <Link href="/" className="transition-colors hover:text-white">Home</Link>
+            <Link href="/" className="transition-colors hover:text-white">{t("nav.home", "Home")}</Link>
             <ChevronRight size={14} />
-            <span className="text-white">About Us</span>
+            <span className="text-white">{t("nav.aboutUs", "About Us")}</span>
           </div>
 
           <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
             <div>
               <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-white/75">
                 <Sparkles size={14} />
-                About HOI
+                {t("about.badge", "About HOI")}
               </p>
               <h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight sm:text-5xl">
                 {cms("about.hero.title")}
@@ -63,10 +66,10 @@ export default function AboutPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-3 rounded-[1.75rem] border border-white/10 bg-white/10 p-4 backdrop-blur">
-              <StatCard icon={<Building2 size={16} />} label="Primary venue" value="Yashobhoomi" />
-              <StatCard icon={<MapPin size={16} />} label="Coverage" value="Yashobhoomi" />
-              <StatCard icon={<LayoutGrid size={16} />} label="Core services" value="6" />
-              <StatCard icon={<Sparkles size={16} />} label="Approach" value="End-to-end" />
+              <StatCard icon={<Building2 size={16} />} label={t("about.primaryVenue", "Primary venue")} value={t("nav.yashobhoomi", "Yashobhoomi")} />
+              <StatCard icon={<MapPin size={16} />} label={t("about.coverage", "Coverage")} value={t("nav.yashobhoomi", "Yashobhoomi")} />
+              <StatCard icon={<LayoutGrid size={16} />} label={t("about.coreServices", "Core services")} value="6" />
+              <StatCard icon={<Sparkles size={16} />} label={t("about.approach", "Approach")} value={t("about.endToEnd", "End-to-end")} />
             </div>
           </div>
         </div>
@@ -75,17 +78,17 @@ export default function AboutPage() {
       <main className="mx-auto max-w-[1600px] px-5 py-10 sm:px-8 sm:py-14">
         <div className="grid gap-8 lg:grid-cols-[1fr_0.95fr]">
           <section className="rounded-[1.75rem] border border-black/5 bg-white p-7 shadow-sm">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">Who We Are</p>
-            <h2 className="mt-3 text-3xl font-black text-slate-900">Built around Yashobhoomi and the full exhibition journey.</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("about.whoWeAre", "Who We Are")}</p>
+            <h2 className="mt-3 text-3xl font-black text-slate-900">{t("about.whoTitle", "Built around Yashobhoomi and the full exhibition journey.")}</h2>
             <div className="mt-5 space-y-4 text-base leading-7 text-slate-600">
               <p>
-                HOI Business Center is the premier exhibition and event services provider at Yashobhoomi - India's largest MICE (Meetings, Incentives, Conferences & Exhibitions) venue, located in Dwarka, New Delhi.
+                {t("about.body1", "HOI Business Center is the premier exhibition and event services provider at Yashobhoomi - India's largest MICE (Meetings, Incentives, Conferences & Exhibitions) venue, located in Dwarka, New Delhi.")}
               </p>
               <p>
-                Our team of seasoned professionals provides comprehensive end-to-end services for exhibitors, ensuring that every aspect of your exhibition journey - from initial booth reservation to final demolition - is handled with expertise and care.
+                {t("about.body2", "Our team of seasoned professionals provides comprehensive end-to-end services for exhibitors, ensuring that every aspect of your exhibition journey - from initial booth reservation to final demolition - is handled with expertise and care.")}
               </p>
               <p>
-                Everything we present on the public site is centered on Yashobhoomi and the six canonical HOI services, so the experience stays simple and consistent.
+                {t("about.body3", "Everything we present on the public site is centered on Yashobhoomi and the six canonical HOI services, so the experience stays simple and consistent.")}
               </p>
             </div>
 
@@ -103,10 +106,10 @@ export default function AboutPage() {
               <img src="/assets/hall.jpg" alt="Exhibition hall" className="absolute inset-0 h-full w-full object-cover opacity-65" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-7">
-                <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/70">Our approach</p>
-                <h3 className="mt-2 text-2xl font-black">We combine venue understanding, execution discipline, and client-first planning.</h3>
+                <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/70">{t("about.ourApproach", "Our approach")}</p>
+                <h3 className="mt-2 text-2xl font-black">{t("about.approachTitle", "We combine venue understanding, execution discipline, and client-first planning.")}</h3>
                 <p className="mt-3 max-w-xl text-sm leading-6 text-white/80">
-                  The result is a service experience that feels premium, organized, and directly tied to how exhibitions actually run on the ground.
+                  {t("about.approachBody", "The result is a service experience that feels premium, organized, and directly tied to how exhibitions actually run on the ground.")}
                 </p>
               </div>
             </div>
@@ -116,8 +119,8 @@ export default function AboutPage() {
         <section className="mt-8 rounded-[1.75rem] border border-black/5 bg-white p-7 shadow-sm">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">Our Core Values</p>
-              <h2 className="mt-2 text-2xl font-black text-slate-900">What we stand for</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.coreValues", "Our Core Values")}</p>
+              <h2 className="mt-2 text-2xl font-black text-slate-900">{t("common.whatWeStandFor", "What we stand for")}</h2>
             </div>
           </div>
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -136,11 +139,11 @@ export default function AboutPage() {
         <section className="mt-8 rounded-[1.75rem] border border-black/5 bg-[#111111] p-7 text-white shadow-sm">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/70">Our Services Overview</p>
-              <h2 className="mt-2 text-2xl font-black">Current services, arranged like a premium venue section</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/70">{t("common.servicesOverview", "Our Services Overview")}</p>
+              <h2 className="mt-2 text-2xl font-black">{t("common.currentServices", "Current services, arranged like a premium venue section")}</h2>
             </div>
             <Link href="/services" className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-900 transition-colors hover:bg-slate-100">
-              Explore Services
+              {t("common.exploreServices", "Explore Services")}
               <ArrowRight size={16} />
             </Link>
           </div>

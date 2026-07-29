@@ -2,6 +2,7 @@ import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { AuthProvider } from "@/hooks/useAuth";
+import { SiteLanguageProvider } from "@/hooks/useSiteLanguage";
 import { useSiteTheme } from "@/hooks/useSiteTheme";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -100,11 +101,13 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary>
-        <AuthProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}> 
-            <Router />
-          </WouterRouter>
-        </AuthProvider>
+        <SiteLanguageProvider>
+          <AuthProvider>
+            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+              <Router />
+            </WouterRouter>
+          </AuthProvider>
+        </SiteLanguageProvider>
       </ErrorBoundary>
     </QueryClientProvider>
   );

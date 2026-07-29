@@ -3,6 +3,8 @@ import { Link } from "wouter";
 import { AlertCircle, CheckCircle, ChevronRight, FileText } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
 import { useCmsContent } from "@/hooks/useCmsContent";
+import { useSiteLanguage } from "@/hooks/useSiteLanguage";
+import { translateSiteText } from "@/lib/site-translations";
 import { manpowerCommonSchema } from "@/lib/validators";
 import { RoleSpecificFields, StepNumber } from "./manpower/RoleSpecificFields";
 import { CvUpload, PersonalDetails, type ManpowerFormState } from "./manpower/CommonSections";
@@ -22,6 +24,8 @@ const emptyForm: ManpowerFormState = {
 };
 
 export default function ManPowerPage() {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const cms = useCmsContent({
     "manpower.hero.title": "Apply for Manpower",
     "manpower.hero.description": "Select your role, add the role-specific details, and upload your CV. All submissions are stored in the project database.",
@@ -54,7 +58,7 @@ export default function ManPowerPage() {
     const allowed = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
     if (!allowed.includes(file.type) || file.size > 5 * 1024 * 1024) {
       setStatus("error");
-      setMessage("Upload a PDF, DOC, or DOCX file under 5 MB.");
+      setMessage(t("manpower.fileError", "Upload a PDF, DOC, or DOCX file under 5 MB."));
       return;
     }
     setMessage("");
@@ -66,10 +70,10 @@ export default function ManPowerPage() {
     setFieldErrors({});
     setMessage("");
 
-    const roleError = role ? validateRoleFields(role, roleFields) : "Please select a role.";
+    const roleError = role ? validateRoleFields(role, roleFields) : t("manpower.selectRole", "Please select a role.");
     if (roleError || !cv) {
       setStatus("error");
-      setMessage(roleError || "Please attach your CV / Resume.");
+      setMessage(roleError || t("manpower.attachCv", "Please attach your CV / Resume."));
       return;
     }
 
@@ -77,7 +81,7 @@ export default function ManPowerPage() {
     if (!result.success) {
       setFieldErrors(Object.fromEntries(result.error.errors.map((error) => [error.path[0] as string, error.message])));
       setStatus("error");
-      setMessage("Please correct the highlighted fields.");
+      setMessage(t("manpower.correctFields", "Please correct the highlighted fields."));
       return;
     }
 
@@ -106,7 +110,7 @@ export default function ManPowerPage() {
     try {
       await apiClient.submitManpowerRequest(formData);
       setStatus("success");
-      setMessage("Application submitted successfully. Our team will contact you shortly.");
+      setMessage(t("manpower.success", "Application submitted successfully. Our team will contact you shortly."));
       setForm(emptyForm);
       setRole("");
       setRoleFields({});
@@ -114,7 +118,7 @@ export default function ManPowerPage() {
       if (fileRef.current) fileRef.current.value = "";
     } catch (err) {
       setStatus("error");
-      setMessage(err instanceof Error ? err.message : "Unable to submit your application.");
+      setMessage(err instanceof Error ? err.message : t("manpower.submitFailed", "Unable to submit your application."));
     }
   };
 
@@ -123,8 +127,8 @@ export default function ManPowerPage() {
       <Hero title={cms("manpower.hero.title")} description={cms("manpower.hero.description")} />
       <form onSubmit={handleSubmit} className="mx-auto max-w-4xl space-y-6 px-4 py-10 lg:px-8">
         <section className="rounded-2xl border border-gray-100 bg-white p-7 shadow-sm">
-          <h2 className="mb-2 flex items-center gap-2 text-lg font-bold text-gray-900"><StepNumber value={1} /> Select the Role You Are Applying For <span className="text-red-500">*</span></h2>
-          <p className="mb-5 ml-9 text-sm text-gray-400">Choose one role. The next section will show fields for that role.</p>
+          <h2 className="mb-2 flex items-center gap-2 text-lg font-bold text-gray-900"><StepNumber value={1} /> {t("manpower.selectRoleTitle", "Select the Role You Are Applying For")} <span className="text-red-500">*</span></h2>
+          <p className="mb-5 ml-9 text-sm text-gray-400">{t("manpower.selectRoleBody", "Choose one role. The next section will show fields for that role.")}</p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {roles.map((item) => (
                 <button key={item.id} type="button" onClick={() => handleRoleChange(item.id)} className={`rounded-xl border-2 px-4 py-3 text-left text-sm font-semibold transition-all ${role === item.id ? "border-[#f97316] bg-orange-50 text-[#f97316]" : "border-gray-200 text-gray-600 hover:border-[#f97316]"}`}>
@@ -153,7 +157,7 @@ export default function ManPowerPage() {
         {message && <div className={`flex gap-3 rounded-xl border p-4 text-sm ${status === "success" ? "border-green-100 bg-green-50 text-green-700" : "border-red-100 bg-red-50 text-red-600"}`}>{status === "success" ? <CheckCircle size={18} /> : <AlertCircle size={18} />}{message}</div>}
         {role && (
           <button disabled={status === "submitting"} className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#f97316] py-4 font-bold text-white transition-colors hover:bg-[#ea580c] disabled:opacity-60">
-            <FileText size={18} /> {status === "submitting" ? "Submitting Application..." : "Submit Application"}
+            <FileText size={18} /> {status === "submitting" ? t("manpower.submitting", "Submitting Application...") : t("manpower.submit", "Submit Application")}
           </button>
         )}
       </form>
@@ -162,13 +166,15 @@ export default function ManPowerPage() {
 }
 
 function Hero({ title, description }: { title: string; description: string }) {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   return (
     <div className="bg-gradient-to-r from-[#111111] via-[#1f1f1f] to-[#f97316] px-8 py-16 text-white">
       <div className="mx-auto max-w-[1100px]">
         <div className="mb-4 flex items-center gap-2 text-sm text-zinc-200">
-          <Link href="/" className="hover:text-white">Home</Link>
+          <Link href="/" className="hover:text-white">{t("nav.home", "Home")}</Link>
           <ChevronRight size={14} />
-          <span className="text-white">Apply for Manpower</span>
+          <span className="text-white">{t("nav.applyForManpower", "Apply for Manpower")}</span>
         </div>
         <h1 className="mb-3 text-4xl font-bold">{title}</h1>
         <p className="max-w-2xl text-zinc-200">{description}</p>

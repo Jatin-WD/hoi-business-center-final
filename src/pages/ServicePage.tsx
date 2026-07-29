@@ -5,8 +5,12 @@ import CTABanner from "@/components/common/CTABanner";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { loadCatalog } from "@/lib/catalog";
 import { ServiceCard, VenueGroup } from "./service/ServiceCards";
+import { useSiteLanguage } from "@/hooks/useSiteLanguage";
+import { translateSiteText } from "@/lib/site-translations";
 
 export default function ServicePage() {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const cms = useCmsContent({
     "service.hero.title": "Exhibition Services",
     "service.hero.description": "All six HOI services are centered on Yashobhoomi, our primary exhibition venue in Dwarka, New Delhi.",
@@ -27,35 +31,35 @@ export default function ServicePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <HeroSection breadcrumbs={[{ label: "Home", href: "/" }, { label: "Yashobhoomi" }]} title={cms("service.hero.title")} description={cms("service.hero.description")}>
+      <HeroSection breadcrumbs={[{ label: t("nav.home", "Home"), href: "/" }, { label: t("nav.yashobhoomi", "Yashobhoomi") }]} title={cms("service.hero.title")} description={cms("service.hero.description")}>
         <div className="grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
-          <Stat icon={PackageCheck} label="Services" value={catalog.services.length} />
-          <Stat icon={CalendarCheck} label="Packages" value={packageCount} />
-          <Stat icon={MapPin} label="Venue" value={yashobhoomiVenue ? 1 : 0} />
+          <Stat icon={PackageCheck} label={t("common.servicesOverview", "Services")} value={catalog.services.length} />
+          <Stat icon={CalendarCheck} label={t("common.packages", "Packages")} value={packageCount} />
+          <Stat icon={MapPin} label={t("common.venueFocus", "Venue")} value={yashobhoomiVenue ? 1 : 0} />
         </div>
       </HeroSection>
 
       <main className="mx-auto max-w-[1600px] space-y-10 px-6 py-12 sm:px-8">
-        {isLoading ? <StateCard title="Loading services..." detail="Fetching the latest service catalog from the database." /> : null}
-        {error ? <StateCard title="Could not load services" detail={error instanceof Error ? error.message : "Failed to load services"} onRetry={() => refetch()} /> : null}
-        {!isLoading && !error && !yashobhoomiVenue ? <StateCard title="Yashobhoomi not found" detail="The venue data is missing, but the service catalog is still available." /> : null}
+        {isLoading ? <StateCard title={t("service.loading", "Loading services...")} detail={t("service.loadingDetail", "Fetching the latest service catalog from the database.")} /> : null}
+        {error ? <StateCard title={t("service.loadError", "Could not load services")} detail={error instanceof Error ? error.message : t("service.loadErrorDetail", "Failed to load services")} onRetry={() => refetch()} /> : null}
+        {!isLoading && !error && !yashobhoomiVenue ? <StateCard title={t("service.yashNotFound", "Yashobhoomi not found")} detail={t("service.yashMissing", "The venue data is missing, but the service catalog is still available.")} /> : null}
 
         {!isLoading && !error ? (
           <>
             <section>
-              <SectionHeader eyebrow="Yashobhoomi" title="Our Primary Exhibition Venue" description="HOI Business Center is built around Yashobhoomi. Every service, package, and execution plan revolves around this venue." />
+              <SectionHeader eyebrow={t("nav.yashobhoomi", "Yashobhoomi")} title={t("service.primaryVenue", "Our Primary Exhibition Venue")} description={t("service.primaryVenueDesc", "HOI Business Center is built around Yashobhoomi. Every service, package, and execution plan revolves around this venue.")} />
               {yashobhoomiVenue ? <VenueGroup locationId="yashobhoomi" venues={selectedVenues} serviceCount={catalog.services.length} featured /> : null}
             </section>
 
             <section>
-              <SectionHeader eyebrow="Services" title={cms("service.overview.title")} description={cms("service.overview.description")} />
+              <SectionHeader eyebrow={t("nav.services", "Services")} title={cms("service.overview.title")} description={cms("service.overview.description")} />
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                 {catalog.services.map((service) => <ServiceCard key={service.id} service={service} selectedVenues={selectedVenues} selectedLocation="yashobhoomi" />)}
                 {!catalog.services.length ? <StateCard title="No services found" detail="Seed the database to show service packages here." /> : null}
               </div>
             </section>
 
-            <CTABanner title="Need a Yashobhoomi exhibition requirement?" description="Share your service, package, and timeline. The HOI team will respond with pricing and next steps." primaryLabel="Request Quote" primaryHref="/contact?location=Yashobhoomi" secondaryLabel="View Yashobhoomi" secondaryHref="/yashobhoomi" />
+            <CTABanner title={t("service.cta.title", "Need a Yashobhoomi exhibition requirement?")} description={t("service.cta.description", "Share your service, package, and timeline. The HOI team will respond with pricing and next steps.")} primaryLabel={t("common.requestQuote", "Request Quote")} primaryHref="/contact?location=Yashobhoomi" secondaryLabel={t("nav.yashobhoomi", "View Yashobhoomi")} secondaryHref="/yashobhoomi" />
           </>
         ) : null}
       </main>

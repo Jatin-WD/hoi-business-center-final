@@ -4,8 +4,12 @@ import { ArrowRight, CheckCircle2, PackageSearch, Sparkles, ArrowUpRight } from 
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { loadCatalog, type CatalogService } from "@/lib/catalog";
 import { SERVICE_DETAIL_CONTENT } from "@/lib/serviceContent";
+import { useSiteLanguage } from "@/hooks/useSiteLanguage";
+import { translateServiceLabel, translateSiteText } from "@/lib/site-translations";
 
 export default function ServicesPage() {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const cms = useCmsContent({
     "services.page.title": "Services",
     "services.page.description": "Explore the six canonical HOI services. Each card opens a dedicated description page, and every service can also flow into the booking path.",
@@ -28,8 +32,9 @@ export default function ServicesPage() {
 
   const cards = useMemo(() => services.map((service) => ({
     ...service,
+    label: translateServiceLabel(service.id, language),
     detail: SERVICE_DETAIL_CONTENT[service.id],
-  })), [services]);
+  })), [language, services]);
 
   return (
     <div className="min-h-screen bg-[#f7f4ef]">
@@ -40,7 +45,7 @@ export default function ServicesPage() {
           <div className="max-w-3xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-white/80">
               <Sparkles size={14} />
-              Service catalog
+              {t("common.serviceCatalog", "Service catalog")}
             </p>
             <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">
               {cms("services.page.title")}
@@ -55,20 +60,20 @@ export default function ServicesPage() {
       <main className="mx-auto max-w-[1600px] px-6 py-10 sm:px-8 lg:py-14">
         <section className="mb-8 rounded-[1.75rem] border border-black/5 bg-white p-6 shadow-sm">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <StatCard icon={PackageSearch} label="Canonical services" value="6" />
-            <StatCard icon={CheckCircle2} label="Venue focus" value="Yashobhoomi" />
-            <StatCard icon={ArrowUpRight} label="Next step" value="View details" />
+            <StatCard icon={PackageSearch} label={t("common.canonicalServices", "Canonical services")} value="6" />
+            <StatCard icon={CheckCircle2} label={t("common.venueFocus", "Venue focus")} value={t("nav.yashobhoomi", "Yashobhoomi")} />
+            <StatCard icon={ArrowUpRight} label={t("common.nextStep", "Next step")} value={t("common.viewDetails", "View details")} />
           </div>
         </section>
 
         <section>
           <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">Service cards</p>
-              <h2 className="mt-2 text-2xl font-black text-slate-900">Tap a service to see the full description</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.serviceCards", "Service cards")}</p>
+              <h2 className="mt-2 text-2xl font-black text-slate-900">{t("common.tapService", "Tap a service to see the full description")}</h2>
             </div>
             <Link href="/service" className="inline-flex items-center gap-2 rounded-xl border border-[color:var(--hoi-primary)] px-4 py-2.5 text-sm font-bold text-[color:var(--hoi-primary)] transition-colors hover:bg-orange-50">
-              Booking menu
+              {t("common.bookingMenu", "Booking menu")}
               <ArrowRight size={16} />
             </Link>
           </div>
@@ -77,7 +82,7 @@ export default function ServicesPage() {
             {cards.map((service) => (
               <article key={service.id} className="group overflow-hidden rounded-[1.65rem] border border-black/5 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(17,17,17,0.08)]">
                 <div className="bg-gradient-to-r from-[#111111] via-[#1f1f1f] to-[#f97316] px-6 py-5 text-white">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/70">HOI Service</p>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/70">{t("service.hoiService", "HOI Service")}</p>
                   <h3 className="mt-2 text-2xl font-black">{service.label}</h3>
                   <p className="mt-2 max-w-xl text-sm leading-6 text-white/80">
                     {service.detail?.description || service.description || "Explore the service in detail and move into the booking path when ready."}
@@ -96,11 +101,11 @@ export default function ServicesPage() {
 
                   <div className="mt-6 flex flex-wrap gap-3">
                     <Link href={`/services/${service.id}`} className="inline-flex items-center gap-2 rounded-xl bg-[#f97316] px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#ea580c]">
-                      View Details
+                      {t("common.viewDetails", "View Details")}
                       <ArrowRight size={15} />
                     </Link>
                     <Link href={`/service/${service.id}`} className="inline-flex items-center gap-2 rounded-xl border border-[#f97316] px-4 py-2.5 text-sm font-bold text-[#f97316] transition-colors hover:bg-orange-50">
-                      Book Now
+                      {t("common.bookNow", "Book Now")}
                     </Link>
                   </div>
                 </div>

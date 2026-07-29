@@ -5,6 +5,8 @@ import HeroSection from "@/components/common/HeroSection";
 import CTABanner from "@/components/common/CTABanner";
 import SubmissionPopup from "@/components/common/SubmissionPopup";
 import { useCmsContent } from "@/hooks/useCmsContent";
+import { useSiteLanguage } from "@/hooks/useSiteLanguage";
+import { translateSiteText } from "@/lib/site-translations";
 import { contactSchema, type ContactValues } from "@/lib/validators";
 import { useAuth } from "@/hooks/useAuth";
 import { ContactForm } from "./contact/ContactForm";
@@ -22,6 +24,8 @@ const blankForm: ContactValues = {
 };
 
 export default function ContactPage() {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const cms = useCmsContent({
     "contact.title": "Contact Us",
     "contact.description": "Reach out to our team for inquiries, quotations, or to book any of our services.",
@@ -100,18 +104,18 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <HeroSection breadcrumbs={[{ label: "Home", href: "/" }, { label: "Contact Us" }]} title={cms("contact.title")} description={cms("contact.description")} />
+      <HeroSection breadcrumbs={[{ label: t("nav.home", "Home"), href: "/" }, { label: t("nav.contactUs", "Contact Us") }]} title={cms("contact.title")} description={cms("contact.description")} />
       <div className="max-w-[1600px] mx-auto px-8 py-14">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <ContactInfo />
           <div className="lg:col-span-2">
-            {catalogError ? <button type="button" onClick={() => refetch()} className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700">Service data failed to load. Retry</button> : null}
+            {catalogError ? <button type="button" onClick={() => refetch()} className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700">{t("contact.retryServices", "Service data failed to load. Retry")}</button> : null}
             <ContactForm form={form} setForm={setForm} fieldErrors={fieldErrors} serviceOptions={catalogLoading ? [] : serviceOptions} locationOptions={catalogLoading ? [] : locationOptions} status={status} submitMessage={submitMessage} onSubmit={handleSubmit} onReset={resetForm} />
           </div>
         </div>
       </div>
       <div className="max-w-[1600px] mx-auto px-8 pb-10">
-        <CTABanner title="Need help with a service package?" description="Our team is ready to guide you through the best HOI service package for your exhibition requirement." primaryLabel="Book a Consultation" primaryHref="/contact" secondaryLabel="Browse Services" secondaryHref="/services" />
+        <CTABanner title={t("contact.cta.title", "Need help with a service package?")} description={t("contact.cta.description", "Our team is ready to guide you through the best HOI service package for your exhibition requirement.")} primaryLabel={t("contact.cta.primary", "Book a Consultation")} primaryHref="/contact" secondaryLabel={t("common.browseServices", "Browse Services")} secondaryHref="/services" />
       </div>
       <SubmissionPopup open={popup.open} type={popup.type} title={popup.title} message={popup.message} onClose={() => setPopup((prev) => ({ ...prev, open: false }))} />
     </div>

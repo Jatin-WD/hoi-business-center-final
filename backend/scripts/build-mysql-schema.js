@@ -1,18 +1,25 @@
 import fs from 'fs';
 import path from 'path';
+import bcrypt from 'bcryptjs';
 import { pathToFileURL } from 'url';
 import { EVENTS, PACKAGE_DETAILS, SERVICE_PACKAGES, VENUE_DETAILS } from '../data/seed-data.js';
 
 const schemaPath = path.join(process.cwd(), 'backend', 'mysql-schema.sql');
-const DEFAULT_ADMIN = {
-  name: 'Admin',
-  email: 'admin@gmail.com',
-  passwordHash: '$2a$10$qvmE1VdQjbsZCAHZ9rIWMu6NYggxOioDexju0YjdDWaqOfkFOtpFS',
-  phone: '',
-  company: '',
-  role: 'admin',
-  status: 'active',
-};
+function getBootstrapAdminRow() {
+  const email = String(process.env.ADMIN_EMAIL || '').trim().toLowerCase();
+  const password = String(process.env.ADMIN_PASSWORD || '');
+  if (!email || !password) return null;
+
+  return {
+    name: String(process.env.ADMIN_NAME || 'Admin').trim() || 'Admin',
+    email,
+    passwordHash: bcrypt.hashSync(password, 10),
+    phone: String(process.env.ADMIN_PHONE || '').trim(),
+    company: String(process.env.ADMIN_COMPANY || '').trim(),
+    role: String(process.env.ADMIN_ROLE || 'admin').trim() || 'admin',
+    status: String(process.env.ADMIN_STATUS || 'active').trim() || 'active',
+  };
+}
 
 const DEFAULT_CONTENT = [
   ['home.hero.badge', 'Home hero badge', "India's Premier Exhibition & Business Center Service"],
@@ -85,19 +92,22 @@ function buildSchemaSeed() {
   parts.push('-- Seed data generated from backend/data/seed-data.js');
   parts.push('');
 
-  parts.push(buildMultiInsert(
-    'users',
-    ['name', 'email', 'password', 'phone', 'company', 'role', 'status'],
-    [[
-      DEFAULT_ADMIN.name,
-      DEFAULT_ADMIN.email,
-      DEFAULT_ADMIN.passwordHash,
-      DEFAULT_ADMIN.phone,
-      DEFAULT_ADMIN.company,
-      DEFAULT_ADMIN.role,
-      DEFAULT_ADMIN.status,
-    ]],
-  ));
+  const bootstrapAdmin = getBootstrapAdminRow();
+  if (bootstrapAdmin) {
+    parts.push(buildMultiInsert(
+      'users',
+      ['name', 'email', 'password', 'phone', 'company', 'role', 'status'],
+      [[
+        bootstrapAdmin.name,
+        bootstrapAdmin.email,
+        bootstrapAdmin.passwordHash,
+        bootstrapAdmin.phone,
+        bootstrapAdmin.company,
+        bootstrapAdmin.role,
+        bootstrapAdmin.status,
+      ]],
+    ));
+  }
 
   parts.push(buildMultiInsert(
     'services',

@@ -32,12 +32,27 @@ const allowedOrigins = [
   'http://127.0.0.1:5173',
 ].filter(Boolean);
 const allowedDevOrigin = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}):\d{4,5}$/;
-const allowedHostingerOrigin = /^https:\/\/[a-z0-9-]+\.hostingersite\.com$/;
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    useDefaults: true,
+    directives: {
+      defaultSrc: ["'self'"],
+      baseUri: ["'self'"],
+      fontSrc: ["'self'", 'data:'],
+      imgSrc: ["'self'", 'data:', 'https:'],
+      objectSrc: ["'none'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      connectSrc: ["'self'", 'https:'],
+      frameAncestors: ["'self'"],
+    },
+  },
+  crossOriginResourcePolicy: { policy: 'same-origin' },
+}));
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin) || allowedDevOrigin.test(origin) || allowedHostingerOrigin.test(origin)) {
+    if (!origin || allowedOrigins.includes(origin) || allowedDevOrigin.test(origin)) {
       callback(null, true);
       return;
     }
@@ -47,7 +62,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use('/uploads/admin-images', express.static(path.join(process.cwd(), 'uploads', 'admin-images')));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/venues', venuesRoutes);

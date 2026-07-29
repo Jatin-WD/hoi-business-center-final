@@ -3,6 +3,8 @@ import { getDb } from '../config/database.js';
 import { requireAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
+let defaultContentReady = false;
+let defaultContentPromise = null;
 
 const DEFAULT_CONTENT = [
   ['home.hero.badge', 'Home hero badge', "India's Premier Exhibition & Business Center Service"],
@@ -56,9 +58,23 @@ async function ensureDefaultContent() {
   }
 }
 
+async function ensureDefaultContentOnce() {
+  if (defaultContentReady) return;
+  if (!defaultContentPromise) {
+    defaultContentPromise = ensureDefaultContent()
+      .then(() => {
+        defaultContentReady = true;
+      })
+      .finally(() => {
+        defaultContentPromise = null;
+      });
+  }
+  await defaultContentPromise;
+}
+
 router.get('/content', async (req, res) => {
   try {
-    await ensureDefaultContent();
+    await ensureDefaultContentOnce();
     const db = await getDb();
     const rows = await db.prepare(`
       SELECT id, content_key, label, value, type, updated_at

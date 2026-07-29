@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import { initDatabase } from '../config/database.js';
 import { pathToFileURL } from 'url';
 import { EVENTS, PACKAGE_DETAILS, SERVICE_PACKAGES, VENUE_DETAILS } from '../data/seed-data.js';
@@ -6,15 +7,20 @@ import { buildSourceKey, fetchIiccEvents } from '../services/iicc-event-sync.js'
 const CANONICAL_SERVICE_IDS = Object.keys(SERVICE_PACKAGES);
 const CANONICAL_PACKAGE_CATEGORIES = Object.keys(PACKAGE_DETAILS);
 
-const DEFAULT_ADMIN = {
-  name: 'Admin',
-  email: 'admin@gmail.com',
-  password: '$2a$10$qvmE1VdQjbsZCAHZ9rIWMu6NYggxOioDexju0YjdDWaqOfkFOtpFS',
-  phone: '',
-  company: '',
-  role: 'admin',
-  status: 'active',
-};
+function getBootstrapAdmin() {
+  const email = String(process.env.ADMIN_EMAIL || '').trim().toLowerCase();
+  const password = String(process.env.ADMIN_PASSWORD || '');
+  if (!email || !password) return null;
+  return {
+    name: String(process.env.ADMIN_NAME || 'Admin').trim() || 'Admin',
+    email,
+    password,
+    phone: String(process.env.ADMIN_PHONE || '').trim(),
+    company: String(process.env.ADMIN_COMPANY || '').trim(),
+    role: String(process.env.ADMIN_ROLE || 'admin').trim() || 'admin',
+    status: String(process.env.ADMIN_STATUS || 'active').trim() || 'active',
+  };
+}
 
 async function upsertByKeys(db, table, keys, values) {
   const where = keys.map((key) => `${key} = ?`).join(' AND ');
@@ -110,19 +116,22 @@ async function cleanupDeprecatedCatalogRows(db) {
 }
 
 async function ensureDefaultAdmin(db) {
-  const existing = await db.get('SELECT id FROM users WHERE lower(email) = ?', [DEFAULT_ADMIN.email]);
+  const bootstrapAdmin = getBootstrapAdmin();
+  if (!bootstrapAdmin) return;
+  const existing = await db.get('SELECT id FROM users WHERE lower(email) = ?', [bootstrapAdmin.email]);
   if (existing) return;
 
+  const passwordHash = await bcrypt.hash(bootstrapAdmin.password, 10);
   await db.run(
     'INSERT INTO users (name, email, password, phone, company, role, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
     [
-      DEFAULT_ADMIN.name,
-      DEFAULT_ADMIN.email,
-      DEFAULT_ADMIN.password,
-      DEFAULT_ADMIN.phone,
-      DEFAULT_ADMIN.company,
-      DEFAULT_ADMIN.role,
-      DEFAULT_ADMIN.status,
+      bootstrapAdmin.name,
+      bootstrapAdmin.email,
+      passwordHash,
+      bootstrapAdmin.phone,
+      bootstrapAdmin.company,
+      bootstrapAdmin.role,
+      bootstrapAdmin.status,
     ]
   );
 }

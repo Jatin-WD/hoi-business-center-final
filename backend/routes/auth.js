@@ -2,11 +2,22 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import { getDb } from '../config/database.js';
 import { signToken, verifyToken } from '../middleware/auth.js';
+import { createRateLimiter } from '../middleware/rateLimit.js';
 import { buildRequirementHtml, REQUIREMENT_EMAIL, sendRequirementMail } from '../utils/mailer.js';
 
 const router = express.Router();
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^\+?[0-9][0-9\s-]{7,}[0-9]$/;
+const loginLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  message: 'Too many login attempts. Please try again later.',
+});
+const registerLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  message: 'Too many registration attempts. Please try again later.',
+});
 
 function validPassword(password) {
   return typeof password === 'string' && password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password);
@@ -32,7 +43,7 @@ async function notify(subject, fields) {
   }
 }
 
-router.post('/register', async (req, res) => {
+router.post('/register', registerLimiter, async (req, res) => {
   try {
     const { name, email, password, phone, company } = req.body;
     const cleanEmail = String(email || '').toLowerCase().trim();
@@ -61,7 +72,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
   try {
     const cleanEmail = String(req.body.email || '').toLowerCase().trim();
     const password = String(req.body.password || '');

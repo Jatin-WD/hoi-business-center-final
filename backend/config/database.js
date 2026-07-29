@@ -42,7 +42,7 @@ function createAsyncDb({ query }) {
   return {
     client: 'mysql',
     async exec(sql) {
-      const statements = sql.split(';').map((item) => item.trim()).filter(Boolean);
+      const statements = splitSqlStatements(sql);
       for (const statement of statements) await runQuery(statement);
     },
     async get(sql, params = []) {
@@ -101,6 +101,111 @@ function isBlank(value) {
 
 function normalizeKeyPart(value) {
   return String(value ?? '').trim().toLowerCase();
+}
+
+function splitSqlStatements(sql) {
+  const statements = [];
+  let current = '';
+  let inSingle = false;
+  let inDouble = false;
+  let inBacktick = false;
+  let inLineComment = false;
+  let inBlockComment = false;
+  let escaped = false;
+
+  for (let i = 0; i < sql.length; i += 1) {
+    const char = sql[i];
+    const next = sql[i + 1];
+
+    if (inLineComment) {
+      current += char;
+      if (char === '\n') inLineComment = false;
+      continue;
+    }
+
+    if (inBlockComment) {
+      current += char;
+      if (char === '*' && next === '/') {
+        current += next;
+        i += 1;
+        inBlockComment = false;
+      }
+      continue;
+    }
+
+    if (inSingle) {
+      current += char;
+      if (char === '\\' && !escaped) {
+        escaped = true;
+        continue;
+      }
+      if (char === '\'' && !escaped) inSingle = false;
+      escaped = false;
+      continue;
+    }
+
+    if (inDouble) {
+      current += char;
+      if (char === '\\' && !escaped) {
+        escaped = true;
+        continue;
+      }
+      if (char === '"' && !escaped) inDouble = false;
+      escaped = false;
+      continue;
+    }
+
+    if (inBacktick) {
+      current += char;
+      if (char === '`') inBacktick = false;
+      continue;
+    }
+
+    if (char === '-' && next === '-') {
+      current += char + next;
+      i += 1;
+      inLineComment = true;
+      continue;
+    }
+
+    if (char === '/' && next === '*') {
+      current += char + next;
+      i += 1;
+      inBlockComment = true;
+      continue;
+    }
+
+    if (char === '\'') {
+      current += char;
+      inSingle = true;
+      escaped = false;
+      continue;
+    }
+
+    if (char === '"') {
+      current += char;
+      inDouble = true;
+      escaped = false;
+      continue;
+    }
+
+    if (char === '`') {
+      current += char;
+      inBacktick = true;
+      continue;
+    }
+
+    if (char === ';') {
+      if (current.trim()) statements.push(current.trim());
+      current = '';
+      continue;
+    }
+
+    current += char;
+  }
+
+  if (current.trim()) statements.push(current.trim());
+  return statements;
 }
 
 async function getExistingColumns(db, tableName) {
@@ -241,6 +346,8 @@ async function repairPackageIdentifiers(db) {
 }
 
 async function dedupeUniqueRows(db) {
+  if (process.env.ALLOW_DB_DEDUPLICATION !== 'true') return;
+
   for (const table of TABLES) {
     for (const uniqueKey of table.uniqueKeys || []) {
       try {
@@ -272,8 +379,12 @@ async function ensureUniqueIndexes(db) {
     const existingIndexes = await getExistingIndexes(db, table.name).catch(() => new Map());
     for (const uniqueKey of table.uniqueKeys || []) {
       if (hasMatchingUniqueIndex(existingIndexes, uniqueKey.columns)) continue;
-      const keyColumns = uniqueKey.columns.map((column) => escapeIdentifier(column)).join(', ');
-      await db.exec(`ALTER TABLE ${escapeIdentifier(table.name)} ADD UNIQUE KEY ${escapeIdentifier(uniqueKey.name)} (${keyColumns})`);
+      try {
+        const keyColumns = uniqueKey.columns.map((column) => escapeIdentifier(column)).join(', ');
+        await db.exec(`ALTER TABLE ${escapeIdentifier(table.name)} ADD UNIQUE KEY ${escapeIdentifier(uniqueKey.name)} (${keyColumns})`);
+      } catch (error) {
+        console.error(`Failed to ensure unique index ${table.name}.${uniqueKey.name}:`, error);
+      }
     }
   }
 }
@@ -290,7 +401,7 @@ async function createMysqlDb() {
     password: decodeURIComponent(parsedUrl.password || ''),
     database: parsedUrl.pathname.replace(/^\/+/, ''),
     connectionLimit: Number(process.env.DB_CONNECTION_LIMIT || 10),
-    ssl: process.env.DB_SSL === 'false' ? false : { rejectUnauthorized: false },
+    ssl: process.env.DB_SSL === 'false' ? false : { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' },
   });
   return createAsyncDb({
     query: (sql, params) => connection.query(sql, params),
@@ -310,8 +421,8 @@ export async function initDatabase() {
   await repairServiceIdentifiers(db);
   await repairVenueIdentifiers(db);
   await repairPackageIdentifiers(db);
-  await dedupeUniqueRows(db);
   await ensureUniqueIndexes(db);
+  await dedupeUniqueRows(db);
   try {
     await db.get('SELECT status FROM users LIMIT 1');
   } catch {

@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.TEST_API_URL || "http://localhost:5000/api";
+const API_BASE_URL = process.env.TEST_API_URL || "http://localhost:3000/api";
 const suffix = `${Date.now()}${Math.round(Math.random() * 1000)}`;
 const testUser = {
   name: "CI Smoke User",

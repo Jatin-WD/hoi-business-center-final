@@ -7,19 +7,27 @@ import { getDb } from '../config/database.js';
 import { databaseTables } from '../config/schema.js';
 import { syncIiccEvents } from '../services/iicc-event-sync.js';
 import { requireAdmin, signToken } from '../middleware/auth.js';
+import { createRateLimiter } from '../middleware/rateLimit.js';
 
 const router = express.Router();
 const adminImageDir = path.join(process.cwd(), 'uploads', 'admin-images');
 if (!fs.existsSync(adminImageDir)) {
   fs.mkdirSync(adminImageDir, { recursive: true });
 }
+const IMAGE_EXTENSIONS = {
+  'image/jpeg': '.jpg',
+  'image/png': '.png',
+  'image/webp': '.webp',
+  'image/gif': '.gif',
+};
 
 const imageUpload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => cb(null, adminImageDir),
     filename: (req, file, cb) => {
       const safeBase = path.basename(file.originalname, path.extname(file.originalname)).replace(/[^a-z0-9-]+/gi, '-').toLowerCase();
-      cb(null, `${safeBase || 'image'}-${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname).toLowerCase()}`);
+      const extension = IMAGE_EXTENSIONS[file.mimetype] || '';
+      cb(null, `${safeBase || 'image'}-${Date.now()}-${Math.round(Math.random() * 1e9)}${extension}`);
     },
   }),
   limits: { fileSize: 5 * 1024 * 1024 },
@@ -65,6 +73,11 @@ const SUBMISSION_CONFIG = {
   bookings: 'bookings',
 };
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const adminLoginLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  message: 'Too many admin login attempts. Please try again later.',
+});
 const STAGE_REPORT = {
   stage1: {
     title: 'Stage 1 - Cleanup and Structure',
@@ -192,7 +205,7 @@ function buildNotifications({ users, inquiries, manpower, bookings, dismissedIds
     .slice(0, 25);
 }
 
-router.post('/login', async (req, res) => {
+router.post('/login', adminLoginLimiter, async (req, res) => {
   const email = String(req.body.email || '').toLowerCase();
   const password = String(req.body.password || '');
 
@@ -215,20 +228,6 @@ router.post('/login', async (req, res) => {
     }
   } catch (error) {
     console.error('Admin DB login lookup error:', error);
-  }
-
-  const envEmail = String(process.env.ADMIN_EMAIL || 'LKMALLSHOP@GMAIL.COM').toLowerCase();
-  const envPassword = String(process.env.ADMIN_PASSWORD || '');
-  if (envPassword && email === envEmail && password === envPassword) {
-    const token = signToken({ id: 0, email: envEmail, role: 'admin', envAdmin: true }, { expiresIn: '8h' });
-    return res.json({
-      success: true,
-      message: 'Admin login successful',
-      data: {
-        token,
-        admin: { id: 0, email: envEmail, role: 'admin', envAdmin: true },
-      },
-    });
   }
 
   return res.status(401).json({

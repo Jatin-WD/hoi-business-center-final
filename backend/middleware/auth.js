@@ -1,15 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { getDb } from '../config/database.js';
 
-const DEV_JWT_SECRET = 'dev-only-hoi-jwt-secret';
-
 export function getJwtSecret() {
   const secret = process.env.JWT_SECRET;
   if (secret) return secret;
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error('JWT_SECRET is required in production');
-  }
-  return DEV_JWT_SECRET;
+  throw new Error('JWT_SECRET is required');
 }
 
 export function signToken(payload, options) {
@@ -43,7 +38,7 @@ export async function authenticate(req, res, next) {
   }
 }
 
-export function requireAdmin(req, res, next) {
+export async function requireAdmin(req, res, next) {
   const token = req.headers.authorization?.replace('Bearer ', '');
   if (!token) {
     return res.status(401).json({ success: false, message: 'Admin login required' });
@@ -51,10 +46,18 @@ export function requireAdmin(req, res, next) {
 
   try {
     const decoded = verifyToken(token);
-    if (!['admin', 'sub-admin', 'editor'].includes(decoded.role)) {
+    const db = await getDb();
+    const user = await db.prepare('SELECT id, email, role, status FROM users WHERE id = ?').get(decoded.id);
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'Invalid admin session' });
+    }
+    if (String(user.status || 'active').toLowerCase() === 'suspended') {
+      return res.status(403).json({ success: false, message: 'This account is suspended. Please contact support.' });
+    }
+    if (!['admin', 'sub-admin', 'editor'].includes(String(user.role || '').toLowerCase())) {
       return res.status(403).json({ success: false, message: 'Admin access required' });
     }
-    req.admin = decoded;
+    req.admin = { ...decoded, role: user.role, email: user.email };
     next();
   } catch {
     res.status(401).json({ success: false, message: 'Invalid admin session' });

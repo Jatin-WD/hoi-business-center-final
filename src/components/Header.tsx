@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 const hoiLogo = "/assets/hoi.png";
 
 const NAV_LINKS = [
+  { href: "/services", label: "Services" },
   { href: "/event-calendar", label: "Event Calendar" },
   { href: "/about", label: "About Us" },
   { href: "/apply-manpower", label: "Apply for Manpower" },
@@ -63,8 +64,8 @@ export default function Header() {
         <div className="hidden lg:flex items-center gap-0 text-sm font-medium">
           <Link href="/" className={linkClass("/")}>Home</Link>
           <div className="relative" onMouseEnter={handleServiceEnter} onMouseLeave={handleServiceLeave}>
-            <button className={`flex items-center gap-1 px-3 py-2 rounded-md transition-colors whitespace-nowrap ${serviceOpen ? "text-[#f97316] bg-gray-100" : "text-gray-700 hover:text-[#f97316] hover:bg-gray-50"}`} data-testid="nav-service" onClick={() => setServiceOpen((value) => !value)}>
-              Service <ChevronDown size={14} className={`transition-transform ${serviceOpen ? "rotate-180" : ""}`} />
+            <button className={`flex items-center gap-1 px-3 py-2 rounded-md transition-colors whitespace-nowrap ${serviceOpen ? "text-[#f97316] bg-gray-100" : "text-gray-700 hover:text-[#f97316] hover:bg-gray-50"}`} data-testid="nav-booking" onClick={() => setServiceOpen((value) => !value)}>
+              Booking <ChevronDown size={14} className={`transition-transform ${serviceOpen ? "rotate-180" : ""}`} />
             </button>
             {serviceOpen && (
               <div className="fixed left-0 right-0 top-[calc(64px+28px)] z-50" onMouseEnter={handleServiceEnter} onMouseLeave={handleServiceLeave}>

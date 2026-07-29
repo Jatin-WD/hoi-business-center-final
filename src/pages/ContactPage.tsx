@@ -111,7 +111,7 @@ export default function ContactPage() {
         </div>
       </div>
       <div className="max-w-[1600px] mx-auto px-8 pb-10">
-        <CTABanner title="Need help with a service package?" description="Our team is ready to guide you through the best HOI service package for your exhibition requirement." primaryLabel="Book a Consultation" primaryHref="/contact" secondaryLabel="Browse Services" secondaryHref="/service" />
+        <CTABanner title="Need help with a service package?" description="Our team is ready to guide you through the best HOI service package for your exhibition requirement." primaryLabel="Book a Consultation" primaryHref="/contact" secondaryLabel="Browse Services" secondaryHref="/services" />
       </div>
       <SubmissionPopup open={popup.open} type={popup.type} title={popup.title} message={popup.message} onClose={() => setPopup((prev) => ({ ...prev, open: false }))} />
     </div>

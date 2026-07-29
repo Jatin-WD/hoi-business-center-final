@@ -85,7 +85,7 @@ export default function AboutPage() {
                 Our team of seasoned professionals provides comprehensive end-to-end services for exhibitors, ensuring that every aspect of your exhibition journey - from initial booth reservation to final demolition - is handled with expertise and care.
               </p>
               <p>
-                With operations extending to Dubai and other major cities, we bring global exhibition experience to every engagement.
+                Everything we present on the public site is centered on Yashobhoomi and the six canonical HOI services, so the experience stays simple and consistent.
               </p>
             </div>
 
@@ -139,7 +139,7 @@ export default function AboutPage() {
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/70">Our Services Overview</p>
               <h2 className="mt-2 text-2xl font-black">Current services, arranged like a premium venue section</h2>
             </div>
-            <Link href="/service" className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-900 transition-colors hover:bg-slate-100">
+            <Link href="/services" className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-900 transition-colors hover:bg-slate-100">
               Explore Services
               <ArrowRight size={16} />
             </Link>

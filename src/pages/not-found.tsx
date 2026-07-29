@@ -17,7 +17,7 @@ export default function NotFound() {
         >
           Return to Home
         </Link>
-          <Link href="/service" className="inline-block rounded-xl border border-[#f97316] px-6 py-3 font-semibold text-[#f97316] hover:bg-orange-50">Browse Services</Link>
+          <Link href="/services" className="inline-block rounded-xl border border-[#f97316] px-6 py-3 font-semibold text-[#f97316] hover:bg-orange-50">Browse Services</Link>
         </div>
       </div>
     </div>

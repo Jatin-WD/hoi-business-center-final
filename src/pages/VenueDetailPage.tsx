@@ -47,7 +47,7 @@ export default function VenueDetailPage({ params }: Props) {
           <div className="flex items-center gap-2 text-zinc-200 text-sm mb-4 flex-wrap">
             <Link href="/" className="hover:text-white">Home</Link>
             <ChevronRight size={14} />
-            <Link href="/service" className="hover:text-white">Service</Link>
+            <Link href="/service" className="hover:text-white">Booking</Link>
             <ChevronRight size={14} />
             <Link href={`/service/${locationId}/${subVenueId}`} className="hover:text-white">{locationTitle}</Link>
             <ChevronRight size={14} />
@@ -123,5 +123,5 @@ function OtherVenues({ locationTitle, venues }: { locationTitle: string; venues:
 }
 
 function CenteredMessage({ title, detail }: { title: string; detail?: string }) {
-  return <div className="min-h-screen flex items-center justify-center bg-gray-50"><div className="text-center"><h1 className="text-2xl font-bold text-gray-900 mb-2">{title}</h1>{detail && <p className="text-gray-500 mb-4">{detail}</p>}<Link href="/service" className="text-[#f97316] font-medium hover:underline">Back to Services</Link></div></div>;
+  return <div className="min-h-screen flex items-center justify-center bg-gray-50"><div className="text-center"><h1 className="text-2xl font-bold text-gray-900 mb-2">{title}</h1>{detail && <p className="text-gray-500 mb-4">{detail}</p>}<Link href="/service" className="text-[#f97316] font-medium hover:underline">Back to Booking</Link></div></div>;
 }

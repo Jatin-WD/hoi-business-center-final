@@ -23,7 +23,7 @@ const emptyForm: ManpowerFormState = {
 
 export default function ManPowerPage() {
   const cms = useCmsContent({
-    "manpower.hero.title": "Apply for Manpower Service",
+    "manpower.hero.title": "Apply for Manpower",
     "manpower.hero.description": "Select your role, add the role-specific details, and upload your CV. All submissions are stored in the project database.",
   });
   const roles = parseRoles(JSON.stringify(defaultRoles));
@@ -168,7 +168,7 @@ function Hero({ title, description }: { title: string; description: string }) {
         <div className="mb-4 flex items-center gap-2 text-sm text-zinc-200">
           <Link href="/" className="hover:text-white">Home</Link>
           <ChevronRight size={14} />
-          <span className="text-white">Apply for Manpower Service</span>
+          <span className="text-white">Apply for Manpower</span>
         </div>
         <h1 className="mb-3 text-4xl font-bold">{title}</h1>
         <p className="max-w-2xl text-zinc-200">{description}</p>

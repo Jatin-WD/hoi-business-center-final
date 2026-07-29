@@ -13,7 +13,7 @@ export default function ServiceDetailBySlug({ service, venues }: { service: Cata
           <div className="mb-4 flex flex-wrap items-center gap-2 text-sm text-zinc-200">
             <Link href="/" className="hover:text-white">Home</Link>
             <ChevronRight size={14} />
-            <Link href="/service" className="hover:text-white">Service</Link>
+            <Link href="/service" className="hover:text-white">Booking</Link>
             <ChevronRight size={14} />
             <span className="text-white">{service.label}</span>
           </div>

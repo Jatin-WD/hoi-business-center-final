@@ -77,7 +77,7 @@ export default function HomePage() {
               {cms("home.hero.description")}
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link href="/service" className="inline-flex items-center gap-2 rounded-xl bg-[#f97316] px-6 py-3.5 text-base font-bold text-white transition-colors hover:bg-[#ea580c]">
+              <Link href="/services" className="inline-flex items-center gap-2 rounded-xl bg-[#f97316] px-6 py-3.5 text-base font-bold text-white transition-colors hover:bg-[#ea580c]">
                 Explore Services <ArrowRight size={18} />
               </Link>
               <Link href="/contact" className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-white/15">
@@ -106,7 +106,7 @@ export default function HomePage() {
             <Link href="/contact" className="rounded-xl bg-[#f97316] px-8 py-3.5 font-bold text-white transition-colors hover:bg-[#ea580c]">
               Contact Us Now
             </Link>
-            <Link href="/service" className="rounded-xl border border-white/20 bg-white/10 px-8 py-3.5 font-semibold text-white transition-colors hover:bg-white/15">
+            <Link href="/services" className="rounded-xl border border-white/20 bg-white/10 px-8 py-3.5 font-semibold text-white transition-colors hover:bg-white/15">
               View All Services
             </Link>
           </div>
@@ -147,7 +147,7 @@ function ServicesSection({ title, description, services }: { title: string; desc
           {services.map((service) => (
             <Link
               key={service.id}
-              href={service.packages[0]?.href ?? `/service/${service.id}`}
+              href={`/services/${service.id}`}
               className="group rounded-2xl border border-gray-100 bg-white p-6 transition-all duration-200 hover:border-[#f97316] hover:shadow-lg"
             >
               <h3 className="mb-2 font-semibold text-gray-900 transition-colors group-hover:text-[#f97316]">{service.label}</h3>
@@ -215,7 +215,7 @@ function LocationsSection({ title, description, venues }: { title: string; descr
               <Link href="/yashobhoomi" className="inline-flex items-center gap-2 rounded-xl bg-[#f97316] px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-[#ea580c]">
                 Explore Yashobhoomi <ArrowRight size={16} />
               </Link>
-              <Link href="/service" className="inline-flex items-center gap-2 rounded-xl border border-[#111111] px-6 py-3.5 text-sm font-bold text-[#111111] transition-colors hover:bg-gray-50">
+              <Link href="/services" className="inline-flex items-center gap-2 rounded-xl border border-[#111111] px-6 py-3.5 text-sm font-bold text-[#111111] transition-colors hover:bg-gray-50">
                 Browse Services
               </Link>
             </div>

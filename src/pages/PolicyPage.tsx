@@ -54,7 +54,7 @@ export default function PolicyPage({ type }: { type: PolicyType }) {
         </div>
       </main>
       <div className="mx-auto max-w-[1600px] px-8 pb-10">
-        <CTABanner title="Need direct help?" description="Share your requirement with the HOI team and we will respond with next steps." primaryLabel="Contact Us" primaryHref="/contact" secondaryLabel="Browse Services" secondaryHref="/service" />
+        <CTABanner title="Need direct help?" description="Share your requirement with the HOI team and we will respond with next steps." primaryLabel="Contact Us" primaryHref="/contact" secondaryLabel="Browse Services" secondaryHref="/services" />
       </div>
     </div>
   );

@@ -18,7 +18,7 @@ export default function HeaderMobileMenu({ onClose, user, logout }: Props) {
         <NavLink href="/" onClose={onClose}>Home</NavLink>
         <div className="border-b border-gray-100">
           <button className="w-full flex justify-between items-center py-2.5 text-gray-700 font-medium" onClick={() => setServiceOpen((v) => !v)}>
-            Service <ChevronDown size={16} className={`transition-transform ${serviceOpen ? "rotate-180" : ""}`} />
+            Booking <ChevronDown size={16} className={`transition-transform ${serviceOpen ? "rotate-180" : ""}`} />
           </button>
           {serviceOpen && (
             <div className="pl-4 pb-2 text-sm text-gray-500 space-y-1">
@@ -28,6 +28,7 @@ export default function HeaderMobileMenu({ onClose, user, logout }: Props) {
             </div>
           )}
         </div>
+        <NavLink href="/services" onClose={onClose}>Services</NavLink>
         <NavLink href="/yashobhoomi" onClose={onClose}>Yashobhoomi</NavLink>
         <NavLink href="/event-calendar" onClose={onClose}>Event Calendar</NavLink>
         <NavLink href="/apply-manpower" onClose={onClose}>Apply for Manpower</NavLink>

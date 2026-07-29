@@ -55,7 +55,7 @@ export default function PackageDetailPage({ params }: Props) {
         <div className="text-center">
           <h1 className="mb-2 text-2xl font-bold text-gray-900">Package Not Found</h1>
           <p className="mb-4 text-gray-500">{error || "This package doesn't exist or may have been moved."}</p>
-          <Link href="/service" className="font-medium text-[#f97316] hover:underline">Back to Services</Link>
+          <Link href="/service" className="font-medium text-[#f97316] hover:underline">Back to Booking</Link>
         </div>
       </div>
     );
@@ -75,7 +75,7 @@ export default function PackageDetailPage({ params }: Props) {
           <div className="mb-4 flex flex-wrap items-center gap-2 text-sm text-zinc-200">
             <Link href="/" className="hover:text-white">Home</Link>
             <ChevronRight size={14} />
-            <Link href="/service" className="hover:text-white">Service</Link>
+            <Link href="/service" className="hover:text-white">Booking</Link>
             <ChevronRight size={14} />
             <span className="text-white">{serviceLabel}</span>
             <ChevronRight size={14} />

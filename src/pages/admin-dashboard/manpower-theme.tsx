@@ -11,7 +11,7 @@ export function ManpowerPanel({ rows, onSave }: { rows: Row[]; onSave: (roles: R
   const pagedRoles = roles.map((role, index) => ({ ...role, index })) as Array<Row & { index: number }>;
   const { page, totalPages, shownRows, setPage } = usePagedRows<Row & { index: number }>(pagedRoles, 8);
   return (
-    <Panel title="Apply for Manpower Service" hint="Control which roles are visible on the public application form. Disabled roles are hidden.">
+    <Panel title="Apply for Manpower" hint="Control which roles are visible on the public application form. Disabled roles are hidden.">
       <div className="rounded-lg border border-slate-200 bg-white p-4">
         <div className="space-y-3">
           {shownRows.map((role) => (

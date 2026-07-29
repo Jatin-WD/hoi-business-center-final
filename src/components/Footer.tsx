@@ -18,12 +18,13 @@ export default function Footer() {
           <div>
             <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide text-white">Services</h4>
             <ul className="space-y-2.5 text-sm text-zinc-400">
-              <li><Link href="/service/booth-reservation" className="transition-colors hover:text-[#f97316]">Booth Reservation</Link></li>
-              <li><Link href="/service/booth-design" className="transition-colors hover:text-[#f97316]">Booth Design</Link></li>
-              <li><Link href="/service/booth-install-demolition" className="transition-colors hover:text-[#f97316]">Booth Install & Demolition</Link></li>
-              <li><Link href="/service/logistics" className="transition-colors hover:text-[#f97316]">Logistics Services</Link></li>
-              <li><Link href="/service/marketing" className="transition-colors hover:text-[#f97316]">Marketing Services</Link></li>
-              <li><Link href="/service/interpretation-protocol" className="transition-colors hover:text-[#f97316]">Interpretation & Protocol</Link></li>
+              <li><Link href="/services" className="transition-colors hover:text-[#f97316]">All Services</Link></li>
+              <li><Link href="/services/booth-reservation" className="transition-colors hover:text-[#f97316]">Booth Reservation</Link></li>
+              <li><Link href="/services/booth-design" className="transition-colors hover:text-[#f97316]">Booth Design</Link></li>
+              <li><Link href="/services/booth-install-demolition" className="transition-colors hover:text-[#f97316]">Booth Install & Demolition</Link></li>
+              <li><Link href="/services/logistics" className="transition-colors hover:text-[#f97316]">Logistics Services</Link></li>
+              <li><Link href="/services/marketing" className="transition-colors hover:text-[#f97316]">Marketing Services</Link></li>
+              <li><Link href="/services/interpretation-protocol" className="transition-colors hover:text-[#f97316]">Interpretation & Protocol</Link></li>
             </ul>
           </div>
 

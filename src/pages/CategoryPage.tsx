@@ -61,7 +61,7 @@ export default function CategoryPage({ params }: Props) {
           <div className="flex items-center gap-2 text-zinc-200 text-sm mb-4 flex-wrap">
             <Link href="/" className="hover:text-white">Home</Link>
             <ChevronRight size={14} />
-            <Link href="/service" className="hover:text-white">Service</Link>
+            <Link href="/service" className="hover:text-white">Booking</Link>
             <ChevronRight size={14} />
             <span className="text-white">{title}</span>
             {activeVenue && <><ChevronRight size={14} /><span>{activeVenue.name.split(",")[0]}</span></>}
@@ -141,7 +141,7 @@ function NotFound() {
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Location Not Found</h1>
-        <Link href="/service" className="text-[#f97316] hover:underline">Back to Services</Link>
+        <Link href="/service" className="text-[#f97316] hover:underline">Back to Booking</Link>
       </div>
     </div>
   );

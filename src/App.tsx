@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProtectedPage from "@/components/ProtectedPage";
 import HomePage from "@/pages/HomePage";
+import ServicesPage from "@/pages/ServicesPage";
 import ServicePage from "@/pages/ServicePage";
 import CategoryPage from "@/pages/CategoryPage";
 import PackageDetailPage from "@/pages/PackageDetailPage";
@@ -14,6 +15,7 @@ import ContactPage from "@/pages/ContactPage";
 import AboutPage from "@/pages/AboutPage";
 import EventCalendarPage from "@/pages/EventCalendarPage";
 import YashobhoomPage from "@/pages/YashobhoomPage";
+import ServiceDetailPage from "@/pages/ServiceDetailPage";
 import ManPowerPage from "@/pages/ManPowerPage";
 import VenueDetailPage from "@/pages/VenueDetailPage";
 import LoginPage from "@/pages/LoginPage";
@@ -34,6 +36,10 @@ function Router() {
       <main className="flex-1">
         <Switch>
           <Route path="/" component={HomePage} />
+
+          {/* Public services pages */}
+          <Route path="/services" component={ServicesPage} />
+          <Route path="/services/:serviceId" component={ServiceDetailPage} />
 
           {/* Service routes */}
           <Route path="/service" component={ServicePage} />

@@ -6,6 +6,16 @@ const router = express.Router();
 let defaultContentReady = false;
 let defaultContentPromise = null;
 
+const LEGACY_THEME_VALUES = {
+  'theme.primary': '#1a3a8f',
+  'theme.primaryDark': '#0f2460',
+};
+
+const HOI_THEME_VALUES = {
+  'theme.primary': '#f97316',
+  'theme.primaryDark': '#111111',
+};
+
 const DEFAULT_CONTENT = [
   ['home.hero.badge', 'Home hero badge', "India's Premier Exhibition & Business Center Service"],
   ['home.hero.title', 'Home hero title', 'Your Complete Exhibition Partner at HOI Business Center'],
@@ -72,20 +82,43 @@ async function ensureDefaultContentOnce() {
   await defaultContentPromise;
 }
 
+async function normalizeLegacyThemeContent() {
+  const db = await getDb();
+  for (const [contentKey, legacyValue] of Object.entries(LEGACY_THEME_VALUES)) {
+    const row = await db.prepare('SELECT id, value FROM cms_content WHERE content_key = ?').get(contentKey);
+    if (row && row.value === legacyValue) {
+      await db.prepare('UPDATE cms_content SET value = ?, updated_at = CURRENT_TIMESTAMP WHERE content_key = ?')
+        .run(HOI_THEME_VALUES[contentKey], contentKey);
+    }
+  }
+}
+
+function normalizeThemeValue(contentKey, value) {
+  if (contentKey in LEGACY_THEME_VALUES && value === LEGACY_THEME_VALUES[contentKey]) {
+    return HOI_THEME_VALUES[contentKey];
+  }
+  return value;
+}
+
 router.get('/content', async (req, res) => {
   try {
     await ensureDefaultContentOnce();
+    await normalizeLegacyThemeContent();
     const db = await getDb();
     const rows = await db.prepare(`
       SELECT id, content_key, label, value, type, updated_at
       FROM cms_content
       ORDER BY content_key
     `).all();
+    const normalizedRows = rows.map((row) => ({
+      ...row,
+      value: normalizeThemeValue(row.content_key, row.value),
+    }));
     res.json({
       success: true,
       data: {
-        content: rows,
-        map: Object.fromEntries(rows.map((row) => [row.content_key, row.value])),
+        content: normalizedRows,
+        map: Object.fromEntries(normalizedRows.map((row) => [row.content_key, row.value])),
       },
     });
   } catch (error) {
@@ -100,14 +133,15 @@ router.post('/content', requireAdmin, async (req, res) => {
     if (!contentKey || !label || typeof value !== 'string') {
       return res.status(400).json({ success: false, message: 'Content key, label, and value are required' });
     }
+    const normalizedValue = normalizeThemeValue(contentKey, value);
     const db = await getDb();
     const existing = await db.prepare('SELECT id FROM cms_content WHERE content_key = ?').get(contentKey);
     if (existing) {
       await db.prepare('UPDATE cms_content SET label = ?, value = ?, type = ?, updated_at = CURRENT_TIMESTAMP WHERE content_key = ?')
-        .run(label, value, type, contentKey);
+        .run(label, normalizedValue, type, contentKey);
     } else {
       await db.prepare('INSERT INTO cms_content (content_key, label, value, type, updated_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)')
-        .run(contentKey, label, value, type);
+        .run(contentKey, label, normalizedValue, type);
     }
     res.json({ success: true, message: 'Content saved successfully' });
   } catch (error) {

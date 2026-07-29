@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { ArrowRight, Building2, CheckCircle, MapPin, PackageCheck } from "lucide-react";
+import { useCmsContent } from "@/hooks/useCmsContent";
 import type { CatalogService, CatalogVenue } from "@/lib/catalog";
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
 import { translatePackageLabel, translateServiceLabel, translateSiteText } from "@/lib/site-translations";
@@ -7,6 +8,7 @@ import { translatePackageLabel, translateServiceLabel, translateSiteText } from 
 export function ServiceCard({ service, selectedVenues, selectedLocation }: { service: CatalogService; selectedVenues: CatalogVenue[]; selectedLocation: string }) {
   const { language } = useSiteLanguage();
   const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
+  const cms = useCmsContent({ [`services.${service.id}.description`]: service.description || "" });
   const location = locationName(selectedLocation, selectedVenues);
   const serviceLabel = translateServiceLabel(service.id, language);
   const quoteHref = `/contact?type=Service%20Requirement&service=${encodeURIComponent(serviceLabel)}&location=${encodeURIComponent(location)}`;
@@ -19,7 +21,7 @@ export function ServiceCard({ service, selectedVenues, selectedLocation }: { ser
         <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">{location}</span>
       </div>
       <h3 className="text-lg font-black text-slate-900">{serviceLabel}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-slate-600 line-clamp-3">{service.description || t("service.packageCount", `${service.packages.length} package option${service.packages.length === 1 ? "" : "s"} available`)}</p>
+      <p className="mt-2 text-sm leading-relaxed text-slate-600 line-clamp-3">{cms(`services.${service.id}.description`) || t("service.packageCount", `${service.packages.length} package option${service.packages.length === 1 ? "" : "s"} available`)}</p>
       <div className="mt-4 space-y-2">
         {service.packages.slice(0, 3).map((pkg) => <Link key={pkg.href} href={withLocation(pkg.href, location)} className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-[color:var(--hoi-primary)]/8 hover:text-[color:var(--hoi-primary)]"><span className="line-clamp-1">{translatePackageLabel(pkg.label, language)}</span><ArrowRight size={13} /></Link>)}
       </div>

@@ -65,7 +65,7 @@ export const PAGE_GROUPS = [
     id: "home",
     title: "Home Page",
     hint: "Hero, services section, locations, why choose us, CTA.",
-    keys: ["home.hero.badge", "home.hero.title", "home.hero.description", "home.services.title", "home.services.description", "home.locations.title", "home.locations.description", "home.why.title", "home.why.description", "home.cta.title", "home.cta.description"],
+    keys: ["home.hero.badge", "home.hero.title", "home.hero.description", "home.hero.focusTitle", "home.hero.focusDesc", "home.services.title", "home.services.description", "home.locations.title", "home.locations.description", "home.locations.body", "home.locations.cardBadge", "home.locations.cardTitle", "home.locations.cardDescription", "home.why.title", "home.why.description", "home.cta.title", "home.cta.description"],
   },
   { id: "service", title: "Booking Page", hint: "Main booking flow headings and package menu labels.", keys: ["service.hero.title", "service.hero.description", "service.overview.title", "service.overview.description"] },
   {

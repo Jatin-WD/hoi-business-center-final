@@ -16,6 +16,24 @@ const HOI_THEME_VALUES = {
   'theme.primaryDark': '#111111',
 };
 
+const LEGACY_HOME_VALUES = {
+  'home.hero.focusTitle': 'Official exhibition venue for every public service flow',
+  'home.hero.focusDesc': 'The homepage stays centered on one venue so users do not have to decode multiple locations or mixed service models.',
+  'home.locations.body': 'Yashobhoomi is the official HOI showcase venue for exhibitions and convention-led services.',
+  'home.locations.cardBadge': 'Official venue spotlight',
+  'home.locations.cardTitle': "Yashobhoomi, India International Convention and Expo Centre",
+  'home.locations.cardDescription': "HOI Business Center's primary exhibition venue.",
+};
+
+const HOI_HOME_VALUES = {
+  'home.hero.focusTitle': 'Official exhibition venue for every public service flow',
+  'home.hero.focusDesc': 'The homepage stays centered on one venue so users do not have to decode multiple locations or mixed service models.',
+  'home.locations.body': 'Yashobhoomi is the official HOI showcase venue for exhibitions and convention-led services.',
+  'home.locations.cardBadge': 'Official venue spotlight',
+  'home.locations.cardTitle': "Yashobhoomi, India International Convention and Expo Centre",
+  'home.locations.cardDescription': "HOI Business Center's primary exhibition venue.",
+};
+
 const DEFAULT_LANGUAGE = 'en';
 const SUPPORTED_LANGUAGE_CODES = new Set(['en', 'hi', 'ko']);
 
@@ -24,10 +42,16 @@ const DEFAULT_CONTENT = [
   ['home.hero.title', 'Home hero title', 'Your Complete Exhibition Partner at HOI Business Center'],
   ['home.hero.highlight', 'Home hero highlight', 'Exhibition Partner'],
   ['home.hero.description', 'Home hero description', 'From booth reservation to booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol - we handle every part of your exhibition journey at Yashobhoomi.'],
+  ['home.hero.focusTitle', 'Home hero focus title', 'Official exhibition venue for every public service flow'],
+  ['home.hero.focusDesc', 'Home hero focus description', 'The homepage stays centered on one venue so users do not have to decode multiple locations or mixed service models.'],
   ['home.services.title', 'Home services title', 'Our Services'],
   ['home.services.description', 'Home services description', 'Comprehensive exhibition solutions designed to make your presence unforgettable. Select any service to begin your journey.'],
   ['home.locations.title', 'Home locations title', 'Where We Operate'],
   ['home.locations.description', 'Home locations description', 'Yashobhoomi is our official venue spotlight and the only public venue highlighted on this website.'],
+  ['home.locations.body', 'Home locations body', 'Yashobhoomi is the official HOI showcase venue for exhibitions and convention-led services.'],
+  ['home.locations.cardBadge', 'Home locations card badge', 'Official venue spotlight'],
+  ['home.locations.cardTitle', 'Home locations card title', 'Yashobhoomi, India International Convention and Expo Centre'],
+  ['home.locations.cardDescription', 'Home locations card description', "HOI Business Center's primary exhibition venue."],
   ['home.why.title', 'Home why choose title', 'Why Choose HOI Business Center?'],
   ['home.why.description', 'Home why choose description', "We are the official HOI partner at Yashobhoomi - India's largest MICE destination. Our six canonical services keep the public model simple, official, and easy to navigate."],
   ['home.cta.title', 'Home CTA title', 'Ready to Elevate Your Exhibition Presence?'],
@@ -157,6 +181,17 @@ async function normalizeLegacyThemeContent() {
   }
 }
 
+async function normalizeLegacyHomeContent() {
+  const db = await getDb();
+  for (const [contentKey, legacyValue] of Object.entries(LEGACY_HOME_VALUES)) {
+    const row = await db.prepare('SELECT id, value FROM cms_content WHERE content_key = ?').get(contentKey);
+    if (row && row.value === legacyValue) {
+      await db.prepare('UPDATE cms_content SET value = ?, updated_at = CURRENT_TIMESTAMP WHERE content_key = ?')
+        .run(HOI_HOME_VALUES[contentKey], contentKey);
+    }
+  }
+}
+
 function normalizeThemeValue(contentKey, value) {
   if (contentKey in LEGACY_THEME_VALUES && value === LEGACY_THEME_VALUES[contentKey]) {
     return HOI_THEME_VALUES[contentKey];
@@ -217,6 +252,7 @@ router.get('/content', async (req, res) => {
   try {
     await ensureDefaultContentOnce();
     await normalizeLegacyThemeContent();
+    await normalizeLegacyHomeContent();
     const lang = normalizeLanguageCode(req.query.lang);
     const normalizedRows = await loadCmsRowsForLanguage(lang);
     res.json({

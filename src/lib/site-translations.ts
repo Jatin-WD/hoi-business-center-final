@@ -1,3 +1,5 @@
+import { getCmsTranslationOverride } from "./site-translation-overrides";
+
 export type SiteLanguage = "en" | "hi" | "ko";
 
 export const SUPPORTED_LANGUAGES: Array<{ code: SiteLanguage; label: string; nativeLabel: string }> = [
@@ -1194,5 +1196,5 @@ const CMS_TRANSLATIONS: Record<SiteLanguage, TranslationMap> = {
 };
 
 export function translateCmsValue(lang: SiteLanguage, key: string, fallback: string) {
-  return CMS_TRANSLATIONS[lang]?.[key] ?? translateSiteText(lang, key, fallback);
+  return getCmsTranslationOverride(lang, key) ?? CMS_TRANSLATIONS[lang]?.[key] ?? translateSiteText(lang, key, fallback);
 }

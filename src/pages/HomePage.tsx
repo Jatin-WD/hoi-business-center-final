@@ -13,10 +13,16 @@ export default function HomePage() {
     "home.hero.badge": "Public information portal",
     "home.hero.title": "HOI Business Center at Yashobhoomi",
     "home.hero.description": "A clear, official-style homepage for exhibition services at Yashobhoomi. Browse the six services, review the venue context, and move into booking when ready.",
+    "home.hero.focusTitle": "Official exhibition venue for every public service flow",
+    "home.hero.focusDesc": "The homepage stays centered on one venue so users do not have to decode multiple locations or mixed service models.",
     "home.services.title": "Six Canonical Services",
     "home.services.description": "The public site uses one simple model: Yashobhoomi as the venue, and only these six service paths.",
     "home.locations.title": "Yashobhoomi spotlight",
     "home.locations.description": "Venue-led presentation with factual details and a clean image-first layout.",
+    "home.locations.body": "Yashobhoomi is the official HOI showcase venue for exhibitions and convention-led services.",
+    "home.locations.cardBadge": "Official venue spotlight",
+    "home.locations.cardTitle": "Yashobhoomi, India International Convention and Expo Centre",
+    "home.locations.cardDescription": "HOI Business Center's primary exhibition venue.",
     "home.why.title": "Why HOI Business Center",
     "home.why.description": "An official, structured service experience built to reduce confusion and keep the content focused.",
     "home.cta.title": "Need a service requirement reviewed?",
@@ -61,7 +67,11 @@ export default function HomePage() {
       image: "/assets/yashobhoomi.png",
     } satisfies CatalogVenue);
 
-  const canonicalServices = services.slice(0, 6).map((service) => ({ ...service, label: translateServiceLabel(service.id, language) }));
+  const canonicalServices = services.slice(0, 6).map((service) => ({
+    ...service,
+    label: translateServiceLabel(service.id, language),
+    description: cms(`services.${service.id}.description`) || service.description || cms("services.canonicalDescriptionFallback"),
+  }));
   const processSteps = [
     { title: t("home.process.selectService", "Select service"), body: t("home.process.selectServiceBody", "Open the service catalog and choose the required service card.") },
     { title: t("home.process.review", "Review detail page"), body: t("home.process.reviewBody", "Read the service description, package links, and Yashobhoomi context.") },
@@ -130,15 +140,15 @@ export default function HomePage() {
               <div className="absolute inset-x-0 bottom-0 h-52 bg-gradient-to-t from-[#111111]/88 via-[#111111]/35 to-transparent" />
               <div className="absolute inset-0 p-6 text-white">
                 <div className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-white/80 backdrop-blur-md">
-                  {t("nav.yashobhoomi", "Yashobhoomi")}
+                  {cms("home.locations.cardBadge")}
                 </div>
                 <div className="mt-auto flex h-full flex-col justify-end">
                   <div className="max-w-md rounded-[1.75rem] border border-white/14 bg-[linear-gradient(135deg,rgba(17,17,17,0.82),rgba(17,17,17,0.56),rgba(249,115,22,0.30))] p-5 shadow-[0_16px_40px_rgba(17,17,17,0.24)] backdrop-blur-xl">
                     <div className="mb-3 h-1.5 w-24 rounded-full bg-[linear-gradient(90deg,#f97316,rgba(255,255,255,0.1))]" />
                     <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/72">{t("common.venueFocus", "Venue focus")}</p>
-                    <h2 className="mt-2 text-2xl font-black leading-tight">{t("home.hero.focusTitle", "Official exhibition venue for every public service flow")}</h2>
+                    <h2 className="mt-2 text-2xl font-black leading-tight">{cms("home.hero.focusTitle")}</h2>
                     <p className="mt-3 text-sm leading-6 text-white/82">
-                      {t("home.hero.focusDesc", "The homepage stays centered on one venue so users do not have to decode multiple locations or mixed service models.")}
+                      {cms("home.hero.focusDesc")}
                     </p>
                   </div>
                 </div>
@@ -188,7 +198,7 @@ export default function HomePage() {
                   {service.label}
                 </h3>
                 <p className="mt-3 line-clamp-3 text-sm leading-7 text-white/72">
-                  {service.description || "Official service description available on the detail page."}
+                  {service.description}
                 </p>
 
                 <div className="mt-5 flex items-center gap-2 text-sm font-bold text-[#ff9d5c]">
@@ -211,9 +221,7 @@ export default function HomePage() {
               align="left"
             />
             <div className="mt-6 space-y-4">
-              <p className="text-base leading-8 text-slate-700">
-                {yashobhoomi.about || yashobhoomi.description}
-              </p>
+              <p className="text-base leading-8 text-slate-700">{cms("home.locations.body")}</p>
               <div className="grid gap-3 sm:grid-cols-2">
                 <Fact label={t("home.fact.location", "Location")} value={`${yashobhoomi.city}, ${yashobhoomi.state}`} />
                 <Fact label={t("home.fact.scale", "Scale")} value={yashobhoomi.totalArea || t("home.fact.major", "Major exhibition venue")} />
@@ -236,9 +244,9 @@ export default function HomePage() {
               <span className="inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/75 backdrop-blur-sm">
                 {t("common.officialVenueSpotlight", "Official venue spotlight")}
               </span>
-              <h3 className="mt-4 max-w-xl text-3xl font-black leading-tight">{yashobhoomi.name}</h3>
+              <h3 className="mt-4 max-w-xl text-3xl font-black leading-tight">{cms("home.locations.cardTitle")}</h3>
               <p className="mt-3 max-w-lg text-sm leading-7 text-white/86">
-                {yashobhoomi.description}
+                {cms("home.locations.cardDescription")}
               </p>
             </div>
           </Link>

@@ -33,7 +33,7 @@ export default function Footer() {
               <li><Link href="/about/hoi" className="transition-colors hover:text-[#f97316]">About HOI</Link></li>
               <li><Link href="/yashobhoomi" className="transition-colors hover:text-[#f97316]">Role of HOI at Yashobhoomi</Link></li>
               <li><Link href="/event-calendar" className="transition-colors hover:text-[#f97316]">Event Calendar</Link></li>
-              <li><Link href="/apply-manpower" className="transition-colors hover:text-[#f97316]">Apply for Man Power</Link></li>
+              <li><Link href="/apply-manpower" className="transition-colors hover:text-[#f97316]">Apply for Manpower</Link></li>
               <li><Link href="/contact" className="transition-colors hover:text-[#f97316]">Contact Us</Link></li>
             </ul>
           </div>

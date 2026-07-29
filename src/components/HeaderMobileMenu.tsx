@@ -30,6 +30,7 @@ export default function HeaderMobileMenu({ onClose, user, logout }: Props) {
         </div>
         <NavLink href="/yashobhoomi" onClose={onClose}>Yashobhoomi</NavLink>
         <NavLink href="/event-calendar" onClose={onClose}>Event Calendar</NavLink>
+        <NavLink href="/apply-manpower" onClose={onClose}>Apply for Manpower</NavLink>
         <NavLink href="/about" onClose={onClose}>About Us</NavLink>
         <NavLink href="/contact" onClose={onClose}>Contact Us</NavLink>
         <div className="pt-3 flex gap-2">

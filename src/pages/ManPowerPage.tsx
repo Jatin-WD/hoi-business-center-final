@@ -2,6 +2,7 @@ import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { Link } from "wouter";
 import { AlertCircle, CheckCircle, ChevronRight, FileText } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
+import { useCmsContent } from "@/hooks/useCmsContent";
 import { manpowerCommonSchema } from "@/lib/validators";
 import { RoleSpecificFields, StepNumber } from "./manpower/RoleSpecificFields";
 import { CvUpload, PersonalDetails, type ManpowerFormState } from "./manpower/CommonSections";
@@ -21,6 +22,10 @@ const emptyForm: ManpowerFormState = {
 };
 
 export default function ManPowerPage() {
+  const cms = useCmsContent({
+    "manpower.hero.title": "Apply for Manpower Service",
+    "manpower.hero.description": "Select your role, add the role-specific details, and upload your CV. All submissions are stored in the project database.",
+  });
   const roles = parseRoles(JSON.stringify(defaultRoles));
   const fileRef = useRef<HTMLInputElement>(null);
   const [role, setRole] = useState("");
@@ -115,7 +120,7 @@ export default function ManPowerPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Hero />
+      <Hero title={cms("manpower.hero.title")} description={cms("manpower.hero.description")} />
       <form onSubmit={handleSubmit} className="mx-auto max-w-4xl space-y-6 px-4 py-10 lg:px-8">
         <section className="rounded-2xl border border-gray-100 bg-white p-7 shadow-sm">
           <h2 className="mb-2 flex items-center gap-2 text-lg font-bold text-gray-900"><StepNumber value={1} /> Select the Role You Are Applying For <span className="text-red-500">*</span></h2>
@@ -156,17 +161,17 @@ export default function ManPowerPage() {
   );
 }
 
-function Hero() {
+function Hero({ title, description }: { title: string; description: string }) {
   return (
     <div className="bg-gradient-to-r from-[#0f2460] to-[#1a3a8f] px-8 py-16 text-white">
       <div className="mx-auto max-w-[1100px]">
         <div className="mb-4 flex items-center gap-2 text-sm text-blue-200">
           <Link href="/" className="hover:text-white">Home</Link>
           <ChevronRight size={14} />
-          <span className="text-white">Apply for Man Power Service</span>
+          <span className="text-white">Apply for Manpower Service</span>
         </div>
-        <h1 className="mb-3 text-4xl font-bold">Apply for Man Power Service</h1>
-        <p className="max-w-2xl text-blue-200">Select your role, add the role-specific details, and upload your CV. All submissions are stored in the project database.</p>
+        <h1 className="mb-3 text-4xl font-bold">{title}</h1>
+        <p className="max-w-2xl text-blue-200">{description}</p>
       </div>
     </div>
   );

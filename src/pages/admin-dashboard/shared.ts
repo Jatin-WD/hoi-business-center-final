@@ -71,6 +71,7 @@ export const PAGE_GROUPS = [
   { id: "yashobhoomi", title: "Yashobhoomi Page", hint: "Yashobhoomi hero content.", keys: ["yashobhoomi.hero.title", "yashobhoomi.hero.description"] },
   { id: "about", title: "About Us Page", hint: "About page intro content.", keys: ["about.hero.title", "about.hero.description"] },
   { id: "contact", title: "Contact Us Page", hint: "Contact page title and description.", keys: ["contact.title", "contact.description"] },
+  { id: "manpower", title: "Manpower Page", hint: "Manpower page hero title and description.", keys: ["manpower.hero.title", "manpower.hero.description"] },
   { id: "events", title: "Event Calendar Page", hint: "Event calendar intro copy.", keys: ["events.hero.title", "events.hero.description"] },
 ];
 

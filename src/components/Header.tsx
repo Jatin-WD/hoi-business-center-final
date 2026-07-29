@@ -10,6 +10,7 @@ const hoiLogo = "/assets/hoi.png";
 const NAV_LINKS = [
   { href: "/event-calendar", label: "Event Calendar" },
   { href: "/about", label: "About Us" },
+  { href: "/apply-manpower", label: "Apply for Manpower" },
   { href: "/contact", label: "Contact Us" },
 ];
 

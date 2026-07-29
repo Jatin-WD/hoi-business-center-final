@@ -87,15 +87,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden border-b border-black/5 bg-[#f3efe6]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(17,17,17,0.05),transparent_35%),radial-gradient(circle_at_top_right,rgba(249,115,22,0.14),transparent_30%)]" />
-        <div className="relative mx-auto grid max-w-[1600px] gap-8 px-6 py-12 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:py-16">
+      <section className="relative overflow-hidden border-b border-black/5 bg-[#f4ecdf]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(17,17,17,0.04),transparent_38%),radial-gradient(circle_at_top_right,rgba(249,115,22,0.12),transparent_30%)]" />
+        <div className="relative mx-auto grid max-w-[1600px] gap-10 px-6 py-14 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-20">
           <div className="max-w-3xl">
-            <p className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-[#6b4b2d] shadow-sm">
+            <p className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-[#7b4c22] shadow-sm">
               <Sparkles size={14} />
               {cms("home.hero.badge")}
             </p>
-            <h1 className="mt-5 max-w-2xl text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+            <h1 className="mt-5 max-w-2xl text-4xl font-black leading-tight tracking-tight text-[#111111] sm:text-5xl lg:text-6xl">
               {cms("home.hero.title")}
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-8 text-slate-700 sm:text-lg">
@@ -122,13 +122,14 @@ export default function HomePage() {
                 loading="eager"
                 decoding="async"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/78 via-black/28 to-black/5" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/72 via-transparent to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-52 bg-gradient-to-t from-[#111111]/82 via-[#f97316]/18 to-transparent" />
               <div className="absolute inset-0 p-6 text-white">
                 <div className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-white/80 backdrop-blur-sm">
                   Yashobhoomi
                 </div>
                 <div className="mt-auto flex h-full flex-col justify-end">
-                  <div className="max-w-md rounded-[1.5rem] border border-white/15 bg-black/35 p-5 backdrop-blur-md">
+                  <div className="max-w-md rounded-[1.5rem] border border-white/15 bg-black/38 p-5 backdrop-blur-md">
                     <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/75">Venue focus</p>
                     <h2 className="mt-2 text-2xl font-black leading-tight">Official exhibition venue for every public service flow</h2>
                     <p className="mt-3 text-sm leading-6 text-white/80">
@@ -223,7 +224,8 @@ export default function HomePage() {
               alt={yashobhoomi.name}
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/84 via-black/30 to-black/10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/84 via-black/28 to-black/10" />
+            <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#111111]/88 via-[#f97316]/25 to-transparent" />
             <div className="absolute inset-0 flex flex-col justify-end p-7 text-white lg:p-8">
               <span className="inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/75">
                 Official venue spotlight

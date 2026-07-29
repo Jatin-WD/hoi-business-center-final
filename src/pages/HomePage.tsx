@@ -60,7 +60,7 @@ export default function HomePage() {
               Your Complete Exhibition Partner at HOI Business Center
             </h1>
             <p className="mb-8 text-xl leading-relaxed text-zinc-200">
-              From booth reservation to design, installation, logistics, marketing, and manpower services - we handle every aspect of your exhibition journey.
+              From booth reservation to booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol - we handle every aspect of your exhibition journey.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href="/service" className="inline-flex items-center gap-2 rounded-xl bg-[#f97316] px-6 py-3.5 text-base font-bold text-white transition-colors hover:bg-[#ea580c]">

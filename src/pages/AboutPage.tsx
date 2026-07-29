@@ -16,8 +16,6 @@ const serviceHighlights = [
   "Logistics Services",
   "Marketing Services",
   "Interpretation & Protocol",
-  "Man Power Services",
-  "Event Calendar Management",
 ];
 
 export default function AboutPage() {
@@ -61,7 +59,7 @@ export default function AboutPage() {
             <div className="grid grid-cols-2 gap-3 rounded-[1.75rem] border border-white/10 bg-white/10 p-4 backdrop-blur">
               <StatCard icon={<Building2 size={16} />} label="Primary venue" value="Yashobhoomi" />
               <StatCard icon={<MapPin size={16} />} label="Coverage" value="India + Dubai" />
-              <StatCard icon={<LayoutGrid size={16} />} label="Core services" value="8" />
+              <StatCard icon={<LayoutGrid size={16} />} label="Core services" value="6" />
               <StatCard icon={<Sparkles size={16} />} label="Approach" value="End-to-end" />
             </div>
           </div>

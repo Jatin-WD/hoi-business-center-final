@@ -10,8 +10,8 @@ export default function Footer() {
           <div>
             <img src={hoiLogo} alt="HOI Business Center Logo" className="mb-4 h-14 w-auto logo" />
             <p className="text-sm leading-relaxed text-zinc-400">
-              HOI Business Center provides end-to-end exhibition and event services including booth reservation, design,
-              installation, logistics, marketing, interpretation, and manpower services.
+              HOI Business Center provides end-to-end exhibition services including booth reservation, booth design,
+              booth install & demolition, logistics services, marketing services, and interpretation & protocol.
             </p>
           </div>
 

@@ -3,8 +3,8 @@ import { Mail, MapPin, Phone } from "lucide-react";
 export function ContactInfo() {
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-2xl border border-gray-100 p-6">
-        <h2 className="font-bold text-gray-900 text-lg mb-5">Get in Touch</h2>
+      <div className="rounded-[1.75rem] border border-black/5 bg-white p-6 shadow-sm">
+        <h2 className="mb-5 text-lg font-black text-slate-900">Get in Touch</h2>
         <div className="space-y-5">
           <ContactItem icon={MapPin} label="Office Address" text="Yashobhoomi, Dwarka, New Delhi, India" />
           <ContactItem icon={Phone} label="Phone" text="+91 98100 97323" href="tel:+919810097323" />
@@ -18,18 +18,18 @@ export function ContactInfo() {
 
 function ContactItem({ icon: Icon, label, text, href }: { icon: typeof Mail; label: string; text: string; href?: string }) {
   const content = href ? (
-    <a href={href} className="text-[#1a3a8f] text-sm mt-0.5 hover:underline">{text}</a>
+    <a href={href} className="mt-0.5 text-sm font-medium text-[color:var(--hoi-primary)] hover:underline">{text}</a>
   ) : (
-    <p className="text-gray-500 text-sm mt-0.5">{text}</p>
+    <p className="mt-0.5 text-sm text-slate-500">{text}</p>
   );
 
   return (
     <div className="flex items-start gap-4">
-      <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-        <Icon size={18} className="text-[#1a3a8f]" />
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[color:var(--hoi-primary)]/10 text-[color:var(--hoi-primary)] ring-1 ring-[color:var(--hoi-primary)]/10">
+        <Icon size={18} />
       </div>
       <div>
-        <p className="font-semibold text-gray-800 text-sm">{label}</p>
+        <p className="text-sm font-semibold text-slate-800">{label}</p>
         {content}
       </div>
     </div>
@@ -38,9 +38,9 @@ function ContactItem({ icon: Icon, label, text, href }: { icon: typeof Mail; lab
 
 function BusinessHours() {
   return (
-    <div className="bg-[#1a3a8f] rounded-2xl p-6 text-white">
-      <h3 className="font-bold text-lg mb-3">Business Hours</h3>
-      <div className="space-y-2 text-sm text-blue-100">
+    <div className="rounded-[1.75rem] bg-[#111111] p-6 text-white shadow-sm">
+      <h3 className="mb-3 text-lg font-black">Business Hours</h3>
+      <div className="space-y-2 text-sm text-white/80">
         <HourRow day="Monday - Friday" time="9:00 AM - 6:00 PM" />
         <HourRow day="Saturday" time="10:00 AM - 4:00 PM" />
         <HourRow day="Sunday" time="Closed" />
@@ -53,7 +53,7 @@ function HourRow({ day, time }: { day: string; time: string }) {
   return (
     <div className="flex justify-between">
       <span>{day}</span>
-      <span className="text-white font-medium">{time}</span>
+      <span className="font-medium text-white">{time}</span>
     </div>
   );
 }

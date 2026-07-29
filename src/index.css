@@ -78,6 +78,23 @@
     color: #cbd5e1 !important;
   }
 
+  .hover\:bg-\[\#1a3a8f\]:hover,
+  .hover\:bg-\[\#152e75\]:hover {
+    background-color: var(--hoi-primary) !important;
+  }
+
+  .hover\:text-\[\#1a3a8f\]:hover {
+    color: var(--hoi-primary) !important;
+  }
+
+  .hover\:border-\[\#1a3a8f\]:hover {
+    border-color: var(--hoi-primary) !important;
+  }
+
+  .hover\:text-white:hover {
+    color: #ffffff !important;
+  }
+
   .bg-\[\#1a3a8f\] {
     background-color: var(--hoi-primary) !important;
   }

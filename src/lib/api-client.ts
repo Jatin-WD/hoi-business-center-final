@@ -1,6 +1,6 @@
 import { adminApiMethods } from "./admin-api-methods";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:5000/api" : "/api");
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:3000/api" : "/api");
 const AUTH_TOKEN_KEY = "hoi_auth_token";
 const AUTH_USER_KEY = "hoi_auth_user";
 const AUTH_SESSION_EXPIRED_EVENT = "hoi-auth-session-expired";
@@ -20,8 +20,8 @@ class ApiClient {
     const url = `${this.baseURL}${endpoint}`;
     const isFormData = options.body instanceof FormData;
     const headers: Record<string, string> = {
-        ...(isFormData ? {} : { "Content-Type": "application/json" }),
-        ...options.headers,
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
+      ...options.headers,
     };
     const config: RequestInit = {
       ...options,
@@ -29,7 +29,7 @@ class ApiClient {
     };
 
     const token = this.getAuthToken();
-    if (token) {
+    if (token && !headers.Authorization && !headers.authorization) {
       headers.Authorization = `Bearer ${token}`;
     }
 
@@ -53,18 +53,18 @@ class ApiClient {
   }
 
   getAuthToken() {
-    return localStorage.getItem(AUTH_TOKEN_KEY);
+    return sessionStorage.getItem(AUTH_TOKEN_KEY);
   }
 
   setAuthSession(token: string, user: unknown) {
-    localStorage.setItem(AUTH_TOKEN_KEY, token);
-    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+    sessionStorage.setItem(AUTH_TOKEN_KEY, token);
+    sessionStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
   }
 
   clearAuthSession() {
-    const hadToken = Boolean(localStorage.getItem(AUTH_TOKEN_KEY));
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-    localStorage.removeItem(AUTH_USER_KEY);
+    const hadToken = Boolean(sessionStorage.getItem(AUTH_TOKEN_KEY));
+    sessionStorage.removeItem(AUTH_TOKEN_KEY);
+    sessionStorage.removeItem(AUTH_USER_KEY);
     if (hadToken) {
       window.dispatchEvent(new Event(AUTH_SESSION_EXPIRED_EVENT));
     }
@@ -84,13 +84,6 @@ class ApiClient {
     });
   }
 
-  async verifyRegistration(payload: { email: string; code: string }) {
-    return this.request("/auth/register/verify", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-  }
-
   async getProfile() {
     return this.request("/auth/me");
   }
@@ -98,20 +91,6 @@ class ApiClient {
   async logout() {
     return this.request("/auth/logout", {
       method: "POST",
-    });
-  }
-
-  async requestPhoneOtp(phone: string) {
-    return this.request("/auth/otp/request", {
-      method: "POST",
-      body: JSON.stringify({ phone }),
-    });
-  }
-
-  async verifyPhoneOtp(payload: { phone: string; code: string }) {
-    return this.request("/auth/otp/verify", {
-      method: "POST",
-      body: JSON.stringify(payload),
     });
   }
 

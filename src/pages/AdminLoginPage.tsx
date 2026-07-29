@@ -16,7 +16,7 @@ export default function AdminLoginPage() {
     setLoading(true);
     try {
       const response = await apiClient.adminLogin({ email, password });
-      localStorage.setItem("hoi_admin_token", response.data.token);
+      sessionStorage.setItem("hoi_admin_token", response.data.token);
       setLocation("/admin");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Admin login failed");

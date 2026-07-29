@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarCheck, MapPin, PackageCheck } from "lucide-react";
 import HeroSection from "@/components/common/HeroSection";

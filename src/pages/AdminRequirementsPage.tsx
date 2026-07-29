@@ -10,7 +10,7 @@ export default function AdminRequirementsPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("hoi_admin_token");
+    const token = sessionStorage.getItem("hoi_admin_token");
     if (!token) return setLocation("/admin-login");
     apiClient.getAdminRequirements(token)
       .then((response) => setData(response.data))
@@ -18,7 +18,7 @@ export default function AdminRequirementsPage() {
   }, [setLocation]);
 
   const logout = () => {
-    localStorage.removeItem("hoi_admin_token");
+    sessionStorage.removeItem("hoi_admin_token");
     setLocation("/admin-login");
   };
 

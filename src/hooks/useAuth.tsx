@@ -48,7 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     window.addEventListener(AUTH_SESSION_EXPIRED_EVENT, clearLocalSession)
-    const storedToken = localStorage.getItem(STORAGE_TOKEN_KEY)
+    const storedToken = sessionStorage.getItem(STORAGE_TOKEN_KEY)
     if (storedToken) {
       if (isJwtExpired(storedToken)) {
         apiClient.clearAuthSession()
@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .finally(() => setLoading(false))
       }
     } else {
-      const storedUser = localStorage.getItem(STORAGE_USER_KEY)
+      const storedUser = sessionStorage.getItem(STORAGE_USER_KEY)
       if (storedUser) {
         setUser(null)
       }

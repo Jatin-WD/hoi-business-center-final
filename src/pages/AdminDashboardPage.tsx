@@ -20,7 +20,7 @@ export default function AdminDashboardPage() {
   const [replyDraft, setReplyDraft] = useState({ source: "", id: "", subject: "Reply from HOI Business Center", message: "" });
   const [adminDraft, setAdminDraft] = useState<Row>({ name: "", email: "", phone: "", company: "", role: "editor", password: "" });
   const [passwordDraft, setPasswordDraft] = useState({ currentPassword: "", newPassword: "" });
-  const adminToken = () => localStorage.getItem("hoi_admin_token") || "";
+  const adminToken = () => sessionStorage.getItem("hoi_admin_token") || "";
   const load = async () => {
     const token = adminToken();
     if (!token) return setLocation("/admin-login");
@@ -31,7 +31,7 @@ export default function AdminDashboardPage() {
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unable to load admin dashboard";
       if (/admin login required|invalid admin session|invalid token|jwt/i.test(message)) {
-        localStorage.removeItem("hoi_admin_token");
+        sessionStorage.removeItem("hoi_admin_token");
         setLocation("/admin-login");
         return;
       }
@@ -125,7 +125,7 @@ export default function AdminDashboardPage() {
     }, action === "delete" ? "User deleted" : "User status updated");
   };
   const logout = () => {
-    localStorage.removeItem("hoi_admin_token");
+    sessionStorage.removeItem("hoi_admin_token");
     setLocation("/admin-login");
   };
   const retryLoad = () => {

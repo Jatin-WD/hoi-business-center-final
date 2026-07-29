@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Link } from "wouter";
 import { ChevronDown } from "lucide-react";
-import { loadCatalog, type CatalogVenue } from "@/lib/catalog";
 import { useAuth } from "@/hooks/useAuth";
 
 type Props = {
@@ -12,21 +11,6 @@ type Props = {
 
 export default function HeaderMobileMenu({ onClose, user, logout }: Props) {
   const [serviceOpen, setServiceOpen] = useState(false);
-  const [venues, setVenues] = useState<CatalogVenue[]>([]);
-
-  useEffect(() => {
-    let mounted = true;
-    loadCatalog().then((data) => mounted && setVenues(data.venues)).catch(() => mounted && setVenues([]));
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  const locations = useMemo(() => {
-    const map = new Map<string, string>();
-    venues.forEach((venue) => map.set(venue.locationId, venue.city || venue.state || venue.locationId));
-    return [...map.entries()].map(([id, label]) => ({ href: `/service/${id}`, label }));
-  }, [venues]);
 
   return (
     <div className="lg:hidden bg-white border-t border-gray-200 overflow-y-auto max-h-[80vh]">
@@ -38,12 +22,9 @@ export default function HeaderMobileMenu({ onClose, user, logout }: Props) {
           </button>
           {serviceOpen && (
             <div className="pl-4 pb-2 text-sm text-gray-500 space-y-1">
-              <p className="text-xs text-gray-400 uppercase tracking-wide pt-1 pb-0.5">Select a location from the menu</p>
               <Link href="/service/yashobhoomi" onClick={onClose} className="block py-1.5 font-semibold text-[#f97316] hover:text-[#ea580c]">
                 Yashobhoomi
               </Link>
-              {locations.map((item) => <Link key={item.href} href={item.href} onClick={onClose} className="block py-1.5 text-gray-600 hover:text-[#f97316]">{item.label}</Link>)}
-              {!locations.length && <p className="py-1.5 text-gray-400">No venues added yet.</p>}
             </div>
           )}
         </div>

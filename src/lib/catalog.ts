@@ -225,7 +225,9 @@ export async function loadCatalog() {
   );
 
   return {
-    venues: ((venuesResponse as any)?.data?.venues ?? []).map(normalizeVenue) as CatalogVenue[],
+    venues: ((venuesResponse as any)?.data?.venues ?? [])
+      .map(normalizeVenue)
+      .filter((venue: CatalogVenue) => venue.locationId === "yashobhoomi") as CatalogVenue[],
     services,
   };
 }

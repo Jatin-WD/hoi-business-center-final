@@ -18,6 +18,10 @@ export default function ServiceDetailPage({ params }: Props) {
   const cms = useCmsContent({
     [`services.${serviceId}.title`]: SERVICE_DETAIL_CONTENT[serviceId]?.title ?? "Service",
     [`services.${serviceId}.description`]: SERVICE_DETAIL_CONTENT[serviceId]?.description ?? "Explore the service in detail and move into the booking flow when ready.",
+    [`services.${serviceId}.overview`]: SERVICE_DETAIL_CONTENT[serviceId]?.overview ?? "",
+    [`services.${serviceId}.highlights`]: JSON.stringify(SERVICE_DETAIL_CONTENT[serviceId]?.highlights ?? []),
+    [`services.${serviceId}.process`]: JSON.stringify(SERVICE_DETAIL_CONTENT[serviceId]?.process ?? []),
+    [`services.${serviceId}.bestFor`]: JSON.stringify(SERVICE_DETAIL_CONTENT[serviceId]?.bestFor ?? []),
   });
 
   const [services, setServices] = useState<CatalogService[]>([]);
@@ -40,6 +44,14 @@ export default function ServiceDetailPage({ params }: Props) {
 
   const service = services.find((item) => item.id === serviceId) ?? null;
   const detail = SERVICE_DETAIL_CONTENT[serviceId];
+  const content = {
+    title: cms(`services.${serviceId}.title`) || detail?.title || "Service",
+    description: cms(`services.${serviceId}.description`) || detail?.description || "Explore the service in detail and move into the booking flow when ready.",
+    overview: cms(`services.${serviceId}.overview`) || detail?.overview || "",
+    highlights: readCmsList(cms(`services.${serviceId}.highlights`), detail?.highlights ?? []),
+    process: readCmsList(cms(`services.${serviceId}.process`), detail?.process ?? []),
+    bestFor: readCmsList(cms(`services.${serviceId}.bestFor`), detail?.bestFor ?? []),
+  };
   const selectedLocation = "Yashobhoomi";
   const bookingHref = `/service/${serviceId}`;
   const serviceLabel = translateServiceLabel(serviceId, language);
@@ -75,11 +87,11 @@ export default function ServiceDetailPage({ params }: Props) {
               {t("common.serviceDetail", "Service detail")}
             </p>
             <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">
-              {cms(`services.${serviceId}.title`)}
-            </h1>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">
-              {cms(`services.${serviceId}.description`)}
-            </p>
+            {content.title}
+          </h1>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">
+            {content.description}
+          </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href={bookingHref} className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#111111] transition-colors hover:bg-zinc-100">
                 {t("service.openBooking", "Open Booking")}
@@ -98,17 +110,17 @@ export default function ServiceDetailPage({ params }: Props) {
           <div className="rounded-[1.75rem] border border-black/5 bg-white p-7 shadow-sm">
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.overview", "Overview")}</p>
             <h2 className="mt-3 text-3xl font-black text-slate-900">{serviceLabel}</h2>
-            <p className="mt-4 text-base leading-7 text-slate-600">{detail.overview}</p>
+            <p className="mt-4 text-base leading-7 text-slate-600">{content.overview}</p>
 
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <InfoCard icon={Layers3} title={t("service.whatCovers", "What this covers")} text={detail.highlights.join(" | ")} />
+              <InfoCard icon={Layers3} title={t("service.whatCovers", "What this covers")} text={content.highlights.join(" | ")} />
               <InfoCard icon={Clock3} title={t("service.bookingPath", "Booking path")} text={t("service.bookingPathDesc", "Start here, then move into the booking flow to pick packages and finalise the requirement.")} />
             </div>
 
             <div className="mt-8">
               <h3 className="text-lg font-black text-slate-900">{t("common.keyHighlights", "Key highlights")}</h3>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                {detail.highlights.map((point) => (
+                {content.highlights.map((point) => (
                   <div key={point} className="flex items-start gap-3 rounded-2xl border border-gray-100 bg-[#f7f4ef] p-4">
                     <CheckCircle2 size={18} className="mt-0.5 text-[#f97316]" />
                     <span className="text-sm leading-6 text-slate-700">{point}</span>
@@ -120,7 +132,7 @@ export default function ServiceDetailPage({ params }: Props) {
             <div className="mt-8">
               <h3 className="text-lg font-black text-slate-900">{t("common.howItWorks", "How it works")}</h3>
               <div className="mt-4 space-y-3">
-                {detail.process.map((step, index) => (
+                {content.process.map((step, index) => (
                   <div key={step} className="flex gap-3 rounded-2xl border border-gray-100 bg-white p-4">
                     <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#f97316] text-sm font-black text-white">
                       {index + 1}
@@ -179,7 +191,7 @@ export default function ServiceDetailPage({ params }: Props) {
             <section className="rounded-[1.75rem] border border-black/5 bg-[#111111] p-7 text-white shadow-sm">
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/70">{t("common.bestFor", "Best for")}</p>
               <div className="mt-4 flex flex-wrap gap-3">
-                {detail.bestFor.map((item) => (
+                {content.bestFor.map((item) => (
                   <span key={item} className="rounded-full bg-white/10 px-4 py-2 text-sm font-medium text-white/90">
                     {item}
                   </span>
@@ -229,4 +241,16 @@ function EmptyState({ t }: { t: (key: string, fallback?: string) => string }) {
       </div>
     </div>
   );
+}
+
+function readCmsList(value: string, fallback: string[]) {
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) && parsed.every((item) => typeof item === "string") ? parsed : fallback;
+  } catch {
+    return value
+      .split("\n")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
 }

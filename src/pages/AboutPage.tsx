@@ -9,14 +9,34 @@ export default function AboutPage() {
   const { language } = useSiteLanguage();
   const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const cms = useCmsContent({
+    "about.badge": "About HOI",
     "about.hero.title": "About HOI Business Center",
     "about.hero.description": "Your trusted exhibition service partner for booth reservation, booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol.",
+    "about.whoTitle": "Built around Yashobhoomi and the full exhibition journey.",
+    "about.body1": "HOI Business Center is the premier exhibition and event services provider at Yashobhoomi - India's largest MICE (Meetings, Incentives, Conferences & Exhibitions) venue, located in Dwarka, New Delhi.",
+    "about.body2": "Our team of seasoned professionals provides comprehensive end-to-end services for exhibitors, ensuring that every aspect of your exhibition journey - from initial booth reservation to final demolition - is handled with expertise and care.",
+    "about.body3": "Everything we present on the public site is centered on Yashobhoomi and the six canonical HOI services, so the experience stays simple and consistent.",
+    "about.ourApproach": "Our approach",
+    "about.approachTitle": "We combine venue understanding, execution discipline, and client-first planning.",
+    "about.approachBody": "The result is a service experience that feels premium, organized, and directly tied to how exhibitions actually run on the ground.",
+    "about.coreValues": "Our Core Values",
+    "about.coreValuesTitle": "What we stand for",
+    "about.value.excellence": "Excellence",
+    "about.value.excellenceDesc": "We deliver the highest standards in every service.",
+    "about.value.reliability": "Reliability",
+    "about.value.reliabilityDesc": "Your timeline is our commitment. We never miss a deadline.",
+    "about.value.innovation": "Innovation",
+    "about.value.innovationDesc": "Creative booth designs and marketing strategies that stand out.",
+    "about.value.partnership": "Partnership",
+    "about.value.partnershipDesc": "We treat every client as a long-term partner, not a transaction.",
+    "about.servicesOverview": "Our Services Overview",
+    "about.currentServices": "Current services, arranged like a premium venue section",
   });
   const coreValues = [
-    { title: t("about.values.excellence", "Excellence"), desc: t("about.values.excellenceDesc", "We deliver the highest standards in every service.") },
-    { title: t("about.values.reliability", "Reliability"), desc: t("about.values.reliabilityDesc", "Your timeline is our commitment. We never miss a deadline.") },
-    { title: t("about.values.innovation", "Innovation"), desc: t("about.values.innovationDesc", "Creative booth designs and marketing strategies that stand out.") },
-    { title: t("about.values.partnership", "Partnership"), desc: t("about.values.partnershipDesc", "We treat every client as a long-term partner, not a transaction.") },
+    { title: cms("about.value.excellence"), desc: cms("about.value.excellenceDesc") },
+    { title: cms("about.value.reliability"), desc: cms("about.value.reliabilityDesc") },
+    { title: cms("about.value.innovation"), desc: cms("about.value.innovationDesc") },
+    { title: cms("about.value.partnership"), desc: cms("about.value.partnershipDesc") },
   ];
 
   const serviceHighlights = [
@@ -55,7 +75,7 @@ export default function AboutPage() {
             <div>
               <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-white/75">
                 <Sparkles size={14} />
-                {t("about.badge", "About HOI")}
+                {cms("about.badge")}
               </p>
               <h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight sm:text-5xl">
                 {cms("about.hero.title")}
@@ -79,17 +99,11 @@ export default function AboutPage() {
         <div className="grid gap-8 lg:grid-cols-[1fr_0.95fr]">
           <section className="rounded-[1.75rem] border border-black/5 bg-white p-7 shadow-sm">
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("about.whoWeAre", "Who We Are")}</p>
-            <h2 className="mt-3 text-3xl font-black text-slate-900">{t("about.whoTitle", "Built around Yashobhoomi and the full exhibition journey.")}</h2>
+            <h2 className="mt-3 text-3xl font-black text-slate-900">{cms("about.whoTitle")}</h2>
             <div className="mt-5 space-y-4 text-base leading-7 text-slate-600">
-              <p>
-                {t("about.body1", "HOI Business Center is the premier exhibition and event services provider at Yashobhoomi - India's largest MICE (Meetings, Incentives, Conferences & Exhibitions) venue, located in Dwarka, New Delhi.")}
-              </p>
-              <p>
-                {t("about.body2", "Our team of seasoned professionals provides comprehensive end-to-end services for exhibitors, ensuring that every aspect of your exhibition journey - from initial booth reservation to final demolition - is handled with expertise and care.")}
-              </p>
-              <p>
-                {t("about.body3", "Everything we present on the public site is centered on Yashobhoomi and the six canonical HOI services, so the experience stays simple and consistent.")}
-              </p>
+              <p>{cms("about.body1")}</p>
+              <p>{cms("about.body2")}</p>
+              <p>{cms("about.body3")}</p>
             </div>
 
             <div className="mt-7 flex flex-wrap gap-3">
@@ -119,8 +133,8 @@ export default function AboutPage() {
         <section className="mt-8 rounded-[1.75rem] border border-black/5 bg-white p-7 shadow-sm">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.coreValues", "Our Core Values")}</p>
-              <h2 className="mt-2 text-2xl font-black text-slate-900">{t("common.whatWeStandFor", "What we stand for")}</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{cms("about.coreValues")}</p>
+              <h2 className="mt-2 text-2xl font-black text-slate-900">{cms("about.coreValuesTitle")}</h2>
             </div>
           </div>
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -139,8 +153,8 @@ export default function AboutPage() {
         <section className="mt-8 rounded-[1.75rem] border border-black/5 bg-[#111111] p-7 text-white shadow-sm">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/70">{t("common.servicesOverview", "Our Services Overview")}</p>
-              <h2 className="mt-2 text-2xl font-black">{t("common.currentServices", "Current services, arranged like a premium venue section")}</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/70">{cms("about.servicesOverview")}</p>
+              <h2 className="mt-2 text-2xl font-black">{cms("about.currentServices")}</h2>
             </div>
             <Link href="/services" className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-900 transition-colors hover:bg-slate-100">
               {t("common.exploreServices", "Explore Services")}

@@ -86,6 +86,20 @@ const TABLES = [
     uniqueKeys: [{ name: 'unique_cms_content_key', columns: ['content_key'] }],
   },
   {
+    name: 'content_translations',
+    columns: [
+      ['id', 'pk'],
+      ['content_key', 'varchar(180) not null'],
+      ['language_code', 'varchar(10) not null'],
+      ['label', 'varchar(180) not null'],
+      ['value', 'text not null'],
+      ['type', "varchar(40) default 'text'"],
+      ['created_at', 'timestamp default current_timestamp'],
+      ['updated_at', 'timestamp default current_timestamp'],
+    ],
+    uniqueKeys: [{ name: 'unique_content_translation', columns: ['content_key', 'language_code'] }],
+  },
+  {
     name: 'admin_replies',
     columns: [['id', 'pk'], ['source', 'varchar(80) not null'], ['record_id', 'integer not null'], ['subject', 'varchar(220) not null'], ['message', 'text not null'], ['created_at', 'timestamp default current_timestamp']],
   },

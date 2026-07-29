@@ -12,7 +12,7 @@ export function useCmsContent(fallback: CmsMap) {
   useEffect(() => {
     let mounted = true;
     apiClient
-      .getCmsContent()
+      .getCmsContent(language)
       .then((response) => {
         if (mounted) {
           setRemoteContent(response.data.map ?? {});
@@ -27,7 +27,7 @@ export function useCmsContent(fallback: CmsMap) {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [language]);
 
   const content = useMemo(() => {
     const base = remoteContent ? { ...fallback, ...remoteContent } : fallback;

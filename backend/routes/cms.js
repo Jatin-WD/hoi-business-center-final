@@ -16,17 +16,20 @@ const HOI_THEME_VALUES = {
   'theme.primaryDark': '#111111',
 };
 
+const DEFAULT_LANGUAGE = 'en';
+const SUPPORTED_LANGUAGE_CODES = new Set(['en', 'hi', 'ko']);
+
 const DEFAULT_CONTENT = [
   ['home.hero.badge', 'Home hero badge', "India's Premier Exhibition & Business Center Service"],
   ['home.hero.title', 'Home hero title', 'Your Complete Exhibition Partner at HOI Business Center'],
   ['home.hero.highlight', 'Home hero highlight', 'Exhibition Partner'],
-  ['home.hero.description', 'Home hero description', 'From booth reservation to booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol - we handle every aspect of your exhibition journey at Yashobhoomi and beyond.'],
+  ['home.hero.description', 'Home hero description', 'From booth reservation to booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol - we handle every part of your exhibition journey at Yashobhoomi.'],
   ['home.services.title', 'Home services title', 'Our Services'],
   ['home.services.description', 'Home services description', 'Comprehensive exhibition solutions designed to make your presence unforgettable. Select any service to begin your journey.'],
   ['home.locations.title', 'Home locations title', 'Where We Operate'],
-  ['home.locations.description', 'Home locations description', "From India's premier MICE destination to global exhibition hubs"],
-  ['home.why.title', 'Home why choose title', 'Why Choose KIL - HOI Business Center?'],
-  ['home.why.description', 'Home why choose description', "We are the official HOI partner at Yashobhoomi - India's largest MICE destination. Our end-to-end services ensure your exhibition is seamless, professional, and impactful."],
+  ['home.locations.description', 'Home locations description', 'Yashobhoomi is our official venue spotlight and the only public venue highlighted on this website.'],
+  ['home.why.title', 'Home why choose title', 'Why Choose HOI Business Center?'],
+  ['home.why.description', 'Home why choose description', "We are the official HOI partner at Yashobhoomi - India's largest MICE destination. Our six canonical services keep the public model simple, official, and easy to navigate."],
   ['home.cta.title', 'Home CTA title', 'Ready to Elevate Your Exhibition Presence?'],
   ['home.cta.description', 'Home CTA description', 'Contact our team today and let us create an unforgettable exhibition experience for your brand.'],
   ['service.hero.title', 'Service page hero title', 'Exhibition Services'],
@@ -84,6 +87,11 @@ async function ensureDefaultContent() {
   }
 }
 
+function normalizeLanguageCode(value) {
+  const code = String(value || DEFAULT_LANGUAGE).toLowerCase();
+  return SUPPORTED_LANGUAGE_CODES.has(code) ? code : DEFAULT_LANGUAGE;
+}
+
 async function ensureDefaultContentOnce() {
   if (defaultContentReady) return;
   if (!defaultContentPromise) {
@@ -116,20 +124,61 @@ function normalizeThemeValue(contentKey, value) {
   return value;
 }
 
+async function loadCmsRowsForLanguage(lang) {
+  const db = await getDb();
+  const baseRows = await db.prepare(`
+    SELECT id, content_key, label, value, type, updated_at
+    FROM cms_content
+    ORDER BY content_key
+  `).all();
+
+  const normalizedBaseRows = baseRows.map((row) => ({
+    ...row,
+    value: normalizeThemeValue(row.content_key, row.value),
+  }));
+
+  if (lang === DEFAULT_LANGUAGE) {
+    return normalizedBaseRows;
+  }
+
+  const translations = await db.prepare(`
+    SELECT content_key, label, value, type, updated_at
+    FROM content_translations
+    WHERE language_code = ?
+    ORDER BY content_key
+  `).all(lang);
+
+  const translationMap = new Map(
+    translations.map((row) => [
+      row.content_key,
+      {
+        label: row.label,
+        value: normalizeThemeValue(row.content_key, row.value),
+        type: row.type,
+        updated_at: row.updated_at,
+      },
+    ]),
+  );
+
+  return normalizedBaseRows.map((row) => {
+    const translation = translationMap.get(row.content_key);
+    if (!translation) return row;
+    return {
+      ...row,
+      label: translation.label || row.label,
+      value: translation.value ?? row.value,
+      type: translation.type || row.type,
+      updated_at: translation.updated_at || row.updated_at,
+    };
+  });
+}
+
 router.get('/content', async (req, res) => {
   try {
     await ensureDefaultContentOnce();
     await normalizeLegacyThemeContent();
-    const db = await getDb();
-    const rows = await db.prepare(`
-      SELECT id, content_key, label, value, type, updated_at
-      FROM cms_content
-      ORDER BY content_key
-    `).all();
-    const normalizedRows = rows.map((row) => ({
-      ...row,
-      value: normalizeThemeValue(row.content_key, row.value),
-    }));
+    const lang = normalizeLanguageCode(req.query.lang);
+    const normalizedRows = await loadCmsRowsForLanguage(lang);
     res.json({
       success: true,
       data: {
@@ -145,19 +194,31 @@ router.get('/content', async (req, res) => {
 
 router.post('/content', requireAdmin, async (req, res) => {
   try {
-    const { contentKey, label, value, type = 'text' } = req.body;
+    const { contentKey, label, value, type = 'text', languageCode } = req.body;
     if (!contentKey || !label || typeof value !== 'string') {
       return res.status(400).json({ success: false, message: 'Content key, label, and value are required' });
     }
+    const lang = normalizeLanguageCode(languageCode);
     const normalizedValue = normalizeThemeValue(contentKey, value);
     const db = await getDb();
-    const existing = await db.prepare('SELECT id FROM cms_content WHERE content_key = ?').get(contentKey);
-    if (existing) {
-      await db.prepare('UPDATE cms_content SET label = ?, value = ?, type = ?, updated_at = CURRENT_TIMESTAMP WHERE content_key = ?')
-        .run(label, normalizedValue, type, contentKey);
+    if (lang === DEFAULT_LANGUAGE) {
+      const existing = await db.prepare('SELECT id FROM cms_content WHERE content_key = ?').get(contentKey);
+      if (existing) {
+        await db.prepare('UPDATE cms_content SET label = ?, value = ?, type = ?, updated_at = CURRENT_TIMESTAMP WHERE content_key = ?')
+          .run(label, normalizedValue, type, contentKey);
+      } else {
+        await db.prepare('INSERT INTO cms_content (content_key, label, value, type, updated_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)')
+          .run(contentKey, label, normalizedValue, type);
+      }
     } else {
-      await db.prepare('INSERT INTO cms_content (content_key, label, value, type, updated_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)')
-        .run(contentKey, label, normalizedValue, type);
+      const existing = await db.prepare('SELECT id FROM content_translations WHERE content_key = ? AND language_code = ?').get(contentKey, lang);
+      if (existing) {
+        await db.prepare('UPDATE content_translations SET label = ?, value = ?, type = ?, updated_at = CURRENT_TIMESTAMP WHERE content_key = ? AND language_code = ?')
+          .run(label, normalizedValue, type, contentKey, lang);
+      } else {
+        await db.prepare('INSERT INTO content_translations (content_key, language_code, label, value, type, updated_at) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)')
+          .run(contentKey, lang, label, normalizedValue, type);
+      }
     }
     res.json({ success: true, message: 'Content saved successfully' });
   } catch (error) {
@@ -168,8 +229,13 @@ router.post('/content', requireAdmin, async (req, res) => {
 
 router.delete('/content/:key', requireAdmin, async (req, res) => {
   try {
+    const lang = normalizeLanguageCode(req.query.lang);
     const db = await getDb();
-    await db.prepare('DELETE FROM cms_content WHERE content_key = ?').run(req.params.key);
+    if (lang === DEFAULT_LANGUAGE) {
+      await db.prepare('DELETE FROM cms_content WHERE content_key = ?').run(req.params.key);
+    } else {
+      await db.prepare('DELETE FROM content_translations WHERE content_key = ? AND language_code = ?').run(req.params.key, lang);
+    }
     res.json({ success: true, message: 'Content deleted successfully' });
   } catch (error) {
     console.error('CMS delete error:', error);

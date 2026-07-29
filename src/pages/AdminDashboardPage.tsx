@@ -9,6 +9,7 @@ export default function AdminDashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [active, setActive] = useState("overview");
   const [activePage, setActivePage] = useState(PAGE_GROUPS[0].id);
+  const [contentLanguage, setContentLanguage] = useState("en");
   const [selected, setSelected] = useState<Row | null>(null);
   const [resourceDrafts, setResourceDrafts] = useState<Record<string, Row>>({});
   const [query, setQuery] = useState("");
@@ -26,7 +27,7 @@ export default function AdminDashboardPage() {
     if (!token) return setLocation("/admin-login");
     try {
       setLoadError("");
-      const response = await apiClient.getAdminDashboard(token);
+      const response = await apiClient.getAdminDashboard(token, contentLanguage);
       setData(normalizeDashboardData(response.data));
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unable to load admin dashboard";
@@ -45,7 +46,7 @@ export default function AdminDashboardPage() {
         setError(err instanceof Error ? err.message : "Unable to load admin dashboard");
       })
       .finally(() => setLoading(false));
-  }, [setLocation]);
+  }, [setLocation, contentLanguage]);
   const contentMap = useMemo(() => Object.fromEntries((data?.content ?? []).map((item) => [item.content_key, item])), [data]);
   const currentResource = (["services", "packages", "venues", "events"].includes(active) ? active : "services") as ResourceKey;
   const resourceRows = (data?.[currentResource] ?? []).filter((row) => JSON.stringify(row).toLowerCase().includes(query.toLowerCase()));
@@ -66,7 +67,7 @@ export default function AdminDashboardPage() {
   };
   const savePageField = async (key: string, value: string) => {
     await runAction(() => apiClient.saveCmsContent(adminToken(), {
-      contentKey: key, label: key.split(".").join(" "), value, type: "text",
+      contentKey: key, label: key.split(".").join(" "), value, type: "text", languageCode: contentLanguage,
     }), "Page content saved");
   };
   const saveResource = async (event: FormEvent) => {
@@ -148,7 +149,7 @@ export default function AdminDashboardPage() {
           {error ? <InlineFeedback message={error} type="error" onClose={() => setError("")} /> : null}
           {notice ? <InlineFeedback message={notice} type="success" onClose={() => setNotice("")} /> : null}
           {active === "overview" && <Overview data={data} onNavigate={setActive} />}
-          {active === "pages" && <PageContentPanel activePage={activePage} setActivePage={setActivePage} contentMap={contentMap} onSaveField={savePageField} />}
+          {active === "pages" && <PageContentPanel activePage={activePage} setActivePage={setActivePage} contentMap={contentMap} onSaveField={savePageField} language={contentLanguage} onLanguageChange={setContentLanguage} />}
           {["services", "packages", "venues", "events"].includes(active) && (
             <ResourceManager
               resource={currentResource}

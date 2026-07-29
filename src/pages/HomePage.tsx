@@ -6,13 +6,6 @@ import { loadCatalog, type CatalogService, type CatalogVenue } from "@/lib/catal
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
 import { translateServiceLabel, translateSiteText } from "@/lib/site-translations";
 
-const processSteps = [
-  { title: "Select service", body: "Open the service catalog and choose the required service card." },
-  { title: "Review detail page", body: "Read the service description, package links, and Yashobhoomi context." },
-  { title: "Start booking", body: "Move into the booking flow to confirm scope and requirements." },
-  { title: "Coordinate execution", body: "HOI team manages delivery, support, and on-ground coordination." },
-];
-
 export default function HomePage() {
   const { language } = useSiteLanguage();
   const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
@@ -69,6 +62,12 @@ export default function HomePage() {
     } satisfies CatalogVenue);
 
   const canonicalServices = services.slice(0, 6).map((service) => ({ ...service, label: translateServiceLabel(service.id, language) }));
+  const processSteps = [
+    { title: t("home.process.selectService", "Select service"), body: t("home.process.selectServiceBody", "Open the service catalog and choose the required service card.") },
+    { title: t("home.process.review", "Review detail page"), body: t("home.process.reviewBody", "Read the service description, package links, and Yashobhoomi context.") },
+    { title: t("home.process.start", "Start booking"), body: t("home.process.startBody", "Move into the booking flow to confirm scope and requirements.") },
+    { title: t("home.process.coordinate", "Coordinate execution"), body: t("home.process.coordinateBody", "HOI team manages delivery, support, and on-ground coordination.") },
+  ];
 
   return (
     <div className="min-h-screen bg-[#f4ede2] text-[#111111]">
@@ -126,15 +125,16 @@ export default function HomePage() {
                 loading="eager"
                 decoding="async"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/12 to-transparent" />
-              <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(17,17,17,0.12)_0%,rgba(17,17,17,0.02)_42%,rgba(249,115,22,0.28)_100%)]" />
-              <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-[#111111]/90 via-[#f97316]/22 to-transparent" />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,11,11,0.18)_0%,rgba(11,11,11,0.46)_52%,rgba(11,11,11,0.88)_100%)]" />
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(17,17,17,0.05)_0%,rgba(17,17,17,0.00)_40%,rgba(249,115,22,0.22)_100%)]" />
+              <div className="absolute inset-x-0 bottom-0 h-52 bg-gradient-to-t from-[#111111]/88 via-[#111111]/35 to-transparent" />
               <div className="absolute inset-0 p-6 text-white">
-                <div className="inline-flex rounded-full border border-white/15 bg-white/12 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-white/80 backdrop-blur-md">
+                <div className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-white/80 backdrop-blur-md">
                   {t("nav.yashobhoomi", "Yashobhoomi")}
                 </div>
                 <div className="mt-auto flex h-full flex-col justify-end">
-                  <div className="max-w-md rounded-[1.5rem] border border-white/12 bg-[linear-gradient(135deg,rgba(17,17,17,0.70),rgba(17,17,17,0.35),rgba(249,115,22,0.30))] p-5 shadow-[0_16px_40px_rgba(17,17,17,0.18)] backdrop-blur-md">
+                  <div className="max-w-md rounded-[1.75rem] border border-white/14 bg-[linear-gradient(135deg,rgba(17,17,17,0.82),rgba(17,17,17,0.56),rgba(249,115,22,0.30))] p-5 shadow-[0_16px_40px_rgba(17,17,17,0.24)] backdrop-blur-xl">
+                    <div className="mb-3 h-1.5 w-24 rounded-full bg-[linear-gradient(90deg,#f97316,rgba(255,255,255,0.1))]" />
                     <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/72">{t("common.venueFocus", "Venue focus")}</p>
                     <h2 className="mt-2 text-2xl font-black leading-tight">{t("home.hero.focusTitle", "Official exhibition venue for every public service flow")}</h2>
                     <p className="mt-3 text-sm leading-6 text-white/82">
@@ -229,15 +229,15 @@ export default function HomePage() {
               alt={yashobhoomi.name}
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/78 via-black/30 to-black/10" />
-            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(17,17,17,0.10)_0%,rgba(17,17,17,0.00)_45%,rgba(249,115,22,0.24)_100%)]" />
-            <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#111111]/88 via-[#f97316]/28 to-transparent" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.06)_0%,rgba(17,17,17,0.28)_34%,rgba(17,17,17,0.82)_100%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(17,17,17,0.08)_0%,rgba(17,17,17,0.00)_42%,rgba(249,115,22,0.22)_100%)]" />
+            <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#111111]/90 via-[#111111]/40 to-transparent" />
             <div className="absolute inset-0 flex flex-col justify-end p-7 text-white lg:p-8">
-              <span className="inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/75">
+              <span className="inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/75 backdrop-blur-sm">
                 {t("common.officialVenueSpotlight", "Official venue spotlight")}
               </span>
               <h3 className="mt-4 max-w-xl text-3xl font-black leading-tight">{yashobhoomi.name}</h3>
-              <p className="mt-3 max-w-xl text-sm leading-7 text-white/82">
+              <p className="mt-3 max-w-lg text-sm leading-7 text-white/86">
                 {yashobhoomi.description}
               </p>
             </div>

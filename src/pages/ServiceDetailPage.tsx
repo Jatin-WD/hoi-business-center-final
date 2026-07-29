@@ -45,7 +45,7 @@ export default function ServiceDetailPage({ params }: Props) {
   const serviceLabel = translateServiceLabel(serviceId, language);
 
   if (!service || !detail) {
-    return <EmptyState />;
+    return <EmptyState t={t} />;
   }
 
   const packageHref = (href: string) => `${href}?location=${encodeURIComponent(selectedLocation)}`;
@@ -217,7 +217,7 @@ function InfoCard({ icon: Icon, title, text }: { icon: typeof Layers3; title: st
   );
 }
 
-function EmptyState() {
+function EmptyState({ t }: { t: (key: string, fallback?: string) => string }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-6">
       <div className="text-center">

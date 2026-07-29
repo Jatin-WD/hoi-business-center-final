@@ -85,10 +85,21 @@ export function EditableField({ label, value, placeholder, onSave }: { label: st
   );
 }
 
-export function PageContentPanel({ activePage, setActivePage, contentMap, onSaveField }: { activePage: string; setActivePage: (page: string) => void; contentMap: Row; onSaveField: (key: string, value: string) => void }) {
+export function PageContentPanel({ activePage, setActivePage, contentMap, onSaveField, language, onLanguageChange }: { activePage: string; setActivePage: (page: string) => void; contentMap: Row; onSaveField: (key: string, value: string) => void; language: string; onLanguageChange: (language: string) => void }) {
   const activePageGroup = PAGE_GROUPS.find((group) => group.id === activePage) ?? PAGE_GROUPS[0];
   return (
     <Panel title="Page Content" hint="Choose a page first, then edit only that page's fields. Content is grouped to stay easy to manage.">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Content language</p>
+          <p className="text-sm text-slate-500">Choose which language copy to view and save.</p>
+        </div>
+        <select value={language} onChange={(event) => onLanguageChange(event.target.value)} className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 focus:border-[#1a3a8f] focus:outline-none">
+          <option value="en">English</option>
+          <option value="hi">Hindi</option>
+          <option value="ko">Korean</option>
+        </select>
+      </div>
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-[280px_1fr]">
         <div className="space-y-2">
           {PAGE_GROUPS.map((group) => (

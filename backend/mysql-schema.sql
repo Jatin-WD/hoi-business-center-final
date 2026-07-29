@@ -132,6 +132,18 @@ CREATE TABLE IF NOT EXISTS cms_content (
   updated_at timestamp default current_timestamp
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS content_translations (
+  id int auto_increment primary key,
+  content_key varchar(180) not null,
+  language_code varchar(10) not null,
+  label varchar(180) not null,
+  value text not null,
+  type varchar(40) default 'text',
+  created_at timestamp default current_timestamp,
+  updated_at timestamp default current_timestamp,
+  unique key unique_content_translation (content_key, language_code)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS admin_replies (
   id int auto_increment primary key,
   source varchar(80) not null,
@@ -271,7 +283,7 @@ INSERT INTO cms_content (content_key, label, value, type) VALUES
   ('home.hero.badge', 'Home hero badge', 'India''s Premier Exhibition & Business Center Service', 'text'),
   ('home.hero.title', 'Home hero title', 'Your Complete Exhibition Partner at HOI Business Center', 'text'),
   ('home.hero.highlight', 'Home hero highlight', 'Exhibition Partner', 'text'),
-  ('home.hero.description', 'Home hero description', 'From booth reservation to booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol - we handle every aspect of your exhibition journey at Yashobhoomi and beyond.', 'text'),
+  ('home.hero.description', 'Home hero description', 'From booth reservation to booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol - we handle every part of your exhibition journey at Yashobhoomi.', 'text'),
   ('home.services.title', 'Home services title', 'Our Services', 'text'),
   ('home.services.description', 'Home services description', 'Comprehensive exhibition solutions designed to make your presence unforgettable. Select any service to begin your journey.', 'text'),
   ('home.locations.title', 'Home locations title', 'Where We Operate', 'text'),

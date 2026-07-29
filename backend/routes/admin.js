@@ -10,6 +10,34 @@ import { requireAdmin, signToken } from '../middleware/auth.js';
 import { createRateLimiter } from '../middleware/rateLimit.js';
 
 const router = express.Router();
+const DEFAULT_LANGUAGE = 'en';
+const SUPPORTED_LANGUAGE_CODES = new Set(['en', 'hi', 'ko']);
+
+function normalizeLanguageCode(value) {
+  const code = String(value || DEFAULT_LANGUAGE).toLowerCase();
+  return SUPPORTED_LANGUAGE_CODES.has(code) ? code : DEFAULT_LANGUAGE;
+}
+
+async function loadCmsRowsForLanguage(db, lang) {
+  const baseRows = await db.prepare(`
+    SELECT id, content_key, label, value, type, updated_at
+    FROM cms_content
+    ORDER BY content_key
+  `).all();
+  if (lang === DEFAULT_LANGUAGE) return baseRows;
+
+  const translations = await db.prepare(`
+    SELECT content_key, label, value, type, updated_at
+    FROM content_translations
+    WHERE language_code = ?
+    ORDER BY content_key
+  `).all(lang);
+  const translationMap = new Map(translations.map((row) => [row.content_key, row]));
+  return baseRows.map((row) => {
+    const translation = translationMap.get(row.content_key);
+    return translation ? { ...row, ...translation } : row;
+  });
+}
 const adminImageDir = path.join(process.cwd(), 'uploads', 'admin-images');
 if (!fs.existsSync(adminImageDir)) {
   fs.mkdirSync(adminImageDir, { recursive: true });
@@ -238,6 +266,7 @@ router.post('/login', adminLoginLimiter, async (req, res) => {
 
 router.get('/dashboard', requireAdmin, async (req, res) => {
   try {
+    const lang = normalizeLanguageCode(req.query.lang);
     const db = await getDb();
     const inquiries = await db.prepare(`
       SELECT id, name, email, phone, company, service, location, message, status, created_at
@@ -254,11 +283,7 @@ router.get('/dashboard', requireAdmin, async (req, res) => {
       FROM bookings
       ORDER BY created_at DESC
     `).all();
-    const content = await db.prepare(`
-      SELECT id, content_key, label, value, type, updated_at
-      FROM cms_content
-      ORDER BY content_key
-    `).all();
+    const content = await loadCmsRowsForLanguage(db, lang);
     const services = await db.prepare(RESOURCE_CONFIG.services.list).all();
     const packages = await db.prepare(RESOURCE_CONFIG.packages.list).all();
     const venues = await db.prepare(RESOURCE_CONFIG.venues.list).all();

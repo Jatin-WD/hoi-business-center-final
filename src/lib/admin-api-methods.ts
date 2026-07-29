@@ -1,11 +1,13 @@
 type Client = { request: <T = any>(endpoint: string, options?: any) => Promise<T> };
 
 export const adminApiMethods = {
-  getAdminDashboard(this: Client, token: string) {
-    return this.request("/admin/dashboard", { headers: { Authorization: `Bearer ${token}` } });
+  getAdminDashboard(this: Client, token: string, languageCode?: string) {
+    const query = languageCode ? `?lang=${encodeURIComponent(languageCode)}` : "";
+    return this.request(`/admin/dashboard${query}`, { headers: { Authorization: `Bearer ${token}` } });
   },
-  getCmsContent(this: Client) {
-    return this.request("/cms/content");
+  getCmsContent(this: Client, languageCode?: string) {
+    const query = languageCode ? `?lang=${encodeURIComponent(languageCode)}` : "";
+    return this.request(`/cms/content${query}`);
   },
   saveCmsContent(this: Client, token: string, content: unknown) {
     return this.request("/cms/content", { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: JSON.stringify(content) });

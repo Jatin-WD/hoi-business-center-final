@@ -107,7 +107,7 @@ export default function AboutPage() {
             </div>
 
             <div className="mt-7 flex flex-wrap gap-3">
-              {["Official partner at Yashobhoomi", "Complete booth lifecycle management", "Experienced interpretation and protocol teams", "Dedicated marketing support"].map((item) => (
+              {[cms("about.partnerYashobhoomi"), cms("about.lifecycle"), cms("about.interpretationTeam"), cms("about.marketingSupport")].map((item) => (
                 <span key={item} className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700">
                   {item}
                 </span>

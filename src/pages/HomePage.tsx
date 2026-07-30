@@ -10,22 +10,22 @@ export default function HomePage() {
   const { language } = useSiteLanguage();
   const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const cms = useCmsContent({
-    "home.hero.badge": "Public information portal",
-    "home.hero.title": "HOI Business Center at Yashobhoomi",
-    "home.hero.description": "A clear, official-style homepage for exhibition services at Yashobhoomi. Browse the six services, review the venue context, and move into booking when ready.",
+    "home.hero.badge": "Official Yashobhoomi exhibition portal",
+    "home.hero.title": "Yashobhoomi Exhibition Services by HOI Business Center",
+    "home.hero.description": "Book the six HOI exhibition services at Yashobhoomi in one place: booth reservation, booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol.",
     "home.hero.focusTitle": "Official exhibition venue for every public service flow",
     "home.hero.focusDesc": "The homepage stays centered on one venue so users do not have to decode multiple locations or mixed service models.",
-    "home.services.title": "Six Canonical Services",
+    "home.services.title": "Yashobhoomi Exhibition Services",
     "home.services.description": "The public site uses one simple model: Yashobhoomi as the venue, and only these six service paths.",
-    "home.locations.title": "Yashobhoomi spotlight",
+    "home.locations.title": "Yashobhoomi venue spotlight",
     "home.locations.description": "Venue-led presentation with factual details and a clean image-first layout.",
     "home.locations.body": "Yashobhoomi is the official HOI showcase venue for exhibitions and convention-led services.",
     "home.locations.cardBadge": "Official venue spotlight",
     "home.locations.cardTitle": "Yashobhoomi, India International Convention and Expo Centre",
     "home.locations.cardDescription": "HOI Business Center's primary exhibition venue.",
-    "home.why.title": "Why HOI Business Center",
+    "home.why.title": "Why choose HOI Business Center for Yashobhoomi exhibitions?",
     "home.why.description": "An official, structured service experience built to reduce confusion and keep the content focused.",
-    "home.cta.title": "Need a service requirement reviewed?",
+    "home.cta.title": "Plan your Yashobhoomi exhibition with HOI",
     "home.cta.description": "Use the booking flow or contact the team for a direct response. The workflow stays simple and tied to Yashobhoomi.",
   });
 

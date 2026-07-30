@@ -7,36 +7,36 @@ import { translateServiceLabel, translateSiteText } from "@/lib/site-translation
 
 export default function AboutPage() {
   const { language } = useSiteLanguage();
-  const t = (key: string) => translateSiteText(language, key);
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const cms = useCmsContent({
-    "about.badge": t("about.badge"),
-    "about.hero.title": t("about.hero.title"),
-    "about.hero.description": t("about.hero.description"),
-    "about.whoTitle": t("about.whoTitle"),
-    "about.body1": t("about.body1"),
-    "about.body2": t("about.body2"),
-    "about.body3": t("about.body3"),
-    "about.ourApproach": t("about.ourApproach"),
-    "about.approachTitle": t("about.approachTitle"),
-    "about.approachBody": t("about.approachBody"),
-    "about.coreValues": t("about.coreValues"),
-    "about.coreValuesTitle": t("about.coreValuesTitle"),
-    "about.value.excellence": t("about.value.excellence"),
-    "about.value.excellenceDesc": t("about.value.excellenceDesc"),
-    "about.value.reliability": t("about.value.reliability"),
-    "about.value.reliabilityDesc": t("about.value.reliabilityDesc"),
-    "about.value.innovation": t("about.value.innovation"),
-    "about.value.innovationDesc": t("about.value.innovationDesc"),
-    "about.value.partnership": t("about.value.partnership"),
-    "about.value.partnershipDesc": t("about.value.partnershipDesc"),
-    "about.servicesOverview": t("about.servicesOverview"),
-    "about.currentServices": t("about.currentServices"),
+    "about.badge": t("about.badge", "About HOI"),
+    "about.hero.title": t("about.hero.title", "About HOI Business Center"),
+    "about.hero.description": t("about.hero.description", "Your trusted exhibition service partner for booth reservation, booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol."),
+    "about.whoTitle": t("about.fullJourney", "Built around Yashobhoomi and the full exhibition journey."),
+    "about.body1": t("about.primaryText1", "HOI Business Center is the premier exhibition and event services provider at Yashobhoomi - India's largest MICE (Meetings, Incentives, Conferences & Exhibitions) venue, located in Dwarka, New Delhi."),
+    "about.body2": t("about.primaryText2", "Our team of seasoned professionals provides comprehensive end-to-end services for exhibitors, ensuring that every aspect of your exhibition journey - from initial booth reservation to final demolition - is handled with expertise and care."),
+    "about.body3": t("about.primaryText3", "Everything we present on the public site is centered on Yashobhoomi and the six canonical HOI services, so the experience stays simple and consistent."),
+    "about.ourApproach": t("about.ourApproach", "Our approach"),
+    "about.approachTitle": t("about.approachTitle", "We combine venue understanding, execution discipline, and client-first planning."),
+    "about.approachBody": t("about.approachBody", "The result is a service experience that feels premium, organized, and directly tied to how exhibitions actually run on the ground."),
+    "about.coreValues": t("about.coreValues", "Our Core Values"),
+    "about.coreValuesTitle": t("about.coreValuesTitle", "What we stand for"),
+    "about.value.excellence": t("about.value.excellence", "Excellence"),
+    "about.value.excellenceDesc": t("about.value.excellenceDesc", "We deliver the highest standards in every service."),
+    "about.value.reliability": t("about.value.reliability", "Reliability"),
+    "about.value.reliabilityDesc": t("about.value.reliabilityDesc", "Your timeline is our commitment. We never miss a deadline."),
+    "about.value.innovation": t("about.value.innovation", "Innovation"),
+    "about.value.innovationDesc": t("about.value.innovationDesc", "Creative booth designs and marketing strategies that stand out."),
+    "about.value.partnership": t("about.value.partnership", "Partnership"),
+    "about.value.partnershipDesc": t("about.value.partnershipDesc", "We treat every client as a long-term partner, not a transaction."),
+    "about.servicesOverview": t("about.servicesOverview", "Our Services Overview"),
+    "about.currentServices": t("about.currentServices", "Current services, arranged like a premium venue section"),
   });
   const coreValues = [
-    { title: cms("about.value.excellence"), desc: cms("about.value.excellenceDesc") },
-    { title: cms("about.value.reliability"), desc: cms("about.value.reliabilityDesc") },
-    { title: cms("about.value.innovation"), desc: cms("about.value.innovationDesc") },
-    { title: cms("about.value.partnership"), desc: cms("about.value.partnershipDesc") },
+    { title: cms("about.value.excellence") || t("about.excellence", "Excellence"), desc: cms("about.value.excellenceDesc") || t("about.excellenceDesc", "We deliver the highest standards in every service.") },
+    { title: cms("about.value.reliability") || t("about.reliability", "Reliability"), desc: cms("about.value.reliabilityDesc") || t("about.reliabilityDesc", "Your timeline is our commitment. We never miss a deadline.") },
+    { title: cms("about.value.innovation") || t("about.innovation", "Innovation"), desc: cms("about.value.innovationDesc") || t("about.innovationDesc", "Creative booth designs and marketing strategies that stand out.") },
+    { title: cms("about.value.partnership") || t("about.partnership", "Partnership"), desc: cms("about.value.partnershipDesc") || t("about.partnershipDesc", "We treat every client as a long-term partner, not a transaction.") },
   ];
 
   const serviceHighlights = [
@@ -98,7 +98,7 @@ export default function AboutPage() {
       <main className="mx-auto max-w-[1600px] px-5 py-10 sm:px-8 sm:py-14">
         <div className="grid gap-8 lg:grid-cols-[1fr_0.95fr]">
           <section className="rounded-[1.75rem] border border-black/5 bg-white p-7 shadow-sm">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("about.whoWeAre")}</p>
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("about.whoWeAre", "Who We Are")}</p>
             <h2 className="mt-3 text-3xl font-black text-slate-900">{cms("about.whoTitle")}</h2>
             <div className="mt-5 space-y-4 text-base leading-7 text-slate-600">
               <p>{cms("about.body1")}</p>
@@ -107,7 +107,7 @@ export default function AboutPage() {
             </div>
 
             <div className="mt-7 flex flex-wrap gap-3">
-              {[cms("about.partnerYashobhoomi"), cms("about.lifecycle"), cms("about.interpretationTeam"), cms("about.marketingSupport")].map((item) => (
+              {[cms("about.partnerYashobhoomi") || t("about.partnerYashobhoomi", "Official partner at Yashobhoomi"), cms("about.lifecycle") || t("about.lifecycle", "Complete booth lifecycle management"), cms("about.interpretationTeam") || t("about.interpretationTeam", "Experienced interpretation and protocol teams"), cms("about.marketingSupport") || t("about.marketingSupport", "Dedicated marketing support")].map((item) => (
                 <span key={item} className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700">
                   {item}
                 </span>
@@ -116,25 +116,23 @@ export default function AboutPage() {
           </section>
 
           <section className="overflow-hidden rounded-[1.75rem] border border-black/5 bg-[#111111] text-white shadow-sm">
-            <div className="relative min-h-[320px]">
-              <video
-                className="absolute inset-0 h-full w-full object-cover opacity-75"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                poster="/assets/hoi-booth-install.jpg"
-              >
-                <source src="/assets/hoi-booth-video.mov" type="video/quicktime" />
-              </video>
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-7">
-                <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/70">{t("about.ourApproach")}</p>
-                <h3 className="mt-2 text-2xl font-black">{t("about.approachTitle")}</h3>
-                <p className="mt-3 max-w-xl text-sm leading-6 text-white/80">
-                  {t("about.approachBody")}
-                </p>
+            <div className="grid min-h-[320px] grid-rows-[1fr_auto]">
+              <div className="relative min-h-[250px]">
+                <img src="/assets/hoi-about-team.jpg" alt="HOI team at Yashobhoomi" className="absolute inset-0 h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.08)_0%,rgba(17,17,17,0.42)_42%,rgba(17,17,17,0.88)_100%)]" />
+                <div className="absolute inset-0 bg-[linear-gradient(130deg,rgba(17,17,17,0.05)_0%,rgba(17,17,17,0)_48%,rgba(249,115,22,0.28)_100%)]" />
+                <div className="absolute inset-x-0 bottom-0 p-7">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/70">{t("about.ourApproach", "Our approach")}</p>
+                  <h3 className="mt-2 text-2xl font-black">{t("about.approachTitle", "We combine venue understanding, execution discipline, and client-first planning.")}</h3>
+                  <p className="mt-3 max-w-xl text-sm leading-6 text-white/80">
+                    {t("about.approachBody", "The result is a service experience that feels premium, organized, and directly tied to how exhibitions actually run on the ground.")}
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-2 bg-[#111111] p-3">
+                <img src="/assets/hoi-team-candid.jpg" alt="HOI team candid" className="h-24 w-full rounded-2xl object-cover" />
+                <img src="/assets/hoi-team-group.jpg" alt="HOI team group" className="h-24 w-full rounded-2xl object-cover" />
+                <img src="/assets/hoi-booth-install.jpg" alt="HOI booth installation" className="h-24 w-full rounded-2xl object-cover" />
               </div>
             </div>
           </section>

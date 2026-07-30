@@ -1,6 +1,6 @@
 import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { Link } from "wouter";
-import { AlertCircle, CheckCircle, ChevronRight, FileText } from "lucide-react";
+import { AlertCircle, CheckCircle, ChevronRight, FileText, Sparkles } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
@@ -169,16 +169,64 @@ function Hero({ title, description }: { title: string; description: string }) {
   const { language } = useSiteLanguage();
   const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   return (
-    <div className="bg-[linear-gradient(135deg,#0a0f18_0%,#111827_56%,#f97316_112%)] px-8 py-16 text-white">
-      <div className="mx-auto max-w-[1100px]">
-        <div className="mb-4 flex items-center gap-2 text-sm text-zinc-200">
-          <Link href="/" className="hover:text-white">{t("nav.home", "Home")}</Link>
-          <ChevronRight size={14} />
-          <span className="text-white">{t("nav.applyForManpower", "Apply for Manpower")}</span>
+    <section className="relative overflow-hidden border-b border-black/5 text-white">
+      <img
+        src="/assets/yashobhoomi.png"
+        alt="Yashobhoomi exhibition venue"
+        className="absolute inset-0 h-full w-full object-cover object-center"
+        loading="eager"
+        decoding="async"
+      />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,15,24,0.96)_0%,rgba(10,15,24,0.92)_36%,rgba(10,15,24,0.74)_60%,rgba(10,15,24,0.52)_74%,rgba(249,115,22,0.26)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(255,255,255,0.08),transparent_24%),radial-gradient(circle_at_80%_24%,rgba(249,115,22,0.18),transparent_26%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.05),transparent_22%)]" />
+
+      <div className="relative mx-auto grid max-w-[1600px] gap-10 px-6 py-14 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:py-20">
+        <div className="max-w-3xl">
+          <div className="mb-4 flex items-center gap-2 text-sm text-zinc-200">
+            <Link href="/" className="hover:text-white">{t("nav.home", "Home")}</Link>
+            <ChevronRight size={14} />
+            <span className="text-white">{t("nav.applyForManpower", "Apply for Manpower")}</span>
+          </div>
+          <p className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/8 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-white/78 backdrop-blur">
+            <Sparkles size={14} />
+            {t("common.publicInformationPortal", "Public information portal")}
+          </p>
+          <h1 className="mt-5 max-w-2xl text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
+            {title}
+          </h1>
+          <p className="mt-5 max-w-2xl text-base leading-8 text-white/78 sm:text-lg">
+            {description}
+          </p>
         </div>
-        <h1 className="mb-3 text-4xl font-bold">{title}</h1>
-        <p className="max-w-2xl text-zinc-200">{description}</p>
+
+        <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_24px_70px_rgba(17,17,17,0.18)]">
+          <div className="relative min-h-[330px]">
+            <img
+              src="/assets/hoi-about-team.jpg"
+              alt="HOI team at Yashobhoomi"
+              className="absolute inset-0 h-full w-full object-cover"
+              loading="eager"
+              decoding="async"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,15,24,0.08)_0%,rgba(10,15,24,0.38)_42%,rgba(10,15,24,0.88)_100%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(10,15,24,0.02)_0%,rgba(10,15,24,0.00)_42%,rgba(249,115,22,0.22)_100%)]" />
+            <div className="absolute inset-0 flex items-end p-6">
+              <div className="max-w-md rounded-[1.5rem] border border-white/12 bg-[linear-gradient(135deg,rgba(17,17,17,0.84),rgba(17,17,17,0.58),rgba(249,115,22,0.26))] p-5 text-white backdrop-blur-xl">
+                <div className="mb-3 h-1.5 w-24 rounded-full bg-[linear-gradient(90deg,#f97316,rgba(255,255,255,0.12))]" />
+                <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/72">
+                  {t("common.publicInformationPortal", "Public information portal")}
+                </p>
+                <h2 className="mt-2 text-2xl font-black leading-tight">
+                  {t("home.hero.focusTitle", "Official exhibition venue for every public service flow")}
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-white/82">
+                  {t("home.hero.focusDesc", "The homepage stays centered on one venue so users do not have to decode multiple locations or mixed service models.")}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

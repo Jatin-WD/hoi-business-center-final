@@ -12,8 +12,9 @@ const SERVICE_FALLBACK_VIDEOS: Record<string, string> = {
 };
 
 export function getServiceMediaImage(serviceId: string, images?: string[]) {
+  const fallback = SERVICE_FALLBACK_IMAGES[serviceId];
   const direct = images?.find((image) => typeof image === "string" && image.trim().length > 0);
-  return direct || SERVICE_FALLBACK_IMAGES[serviceId] || "/assets/yashobhoomi.png";
+  return fallback || direct || "/assets/yashobhoomi.png";
 }
 
 export function getServiceMediaVideo(serviceId: string) {

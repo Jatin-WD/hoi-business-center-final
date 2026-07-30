@@ -4,7 +4,7 @@ import { ArrowRight, ChevronRight, Clock3, CheckCircle2, Layers3, MapPin, Sparkl
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { loadCatalog, type CatalogService } from "@/lib/catalog";
 import { SERVICE_DETAIL_CONTENT } from "@/lib/serviceContent";
-import { getServiceMediaImage, getServiceMediaVideo } from "@/lib/service-media";
+import { getServiceMediaImage } from "@/lib/service-media";
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
 import { translatePackageLabel, translateServiceLabel, translateSiteText } from "@/lib/site-translations";
 
@@ -47,7 +47,6 @@ export default function ServiceDetailPage({ params }: Props) {
   const service = services.find((item) => item.id === serviceId) ?? null;
   const detail = SERVICE_DETAIL_CONTENT[serviceId];
   const serviceImage = getServiceMediaImage(serviceId, service?.images);
-  const serviceVideo = getServiceMediaVideo(serviceId);
   const content = {
     title: cms(`services.${serviceId}.title`) || detail?.title || serviceLabel,
     description: cms(`services.${serviceId}.description`) || detail?.description || t("services.detailFallback"),
@@ -150,22 +149,7 @@ export default function ServiceDetailPage({ params }: Props) {
           <div className="space-y-6">
             <section className="overflow-hidden rounded-[1.75rem] border border-black/5 bg-white shadow-sm">
               <div className="relative min-h-[280px] bg-[#111111]">
-                {serviceVideo ? (
-                  <video
-                    className="absolute inset-0 h-full w-full object-cover"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    poster={serviceImage}
-                  >
-                    <source src={serviceVideo} type="video/quicktime" />
-                    <img src={serviceImage} alt={serviceLabel} className="h-full w-full object-cover" />
-                  </video>
-                ) : (
-                  <img src={serviceImage} alt={serviceLabel} className="absolute inset-0 h-full w-full object-cover" />
-                )}
+                <img src={serviceImage} alt={serviceLabel} className="absolute inset-0 h-full w-full object-cover" />
                 <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,15,24,0.08)_0%,rgba(10,15,24,0.36)_42%,rgba(10,15,24,0.86)_100%)]" />
                 <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#111111]/90 via-[#111111]/45 to-transparent" />
                 <div className="absolute inset-0 flex items-end p-6 text-white">

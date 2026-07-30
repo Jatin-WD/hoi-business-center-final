@@ -25,7 +25,7 @@ export default function HeroSection({ breadcrumbs, title, description, children 
           <p className="inline-flex items-center rounded-full border border-white/12 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-white/78 backdrop-blur-sm">
             {t("hero.contentArea", "Yashobhoomi-style content area")}
           </p>
-          <h1 className="mt-4 max-w-3xl font-serif text-4xl font-black leading-[1.05] tracking-[-0.04em] md:text-5xl lg:text-6xl">
+          <h1 className="mt-4 max-w-3xl text-4xl font-black leading-[1.05] tracking-[-0.04em] md:text-5xl lg:text-6xl">
             {title}
           </h1>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/80 sm:text-lg">

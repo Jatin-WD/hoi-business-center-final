@@ -258,8 +258,8 @@ export default function HomePage() {
 
           <Link href={`/venue/${yashobhoomi.locationId}/${yashobhoomi.subVenueId}`} className="group relative min-h-[360px] overflow-hidden rounded-[2rem] border border-black/5 bg-[#111111] shadow-[0_18px_50px_rgba(17,17,17,0.08)]">
             <img
-              src="/assets/hoi-about-team.jpg"
-              alt="HOI Business Center team"
+              src="/assets/hoi-business-center.JPG"
+              alt="HOI Business Center building"
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.26)_34%,rgba(17,17,17,0.82)_100%)]" />

@@ -116,23 +116,32 @@ export default function AboutPage() {
           </section>
 
           <section className="overflow-hidden rounded-[1.75rem] border border-black/5 bg-[#111111] text-white shadow-sm">
-            <div className="grid min-h-[320px] grid-rows-[1fr_auto]">
-              <div className="relative min-h-[250px]">
-                <img src="/assets/hoi-about-team.jpg" alt="HOI team at Yashobhoomi" className="absolute inset-0 h-full w-full object-cover" />
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.08)_0%,rgba(17,17,17,0.42)_42%,rgba(17,17,17,0.88)_100%)]" />
-                <div className="absolute inset-0 bg-[linear-gradient(130deg,rgba(17,17,17,0.05)_0%,rgba(17,17,17,0)_48%,rgba(249,115,22,0.28)_100%)]" />
-                <div className="absolute inset-x-0 bottom-0 p-7">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/70">{t("about.ourApproach", "Our approach")}</p>
-                  <h3 className="mt-2 text-2xl font-black">{t("about.approachTitle", "We combine venue understanding, execution discipline, and client-first planning.")}</h3>
-                  <p className="mt-3 max-w-xl text-sm leading-6 text-white/80">
-                    {t("about.approachBody", "The result is a service experience that feels premium, organized, and directly tied to how exhibitions actually run on the ground.")}
-                  </p>
+            <div className="relative min-h-[420px]">
+              <img src="/assets/hoi-business-center.JPG" alt="HOI Business Center building" className="absolute inset-0 h-full w-full object-cover" />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.08)_0%,rgba(17,17,17,0.44)_44%,rgba(17,17,17,0.9)_100%)]" />
+              <div className="absolute inset-0 bg-[linear-gradient(130deg,rgba(17,17,17,0.10)_0%,rgba(17,17,17,0)_45%,rgba(249,115,22,0.26)_100%)]" />
+              <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/30 to-transparent" />
+
+              <div className="absolute inset-x-0 bottom-0 p-7">
+                <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/70">{t("about.ourApproach", "Our approach")}</p>
+                <h3 className="mt-2 max-w-xl text-2xl font-black leading-tight">
+                  {t("about.approachTitle", "We combine venue understanding, execution discipline, and client-first planning.")}
+                </h3>
+                <p className="mt-3 max-w-xl text-sm leading-6 text-white/82">
+                  {t("about.approachBody", "The result is a service experience that feels premium, organized, and directly tied to how exhibitions actually run on the ground.")}
+                </p>
+
+                <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                  <div className="overflow-hidden rounded-2xl border border-white/12 bg-white/8">
+                    <img src="/assets/hoi-team-group.jpg" alt="HOI team group" className="h-24 w-full object-cover" />
+                  </div>
+                  <div className="overflow-hidden rounded-2xl border border-white/12 bg-white/8">
+                    <img src="/assets/hoi-team-candid.jpg" alt="HOI team candid" className="h-24 w-full object-cover" />
+                  </div>
+                  <div className="overflow-hidden rounded-2xl border border-white/12 bg-white/8">
+                    <img src="/assets/hoi-booth-install.jpg" alt="HOI booth installation" className="h-24 w-full object-cover" />
+                  </div>
                 </div>
-              </div>
-              <div className="grid grid-cols-3 gap-2 bg-[#111111] p-3">
-                <img src="/assets/hoi-team-candid.jpg" alt="HOI team candid" className="h-24 w-full rounded-2xl object-cover" />
-                <img src="/assets/hoi-team-group.jpg" alt="HOI team group" className="h-24 w-full rounded-2xl object-cover" />
-                <img src="/assets/hoi-booth-install.jpg" alt="HOI booth installation" className="h-24 w-full rounded-2xl object-cover" />
               </div>
             </div>
           </section>

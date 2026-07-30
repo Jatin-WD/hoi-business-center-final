@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { ChevronRight, Building2, Boxes, Languages, Megaphone, PanelTop, Truck } from "lucide-react";
+import { ChevronRight, Building2, Boxes, Languages, Megaphone, PanelTop, Truck, Image as ImageIcon } from "lucide-react";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
 import { translateServiceLabel, translateSiteText } from "@/lib/site-translations";
@@ -124,6 +124,32 @@ export default function YashobhoomiPage() {
             </div>
           </div>
         </div>
+
+        <section className="mb-16 rounded-[2rem] border border-black/5 bg-white p-6 shadow-sm sm:p-8">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("yash.gallery.eyebrow", "Venue Gallery")}</p>
+              <h2 className="mt-2 text-2xl font-black text-[#111111]">{t("yash.gallery.title", "A closer look at Yashobhoomi and HOI on ground")}</h2>
+            </div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-600">
+              <ImageIcon size={16} className="text-[color:var(--hoi-primary)]" />
+              {t("yash.gallery.note", "Selected venue and team visuals")}
+            </div>
+          </div>
+          <div className="mt-6 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="overflow-hidden rounded-[1.75rem] border border-black/5 bg-[#111111] shadow-[0_18px_50px_rgba(17,17,17,0.08)]">
+              <img src="/assets/yashobhoomi.png" alt="Yashobhoomi exhibition venue" className="h-full w-full object-cover" />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+              <div className="overflow-hidden rounded-[1.45rem] border border-black/5 bg-[#111111]">
+                <img src="/assets/hoi-business-center.JPG" alt="HOI Business Center building" className="h-44 w-full object-cover" />
+              </div>
+              <div className="overflow-hidden rounded-[1.45rem] border border-black/5 bg-[#111111]">
+                <img src="/assets/hoi-event-reg.jpg" alt="HOI event registration area" className="h-44 w-full object-cover" />
+              </div>
+            </div>
+          </div>
+        </section>
 
         <div className="mb-16">
           <h2 className="mb-8 text-2xl font-black text-[#111111]">{t("yash.services.title", "What HOI Provides at Yashobhoomi")}</h2>

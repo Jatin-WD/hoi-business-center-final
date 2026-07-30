@@ -200,30 +200,16 @@ function Hero({ title, description }: { title: string; description: string }) {
         </div>
 
         <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_24px_70px_rgba(17,17,17,0.18)]">
-          <div className="relative min-h-[330px]">
+      <div className="relative min-h-[330px]">
             <img
-              src="/assets/hoi-about-team.jpg"
-              alt="HOI team at Yashobhoomi"
+              src="/assets/hoi-business-center.JPG"
+              alt="HOI Business Center building"
               className="absolute inset-0 h-full w-full object-cover"
               loading="eager"
               decoding="async"
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,15,24,0.08)_0%,rgba(10,15,24,0.38)_42%,rgba(10,15,24,0.88)_100%)]" />
             <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(10,15,24,0.02)_0%,rgba(10,15,24,0.00)_42%,rgba(249,115,22,0.22)_100%)]" />
-            <div className="absolute inset-0 flex items-end p-6">
-              <div className="max-w-md rounded-[1.5rem] border border-white/12 bg-[linear-gradient(135deg,rgba(17,17,17,0.84),rgba(17,17,17,0.58),rgba(249,115,22,0.26))] p-5 text-white backdrop-blur-xl">
-                <div className="mb-3 h-1.5 w-24 rounded-full bg-[linear-gradient(90deg,#f97316,rgba(255,255,255,0.12))]" />
-                <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/72">
-                  {t("common.publicInformationPortal", "Public information portal")}
-                </p>
-                <h2 className="mt-2 text-2xl font-black leading-tight">
-                  {t("home.hero.focusTitle", "Official exhibition venue for every public service flow")}
-                </h2>
-                <p className="mt-3 text-sm leading-6 text-white/82">
-                  {t("home.hero.focusDesc", "The homepage stays centered on one venue so users do not have to decode multiple locations or mixed service models.")}
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </div>

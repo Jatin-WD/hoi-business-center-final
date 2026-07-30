@@ -1,4 +1,4 @@
-import { getCmsTranslationOverride } from "./site-translation-overrides";
+﻿import { getCmsTranslationOverride } from "./site-translation-overrides";
 
 export type SiteLanguage = "en" | "hi" | "ko";
 
@@ -857,6 +857,18 @@ const KO: TranslationMap = {
   "home.locations.description": "야쇼부미는 우리의 주요 전시 장소이며, 이 웹사이트에서 공개적으로 강조하는 유일한 장소입니다.",
   "home.why.title": "왜 HOI 비즈니스 센터인가요?",
   "home.why.description": "엔드 투 엔드 서비스로 전시를 매끄럽고 전문적이며 영향력 있게 만듭니다.",
+  "home.process.selectService": "서비스 선택",
+  "home.process.review": "상세 페이지 확인",
+  "home.process.start": "예약 시작",
+  "home.process.coordinate": "실행 조율",
+  "home.process.selectServiceBody": "서비스 카탈로그를 열고 필요한 서비스 카드를 선택하세요.",
+  "home.process.reviewBody": "서비스 설명, 패키지 링크, 야쇼부미 맥락을 확인하세요.",
+  "home.process.startBody": "예약 흐름으로 이동해 범위와 요구사항을 확정하세요.",
+  "home.process.coordinateBody": "HOI 팀이 전달, 지원, 현장 조율을 관리합니다.",
+  "home.why.item1": "공식 장소 우선 전시",
+  "home.why.item2": "공개 사이트에는 6가지 핵심 서비스만 표시",
+  "home.why.item3": "맨파워용 별도 신청 흐름",
+  "home.why.item4": "추후 업데이트를 위한 CMS 기반 콘텐츠",
   "home.cta.title": "전시 존재감을 높일 준비가 되셨나요?",
   "home.cta.description": "오늘 팀에 문의해 브랜드를 위한 잊지 못할 전시 경험을 만들어보세요.",
   "services.page.title": "서비스",

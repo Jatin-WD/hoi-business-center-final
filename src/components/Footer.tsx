@@ -13,12 +13,19 @@ export default function Footer() {
   });
 
   return (
-    <footer className="bg-[#111111] text-zinc-200 border-t border-white/10">
-      <div className="mx-auto max-w-[1600px] px-8 py-14">
+    <footer className="relative overflow-hidden border-t border-white/10 bg-[#0a0f18] text-zinc-200">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(249,115,22,0.18),transparent_24%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.04),transparent_20%)]" />
+      <div className="relative mx-auto max-w-[1600px] px-6 py-14 sm:px-8">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
-            <img src={hoiLogo} alt="HOI Business Center Logo" className="mb-4 h-14 w-auto logo" />
-            <p className="text-sm leading-relaxed text-zinc-400">
+            <div className="mb-4 inline-flex items-center gap-3 rounded-2xl border border-white/8 bg-white/5 px-4 py-3">
+              <img src={hoiLogo} alt="HOI Business Center Logo" className="h-14 w-auto logo" />
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.18em] text-white">{t("footer.brand", "HOI Business Center")}</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-white/50">{t("footer.partner", "Official partner • Yashobhoomi")}</p>
+              </div>
+            </div>
+            <p className="max-w-sm text-sm leading-relaxed text-zinc-400">
               {cms("footer.about")}
             </p>
           </div>

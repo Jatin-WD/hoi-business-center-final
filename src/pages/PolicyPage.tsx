@@ -44,7 +44,7 @@ export default function PolicyPage({ type }: { type: PolicyType }) {
   const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const page = content[type];
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f5efe4]">
       <HeroSection breadcrumbs={[{ label: t("nav.home", "Home"), href: "/" }, { label: page.title }]} title={page.title} description={page.description} />
       <main className="mx-auto max-w-4xl px-6 py-12 sm:px-8">
         <div className="space-y-5 rounded-lg border border-gray-100 bg-white p-8 shadow-sm">

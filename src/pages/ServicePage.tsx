@@ -30,7 +30,7 @@ export default function ServicePage() {
   const packageCount = catalog.services.reduce((total, service) => total + service.packages.length, 0);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f5efe4]">
       <HeroSection breadcrumbs={[{ label: t("nav.home", "Home"), href: "/" }, { label: t("nav.yashobhoomi", "Yashobhoomi") }]} title={cms("service.hero.title")} description={cms("service.hero.description")}>
         <div className="grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
           <Stat icon={PackageCheck} label={t("common.servicesOverview", "Services")} value={catalog.services.length} />
@@ -47,7 +47,7 @@ export default function ServicePage() {
         {!isLoading && !error ? (
           <>
             <section>
-              <SectionHeader eyebrow={t("nav.yashobhoomi", "Yashobhoomi")} title={t("service.primaryVenue", "Our Primary Exhibition Venue")} description={t("service.primaryVenueDesc", "HOI Business Center is built around Yashobhoomi. Every service, package, and execution plan revolves around this venue.")} />
+            <SectionHeader eyebrow={t("nav.yashobhoomi", "Yashobhoomi")} title={t("service.primaryVenue", "Our Primary Exhibition Venue")} description={t("service.primaryVenueDesc", "HOI Business Center is built around Yashobhoomi. Every service, package, and execution plan revolves around this venue.")} />
               {yashobhoomiVenue ? <VenueGroup locationId="yashobhoomi" venues={selectedVenues} serviceCount={catalog.services.length} featured /> : null}
             </section>
 
@@ -71,7 +71,7 @@ function SectionHeader({ eyebrow, title, description }: { eyebrow?: string; titl
   return (
     <div className="mb-6">
       {eyebrow ? <p className="mb-2 text-xs font-bold uppercase tracking-wide text-[#f97316]">{eyebrow}</p> : null}
-      <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+      <h2 className="hoi-display text-2xl font-bold text-gray-900 sm:text-3xl">{title}</h2>
       <p className="mt-2 max-w-3xl text-sm leading-relaxed text-gray-500">{description}</p>
     </div>
   );

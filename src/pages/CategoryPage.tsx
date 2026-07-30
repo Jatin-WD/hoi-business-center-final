@@ -59,8 +59,8 @@ export default function CategoryPage({ params }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-gradient-to-r from-[#111111] via-[#1f1f1f] to-[#f97316] text-white py-14 px-8">
+    <div className="min-h-screen bg-[#f5efe4]">
+      <div className="bg-[linear-gradient(135deg,#0a0f18_0%,#111827_56%,#f97316_112%)] px-8 py-14 text-white">
         <div className="max-w-[1600px] mx-auto">
           <div className="flex items-center gap-2 text-zinc-200 text-sm mb-4 flex-wrap">
             <Link href="/" className="hover:text-white">{t("nav.home", "Home")}</Link>
@@ -70,7 +70,7 @@ export default function CategoryPage({ params }: Props) {
             <span className="text-white">{title}</span>
             {activeVenue && <><ChevronRight size={14} /><span>{activeVenue.name.split(",")[0]}</span></>}
           </div>
-          <h1 className="text-4xl font-bold mb-3">{title}</h1>
+          <h1 className="hoi-display mb-3 text-4xl font-bold">{title}</h1>
           {activeVenue && <p className="text-yellow-300 font-semibold text-lg mb-2">{activeVenue.name}</p>}
           <p className="text-zinc-200 max-w-xl">{t("category.hero.description", "Select a venue below, then choose from available services and packages.")}</p>
         </div>
@@ -122,9 +122,9 @@ function ServiceCard({ service, venueName }: { service: CatalogService; venueNam
   const requirementHref = `/contact?type=Service%20Requirement&service=${encodeURIComponent(serviceLabel)}&location=${encodeURIComponent(venueName)}`;
   const locationParam = `?location=${encodeURIComponent(venueName)}`;
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all">
+      <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all hover:shadow-lg">
       <div className="p-5 border-b border-gray-100">
-        <h2 className="font-bold text-gray-900">{serviceLabel}</h2>
+        <h2 className="hoi-display font-bold text-gray-900">{serviceLabel}</h2>
         <p className="text-xs text-gray-400 mt-0.5">{service.packages.length} {t("common.packageOptions", "package options")}</p>
       </div>
       <div className="p-5 space-y-2">

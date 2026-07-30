@@ -107,7 +107,7 @@ export default function EventCalendarPage() {
   }, [selectedEvent]);
 
   return (
-    <div className="min-h-screen bg-[#f7f4ef]">
+    <div className="min-h-screen bg-[#f5efe4]">
       <section
         className="relative overflow-hidden text-white"
         style={{
@@ -128,7 +128,7 @@ export default function EventCalendarPage() {
                 <CalendarDays size={14} />
                 {t("nav.eventCalendar", "Event Calendar")}
               </p>
-              <h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight sm:text-5xl">
+              <h1 className="hoi-display mt-4 max-w-3xl text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
                 {cms("events.hero.title")}
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">
@@ -147,7 +147,7 @@ export default function EventCalendarPage() {
         <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">{t("events.listings.eyebrow", "Event listings")}</p>
-            <h2 className="mt-1 text-2xl font-bold text-slate-900">{t("events.listings.title", "Cards styled for quick scanning")}</h2>
+          <h2 className="hoi-display mt-1 text-2xl font-bold text-slate-900 sm:text-3xl">{t("events.listings.title", "Cards styled for quick scanning")}</h2>
           </div>
           <p className="text-sm text-slate-600">
             {loading ? t("events.loading", "Loading events...") : (
@@ -195,7 +195,7 @@ export default function EventCalendarPage() {
                             {event.category || t("events.label.featured", "Featured")}
                           </span>
                         </div>
-                        <h3 className="mt-1 line-clamp-2 text-[17px] font-bold leading-snug text-slate-900 transition-colors group-hover:text-[color:var(--hoi-primary)]">
+                        <h3 className="hoi-display mt-1 line-clamp-2 text-[17px] font-bold leading-snug text-slate-900 transition-colors group-hover:text-[color:var(--hoi-primary)]">
                           {event.name}
                         </h3>
                         <div className="mt-2 space-y-1.25 text-[13px] text-slate-600">

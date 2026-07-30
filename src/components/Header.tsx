@@ -33,38 +33,38 @@ export default function Header() {
   };
 
   const linkClass = (href: string) =>
-    `px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
-      location === href ? "text-[#f97316] bg-gray-100" : "text-gray-700 hover:text-[#f97316] hover:bg-gray-50"
+    `relative px-3 py-2 rounded-md text-sm font-semibold transition-colors whitespace-nowrap ${
+      location === href ? "text-[#f97316] bg-orange-50" : "text-slate-700 hover:text-[#f97316] hover:bg-gray-50"
     }`;
 
   const yashobhoomiClass = () =>
-    `px-3 py-2 rounded-md text-sm font-semibold transition-colors whitespace-nowrap ${
-      location === "/yashobhoomi" ? "text-gray-900 bg-gray-100" : "text-gray-900 hover:text-gray-900 hover:bg-gray-50"
+    `relative px-3 py-2 rounded-md text-sm font-semibold transition-colors whitespace-nowrap ${
+      location === "/yashobhoomi" ? "text-[#111111] bg-gray-100" : "text-[#111111] hover:text-[#111111] hover:bg-gray-50"
     }`;
 
   return (
-    <header className="w-full bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-      <div className="bg-[#111111] text-white text-xs py-1 px-4 flex justify-end gap-4">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-white shadow-[0_8px_30px_rgba(17,17,17,0.08)]">
+      <div className="flex justify-end gap-4 bg-[#0a0f18] px-4 py-1 text-xs text-white">
         <span>{t("header.topline", "HOI Business Center")}</span>
         <span>|</span>
-        <a href="tel:+919810097323" className="hover:text-[#f97316] transition-colors">+91 98100 97323</a>
+        <a href="tel:+919810097323" className="transition-colors hover:text-[#f97316]">+91 98100 97323</a>
         <span>|</span>
-        <a href="mailto:thlim@kilindia.in" className="hover:text-[#f97316] transition-colors">thlim@kilindia.in</a>
+        <a href="mailto:thlim@kilindia.in" className="transition-colors hover:text-[#f97316]">thlim@kilindia.in</a>
       </div>
 
-      <nav className="relative flex items-center justify-between px-4 lg:px-8 h-16 max-w-[1600px] mx-auto">
+      <nav className="relative mx-auto flex h-20 max-w-[1600px] items-center justify-between px-4 lg:px-8">
         <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-          <img src={hoiLogo} alt="HOI Business Center Logo" className="h-12 w-auto logo" data-testid="logo" />
+          <img src={hoiLogo} alt="HOI Business Center Logo" className="logo h-12 w-auto" data-testid="logo" />
         </Link>
 
-        <div className="hidden lg:flex items-center gap-0 text-sm font-medium">
+        <div className="hidden items-center gap-0 text-sm font-medium lg:flex">
           <Link href="/" className={linkClass("/")}>{t("nav.home", "Home")}</Link>
           <div className="relative" onMouseEnter={handleServiceEnter} onMouseLeave={handleServiceLeave}>
-            <button className={`flex items-center gap-1 px-3 py-2 rounded-md transition-colors whitespace-nowrap ${serviceOpen ? "text-[#f97316] bg-gray-100" : "text-gray-700 hover:text-[#f97316] hover:bg-gray-50"}`} data-testid="nav-booking" onClick={() => setServiceOpen((value) => !value)}>
+            <button className={`flex items-center gap-1 rounded-md px-3 py-2 whitespace-nowrap transition-colors ${serviceOpen ? "bg-orange-50 text-[#f97316]" : "text-slate-700 hover:bg-gray-50 hover:text-[#f97316]"}`} data-testid="nav-booking" onClick={() => setServiceOpen((value) => !value)}>
               {t("nav.booking", "Booking")} <ChevronDown size={14} className={`transition-transform ${serviceOpen ? "rotate-180" : ""}`} />
             </button>
             {serviceOpen && (
-              <div className="fixed left-0 right-0 top-[calc(64px+28px)] z-50" onMouseEnter={handleServiceEnter} onMouseLeave={handleServiceLeave}>
+              <div className="fixed left-0 right-0 top-[calc(80px+28px)] z-50" onMouseEnter={handleServiceEnter} onMouseLeave={handleServiceLeave}>
                 <ServiceMegaMenu onClose={() => setServiceOpen(false)} />
               </div>
             )}
@@ -87,7 +87,7 @@ export default function Header() {
           {user ? <UserActions name={user.name} logout={logout} /> : <AuthActions />}
         </div>
 
-        <button className="lg:hidden p-2 text-gray-700" onClick={() => setMobileOpen(!mobileOpen)} data-testid="btn-mobile-menu">
+        <button className="p-2 text-slate-700 lg:hidden" onClick={() => setMobileOpen(!mobileOpen)} data-testid="btn-mobile-menu">
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </nav>
@@ -103,8 +103,8 @@ function UserActions({ name, logout }: { name: string; logout: () => void }) {
 
   return (
     <>
-      <span className="text-sm text-gray-700">{t("auth.hi", "Hi")}, {name}</span>
-      <button type="button" onClick={logout} className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold text-[#f97316] border border-[#f97316] hover:bg-gray-50 transition-colors whitespace-nowrap">
+      <span className="text-sm text-slate-700">{t("auth.hi", "Hi")}, {name}</span>
+      <button type="button" onClick={logout} className="flex items-center gap-1.5 whitespace-nowrap rounded-md border border-[#f97316] px-4 py-2 text-sm font-semibold text-[#f97316] transition-colors hover:bg-orange-50">
         {t("auth.logout", "Logout")}
       </button>
     </>
@@ -117,10 +117,10 @@ function AuthActions() {
 
   return (
     <>
-      <Link href="/login" className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold text-[#f97316] border border-[#f97316] hover:bg-gray-50 transition-colors whitespace-nowrap" data-testid="btn-login">
+      <Link href="/login" className="flex items-center gap-1.5 whitespace-nowrap rounded-md border border-[#f97316] px-4 py-2 text-sm font-semibold text-[#f97316] transition-colors hover:bg-orange-50" data-testid="btn-login">
         <LogIn size={15} /> {t("auth.login", "Login")}
       </Link>
-      <Link href="/signup" className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold bg-[#f97316] text-white hover:bg-[#ea580c] transition-colors whitespace-nowrap" data-testid="btn-signup">
+      <Link href="/signup" className="flex items-center gap-1.5 whitespace-nowrap rounded-md bg-[#f97316] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#ea580c]" data-testid="btn-signup">
         <UserPlus size={15} /> {t("auth.signup", "Sign Up")}
       </Link>
     </>
@@ -129,12 +129,12 @@ function AuthActions() {
 
 function LanguageSwitcher({ language, onChange }: { language: SiteLanguage; onChange: (language: SiteLanguage) => void }) {
   return (
-    <label className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-700">
+    <label className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700">
       <Globe size={14} className="text-[#f97316]" />
       <span className="sr-only">Language</span>
         <select
           value={language}
-        onChange={(event) => onChange(event.target.value as SiteLanguage)}
+          onChange={(event) => onChange(event.target.value as SiteLanguage)}
           className="bg-transparent text-sm outline-none"
           aria-label="Language"
         >

@@ -103,7 +103,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f5efe4]">
       <HeroSection breadcrumbs={[{ label: t("nav.home", "Home"), href: "/" }, { label: t("nav.contactUs", "Contact Us") }]} title={cms("contact.title")} description={cms("contact.description")} />
       <div className="max-w-[1600px] mx-auto px-8 py-14">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">

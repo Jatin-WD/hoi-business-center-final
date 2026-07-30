@@ -17,16 +17,16 @@ export default function HeaderMobileMenu({ onClose, user, logout, language, onLa
   const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
 
   return (
-    <div className="lg:hidden bg-white border-t border-gray-200 overflow-y-auto max-h-[80vh]">
-      <div className="px-4 py-3 space-y-1">
+    <div className="max-h-[80vh] overflow-y-auto border-t border-white/10 bg-[#0f1116] text-white lg:hidden">
+      <div className="space-y-1 px-4 py-3">
         <NavLink href="/" onClose={onClose}>{t("nav.home", "Home")}</NavLink>
-        <div className="border-b border-gray-100">
-          <button className="w-full flex justify-between items-center py-2.5 text-gray-700 font-medium" onClick={() => setServiceOpen((v) => !v)}>
+        <div className="border-b border-white/10">
+          <button className="flex w-full items-center justify-between py-2.5 font-medium text-white/80" onClick={() => setServiceOpen((v) => !v)}>
             {t("nav.booking", "Booking")} <ChevronDown size={16} className={`transition-transform ${serviceOpen ? "rotate-180" : ""}`} />
           </button>
           {serviceOpen && (
-            <div className="pl-4 pb-2 text-sm text-gray-500 space-y-1">
-              <Link href="/service/yashobhoomi" onClick={onClose} className="block py-1.5 font-semibold text-[#f97316] hover:text-[#ea580c]">
+            <div className="space-y-1 pb-2 pl-4 text-sm text-white/65">
+              <Link href="/service/yashobhoomi" onClick={onClose} className="block py-1.5 font-semibold text-[#f97316] hover:text-[#ffb37a]">
                 {t("nav.yashobhoomi", "Yashobhoomi")}
               </Link>
             </div>
@@ -39,7 +39,7 @@ export default function HeaderMobileMenu({ onClose, user, logout, language, onLa
         <NavLink href="/about" onClose={onClose}>{t("nav.aboutUs", "About Us")}</NavLink>
         <NavLink href="/contact" onClose={onClose}>{t("nav.contactUs", "Contact Us")}</NavLink>
         <div className="pt-2">
-          <label className="flex items-center gap-2 rounded-md border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700">
+          <label className="flex items-center gap-2 rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white/80">
             <Globe size={14} className="text-[#f97316]" />
             <span className="text-xs uppercase tracking-wide">{t("nav.language", "Language")}</span>
             <select
@@ -57,7 +57,7 @@ export default function HeaderMobileMenu({ onClose, user, logout, language, onLa
           </label>
         </div>
         <div className="pt-3 flex gap-2">
-          {user ? <button type="button" onClick={() => { logout(); onClose(); }} className="flex-1 text-center border border-[#f97316] text-[#f97316] px-4 py-2.5 rounded-md text-sm font-semibold">{t("auth.logout", "Logout")}</button> : <AuthLinks onClose={onClose} language={language} />}
+          {user ? <button type="button" onClick={() => { logout(); onClose(); }} className="flex-1 rounded-md border border-[#f97316] px-4 py-2.5 text-center text-sm font-semibold text-[#f97316]">{t("auth.logout", "Logout")}</button> : <AuthLinks onClose={onClose} language={language} />}
         </div>
       </div>
     </div>
@@ -66,7 +66,7 @@ export default function HeaderMobileMenu({ onClose, user, logout, language, onLa
 
 function NavLink({ href, onClose, children }: { href: string; onClose: () => void; children: ReactNode }) {
   const isYashobhoomi = href === "/yashobhoomi";
-  return <Link href={href} onClick={onClose} className={`block py-2.5 border-b border-gray-100 ${isYashobhoomi ? "text-gray-900 font-semibold" : "text-gray-700 font-medium"}`}>{children}</Link>;
+  return <Link href={href} onClick={onClose} className={`block border-b border-white/10 py-2.5 ${isYashobhoomi ? "font-semibold text-white" : "font-medium text-white/80"}`}>{children}</Link>;
 }
 
 function AuthLinks({ onClose, language }: { onClose: () => void; language: SiteLanguage }) {
@@ -74,8 +74,8 @@ function AuthLinks({ onClose, language }: { onClose: () => void; language: SiteL
 
   return (
     <>
-      <Link href="/login" onClick={onClose} className="flex-1 text-center border border-[#f97316] text-[#f97316] px-4 py-2.5 rounded-md text-sm font-semibold">{t("auth.login", "Login")}</Link>
-      <Link href="/signup" onClick={onClose} className="flex-1 text-center bg-[#f97316] text-white px-4 py-2.5 rounded-md text-sm font-semibold">{t("auth.signup", "Sign Up")}</Link>
+      <Link href="/login" onClick={onClose} className="flex-1 rounded-md border border-[#f97316] px-4 py-2.5 text-center text-sm font-semibold text-[#f97316]">{t("auth.login", "Login")}</Link>
+      <Link href="/signup" onClick={onClose} className="flex-1 rounded-md bg-[#f97316] px-4 py-2.5 text-center text-sm font-semibold text-white">{t("auth.signup", "Sign Up")}</Link>
     </>
   );
 }

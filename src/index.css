@@ -9,8 +9,35 @@
   --hoi-accent-text: #111111;
 }
 
+html {
+  color-scheme: light;
+}
+
+body {
+  background:
+    radial-gradient(circle at top right, rgba(249, 115, 22, 0.05), transparent 24%),
+    radial-gradient(circle at bottom left, rgba(17, 24, 39, 0.04), transparent 20%),
+    #f4ede2;
+  color: #111111;
+}
+
 .logo {
   filter: drop-shadow(0px 2px 8px rgba(249, 115, 22, 0.14));
+}
+
+.hoi-display {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: -0.04em;
+}
+
+.hoi-panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 251, 244, 0.96) 100%);
+  box-shadow: 0 16px 40px rgba(17, 17, 17, 0.06);
+}
+
+.hoi-dark-panel {
+  background: linear-gradient(135deg, #0a0f18 0%, #111827 56%, #1f2937 100%);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.18);
 }
 
 @layer base {

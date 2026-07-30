@@ -123,7 +123,7 @@ export default function ManPowerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f5efe4]">
       <Hero title={cms("manpower.hero.title")} description={cms("manpower.hero.description")} />
       <form onSubmit={handleSubmit} className="mx-auto max-w-4xl space-y-6 px-4 py-10 lg:px-8">
         <section className="rounded-2xl border border-gray-100 bg-white p-7 shadow-sm">
@@ -169,14 +169,14 @@ function Hero({ title, description }: { title: string; description: string }) {
   const { language } = useSiteLanguage();
   const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   return (
-    <div className="bg-gradient-to-r from-[#111111] via-[#1f1f1f] to-[#f97316] px-8 py-16 text-white">
+    <div className="bg-[linear-gradient(135deg,#0a0f18_0%,#111827_56%,#f97316_112%)] px-8 py-16 text-white">
       <div className="mx-auto max-w-[1100px]">
         <div className="mb-4 flex items-center gap-2 text-sm text-zinc-200">
           <Link href="/" className="hover:text-white">{t("nav.home", "Home")}</Link>
           <ChevronRight size={14} />
           <span className="text-white">{t("nav.applyForManpower", "Apply for Manpower")}</span>
         </div>
-        <h1 className="mb-3 text-4xl font-bold">{title}</h1>
+        <h1 className="hoi-display mb-3 text-4xl font-bold">{title}</h1>
         <p className="max-w-2xl text-zinc-200">{description}</p>
       </div>
     </div>

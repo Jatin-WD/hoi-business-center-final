@@ -48,17 +48,17 @@ export default function ServicesPage() {
   })), [language, services]);
 
   return (
-    <div className="min-h-screen bg-[#f7f4ef]">
+    <div className="min-h-screen bg-[#f5efe4]">
       <section className="relative overflow-hidden text-white">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#111111] via-[#1f1f1f] to-[#f97316]" />
-        <div className="absolute inset-0 opacity-15" style={{ backgroundImage: "radial-gradient(circle at 18% 22%, white 0, transparent 20%), radial-gradient(circle at 78% 26%, white 0, transparent 16%), radial-gradient(circle at 50% 76%, white 0, transparent 18%)" }} />
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,#0a0f18_0%,#111827_56%,#f97316_112%)]" />
+        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 18% 22%, white 0, transparent 20%), radial-gradient(circle at 78% 26%, white 0, transparent 16%), radial-gradient(circle at 50% 76%, white 0, transparent 18%)" }} />
         <div className="relative mx-auto max-w-[1600px] px-6 py-16 sm:px-8 lg:py-20">
           <div className="max-w-3xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-white/80">
               <Sparkles size={14} />
               {cms("services.page.eyebrow")}
             </p>
-            <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">
+            <h1 className="hoi-display mt-4 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
               {cms("services.page.title")}
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">
@@ -69,7 +69,7 @@ export default function ServicesPage() {
       </section>
 
       <main className="mx-auto max-w-[1600px] px-6 py-10 sm:px-8 lg:py-14">
-        <section className="mb-8 rounded-[1.75rem] border border-black/5 bg-white p-6 shadow-sm">
+        <section className="hoi-panel mb-8 rounded-[1.75rem] border border-black/5 p-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <StatCard icon={PackageSearch} label={t("common.canonicalServices", "Canonical services")} value="6" />
             <StatCard icon={CheckCircle2} label={t("common.venueFocus", "Venue focus")} value={t("nav.yashobhoomi", "Yashobhoomi")} />
@@ -81,7 +81,7 @@ export default function ServicesPage() {
           <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.serviceCards", "Service cards")}</p>
-              <h2 className="mt-2 text-2xl font-black text-slate-900">{cms("services.section.title")}</h2>
+              <h2 className="hoi-display mt-2 text-2xl font-black text-slate-900 sm:text-3xl">{cms("services.section.title")}</h2>
             </div>
             <Link href="/service" className="inline-flex items-center gap-2 rounded-xl border border-[color:var(--hoi-primary)] px-4 py-2.5 text-sm font-bold text-[color:var(--hoi-primary)] transition-colors hover:bg-orange-50">
               {t("common.bookingMenu", "Booking menu")}
@@ -92,9 +92,9 @@ export default function ServicesPage() {
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {cards.map((service) => (
               <article key={service.id} className="group overflow-hidden rounded-[1.65rem] border border-black/5 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(17,17,17,0.08)]">
-                <div className="bg-gradient-to-r from-[#111111] via-[#1f1f1f] to-[#f97316] px-6 py-5 text-white">
+                <div className="bg-[linear-gradient(135deg,#0a0f18_0%,#111827_55%,#f97316_118%)] px-6 py-5 text-white">
                   <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/70">{cms("services.card.tag")}</p>
-                  <h3 className="mt-2 text-2xl font-black">{service.label}</h3>
+                  <h3 className="hoi-display mt-2 text-2xl font-black">{service.label}</h3>
                   <p className="mt-2 max-w-xl text-sm leading-6 text-white/80">
                     {cms(`services.${service.id}.description`) || service.detail?.description || service.description || cms("services.card.defaultDesc")}
                   </p>
@@ -131,12 +131,12 @@ export default function ServicesPage() {
 
 function StatCard({ icon: Icon, label, value }: { icon: typeof PackageSearch; label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-gray-100 bg-[#f7f4ef] p-5">
+    <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-[0_10px_30px_rgba(17,17,17,0.04)]">
       <div className="flex items-center gap-2 text-[#f97316]">
         <Icon size={16} />
         <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">{label}</span>
       </div>
-      <p className="mt-2 text-2xl font-black text-slate-900">{value}</p>
+      <p className="hoi-display mt-2 text-2xl font-black text-slate-900">{value}</p>
     </div>
   );
 }

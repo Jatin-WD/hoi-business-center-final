@@ -71,7 +71,7 @@ function SectionHeader({ eyebrow, title, description }: { eyebrow?: string; titl
   return (
     <div className="mb-6">
       {eyebrow ? <p className="mb-2 text-xs font-bold uppercase tracking-wide text-[#f97316]">{eyebrow}</p> : null}
-      <h2 className="hoi-display text-2xl font-bold text-gray-900 sm:text-3xl">{title}</h2>
+      <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">{title}</h2>
       <p className="mt-2 max-w-3xl text-sm leading-relaxed text-gray-500">{description}</p>
     </div>
   );

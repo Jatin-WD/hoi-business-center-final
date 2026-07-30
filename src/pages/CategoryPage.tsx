@@ -70,7 +70,7 @@ export default function CategoryPage({ params }: Props) {
             <span className="text-white">{title}</span>
             {activeVenue && <><ChevronRight size={14} /><span>{activeVenue.name.split(",")[0]}</span></>}
           </div>
-          <h1 className="hoi-display mb-3 text-4xl font-bold">{title}</h1>
+          <h1 className="mb-3 text-4xl font-bold">{title}</h1>
           {activeVenue && <p className="text-yellow-300 font-semibold text-lg mb-2">{activeVenue.name}</p>}
           <p className="text-zinc-200 max-w-xl">{t("category.hero.description", "Select a venue below, then choose from available services and packages.")}</p>
         </div>
@@ -124,7 +124,7 @@ function ServiceCard({ service, venueName }: { service: CatalogService; venueNam
   return (
       <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all hover:shadow-lg">
       <div className="p-5 border-b border-gray-100">
-        <h2 className="hoi-display font-bold text-gray-900">{serviceLabel}</h2>
+        <h2 className="font-bold text-gray-900">{serviceLabel}</h2>
         <p className="text-xs text-gray-400 mt-0.5">{service.packages.length} {t("common.packageOptions", "package options")}</p>
       </div>
       <div className="p-5 space-y-2">

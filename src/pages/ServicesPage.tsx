@@ -58,7 +58,7 @@ export default function ServicesPage() {
               <Sparkles size={14} />
               {cms("services.page.eyebrow")}
             </p>
-            <h1 className="hoi-display mt-4 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
+            <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
               {cms("services.page.title")}
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">
@@ -81,7 +81,7 @@ export default function ServicesPage() {
           <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.serviceCards", "Service cards")}</p>
-              <h2 className="hoi-display mt-2 text-2xl font-black text-slate-900 sm:text-3xl">{cms("services.section.title")}</h2>
+              <h2 className="mt-2 text-2xl font-black text-slate-900 sm:text-3xl">{cms("services.section.title")}</h2>
             </div>
             <Link href="/service" className="inline-flex items-center gap-2 rounded-xl border border-[color:var(--hoi-primary)] px-4 py-2.5 text-sm font-bold text-[color:var(--hoi-primary)] transition-colors hover:bg-orange-50">
               {t("common.bookingMenu", "Booking menu")}
@@ -94,7 +94,7 @@ export default function ServicesPage() {
               <article key={service.id} className="group overflow-hidden rounded-[1.65rem] border border-black/5 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(17,17,17,0.08)]">
                 <div className="bg-[linear-gradient(135deg,#0a0f18_0%,#111827_55%,#f97316_118%)] px-6 py-5 text-white">
                   <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/70">{cms("services.card.tag")}</p>
-                  <h3 className="hoi-display mt-2 text-2xl font-black">{service.label}</h3>
+                  <h3 className="mt-2 text-2xl font-black">{service.label}</h3>
                   <p className="mt-2 max-w-xl text-sm leading-6 text-white/80">
                     {cms(`services.${service.id}.description`) || service.detail?.description || service.description || cms("services.card.defaultDesc")}
                   </p>
@@ -136,7 +136,7 @@ function StatCard({ icon: Icon, label, value }: { icon: typeof PackageSearch; la
         <Icon size={16} />
         <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">{label}</span>
       </div>
-      <p className="hoi-display mt-2 text-2xl font-black text-slate-900">{value}</p>
+      <p className="mt-2 text-2xl font-black text-slate-900">{value}</p>
     </div>
   );
 }

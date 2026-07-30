@@ -129,7 +129,7 @@ export default function HomePage() {
               <Sparkles size={14} />
               {cms("home.hero.badge")}
             </p>
-            <h1 className="hoi-display mt-5 max-w-2xl text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
+            <h1 className="mt-5 max-w-2xl text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
               {cms("home.hero.title")}
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-8 text-white/78 sm:text-lg">
@@ -167,7 +167,7 @@ export default function HomePage() {
                   <div className="max-w-md rounded-[1.75rem] border border-white/14 bg-[linear-gradient(135deg,rgba(10,15,24,0.86),rgba(10,15,24,0.60),rgba(249,115,22,0.34))] p-5 shadow-[0_16px_40px_rgba(17,17,17,0.24)] backdrop-blur-xl">
                     <div className="mb-3 h-1.5 w-24 rounded-full bg-[linear-gradient(90deg,#f97316,rgba(255,255,255,0.1))]" />
                     <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/72">{t("common.venueFocus", "Venue focus")}</p>
-                    <h2 className="hoi-display mt-2 text-2xl font-black leading-tight">{cms("home.hero.focusTitle")}</h2>
+                    <h2 className="mt-2 text-2xl font-black leading-tight">{cms("home.hero.focusTitle")}</h2>
                     <p className="mt-3 text-sm leading-6 text-white/82">
                       {cms("home.hero.focusDesc")}
                     </p>
@@ -215,7 +215,7 @@ export default function HomePage() {
                   </span>
                 </div>
 
-                <h3 className="hoi-display mt-5 text-2xl font-black text-white transition-colors group-hover:text-[#ffb37a]">
+                <h3 className="mt-5 text-2xl font-black text-white transition-colors group-hover:text-[#ffb37a]">
                   {service.label}
                 </h3>
                 <p className="mt-3 line-clamp-3 text-sm leading-7 text-white/72">
@@ -265,7 +265,7 @@ export default function HomePage() {
               <span className="inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/75 backdrop-blur-sm">
                 {t("common.officialVenueSpotlight", "Official venue spotlight")}
               </span>
-              <h3 className="hoi-display mt-4 max-w-xl text-3xl font-black leading-tight">{cms("home.locations.cardTitle")}</h3>
+              <h3 className="mt-4 max-w-xl text-3xl font-black leading-tight">{cms("home.locations.cardTitle")}</h3>
               <p className="mt-3 max-w-lg text-sm leading-7 text-white/86">
                 {cms("home.locations.cardDescription")}
               </p>
@@ -334,7 +334,7 @@ export default function HomePage() {
                 <Clock3 size={14} />
                 {t("common.readyToMoveForward", "Ready to move forward")}
               </p>
-              <h2 className="hoi-display mt-4 text-3xl font-black leading-tight sm:text-4xl">{cms("home.cta.title")}</h2>
+              <h2 className="mt-4 text-3xl font-black leading-tight sm:text-4xl">{cms("home.cta.title")}</h2>
               <p className="mt-4 max-w-2xl text-base leading-8 text-white/78">{cms("home.cta.description")}</p>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -395,7 +395,7 @@ function SectionHeading({
       <p className={`text-xs font-bold uppercase tracking-[0.24em] ${tone === "light" ? "text-white/65" : "text-[#6b4b2d]"}`}>
         {eyebrow}
       </p>
-      <h2 className={`hoi-display mt-3 text-3xl font-black tracking-tight sm:text-4xl ${headingTone}`}>{title}</h2>
+      <h2 className={`mt-3 text-3xl font-black tracking-tight sm:text-4xl ${headingTone}`}>{title}</h2>
       <p className={`mt-3 text-base leading-8 ${textTone}`}>{description}</p>
     </div>
   );

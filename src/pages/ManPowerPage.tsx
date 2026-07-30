@@ -176,7 +176,7 @@ function Hero({ title, description }: { title: string; description: string }) {
           <ChevronRight size={14} />
           <span className="text-white">{t("nav.applyForManpower", "Apply for Manpower")}</span>
         </div>
-        <h1 className="hoi-display mb-3 text-4xl font-bold">{title}</h1>
+        <h1 className="mb-3 text-4xl font-bold">{title}</h1>
         <p className="max-w-2xl text-zinc-200">{description}</p>
       </div>
     </div>

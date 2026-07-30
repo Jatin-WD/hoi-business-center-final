@@ -82,7 +82,7 @@ export default function PackageDetailPage({ params }: Props) {
             <span className="text-white">{detail.title}</span>
           </div>
           <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-yellow-300">{serviceLabel}</p>
-          <h1 className="hoi-display mb-2 text-3xl font-bold">{detail.title}</h1>
+          <h1 className="mb-2 text-3xl font-bold">{detail.title}</h1>
           {selectedLocation ? <p className="mt-3 inline-flex rounded-lg bg-yellow-400 px-3 py-1.5 text-sm font-bold text-gray-900">Selected location: {selectedLocation}</p> : null}
           <div className="mt-3 flex items-baseline gap-3">
             <span className="text-2xl font-bold text-white">{detail.price}</span>
@@ -95,7 +95,7 @@ export default function PackageDetailPage({ params }: Props) {
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
           <div className="space-y-8 lg:col-span-2">
             <section className="rounded-2xl border border-gray-100 bg-white p-7">
-              <h2 className="hoi-display mb-3 text-xl font-bold text-gray-900">About This Package</h2>
+              <h2 className="mb-3 text-xl font-bold text-gray-900">About This Package</h2>
               <p className="leading-relaxed text-gray-600">{detail.description}</p>
               <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-orange-50 px-3 py-1.5 text-sm text-[#f97316]">
                 <span className="font-semibold">Duration:</span> {detail.duration}
@@ -103,7 +103,7 @@ export default function PackageDetailPage({ params }: Props) {
             </section>
 
             <section className="rounded-2xl border border-gray-100 bg-white p-7">
-              <h2 className="hoi-display mb-5 text-xl font-bold text-gray-900">What's Included</h2>
+              <h2 className="mb-5 text-xl font-bold text-gray-900">What's Included</h2>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {detail.includes.map((item) => (
                   <div key={item} className="flex items-start gap-3">
@@ -118,7 +118,7 @@ export default function PackageDetailPage({ params }: Props) {
 
             {notIncludes.length > 0 && (
               <section className="rounded-2xl border border-gray-100 bg-white p-7">
-                <h2 className="hoi-display mb-5 text-xl font-bold text-gray-900">Not Included</h2>
+                <h2 className="mb-5 text-xl font-bold text-gray-900">Not Included</h2>
                 <ul className="space-y-2">
                   {notIncludes.map((item) => (
                     <li key={item} className="flex items-start gap-3 text-sm text-gray-500">
@@ -132,7 +132,7 @@ export default function PackageDetailPage({ params }: Props) {
 
             {otherPackages.length > 0 && (
               <section className="rounded-2xl border border-gray-100 bg-white p-7">
-                <h2 className="hoi-display mb-5 text-xl font-bold text-gray-900">Other {serviceLabel} Packages</h2>
+                <h2 className="mb-5 text-xl font-bold text-gray-900">Other {serviceLabel} Packages</h2>
                 <div className="space-y-2">
                   {otherPackages.map((pkg) => (
                     <Link key={`${pkg.category}-${pkg.subcategory}`} href={`/packages/${pkg.category}/${pkg.subcategory}${selectedLocation ? `?location=${encodeURIComponent(selectedLocation)}` : ""}`} className="group flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 transition-all hover:border-[#f97316] hover:bg-orange-50">
@@ -147,7 +147,7 @@ export default function PackageDetailPage({ params }: Props) {
 
           <aside className="space-y-5">
             <div className="sticky top-28 rounded-2xl border border-gray-100 bg-white p-7">
-              <h3 className="hoi-display mb-2 text-lg font-bold text-gray-900">Book This Package</h3>
+              <h3 className="mb-2 text-lg font-bold text-gray-900">Book This Package</h3>
               <p className="mb-3 text-sm text-gray-500">Contact our team to confirm availability and finalise your booking.</p>
               {selectedLocation ? <p className="mb-5 rounded-lg bg-orange-50 px-3 py-2 text-sm font-semibold text-[#f97316]">Location: {selectedLocation}</p> : null}
               <Link href={contactHref} className="mb-3 block w-full rounded-xl bg-[#f97316] py-3 text-center font-semibold text-white transition-colors hover:bg-[#ea580c]">Book Now</Link>

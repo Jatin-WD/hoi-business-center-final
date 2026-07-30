@@ -25,11 +25,6 @@ body {
   filter: drop-shadow(0px 2px 8px rgba(249, 115, 22, 0.14));
 }
 
-.hoi-display {
-  font-family: Georgia, "Times New Roman", serif;
-  letter-spacing: -0.04em;
-}
-
 .hoi-panel {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 251, 244, 0.96) 100%);
   box-shadow: 0 16px 40px rgba(17, 17, 17, 0.06);

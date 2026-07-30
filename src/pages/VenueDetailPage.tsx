@@ -57,7 +57,7 @@ export default function VenueDetailPage({ params }: Props) {
             <MapPin size={14} />
             <span>{venue.city}, {venue.state}</span>
           </div>
-          <h1 className="hoi-display mb-3 text-4xl font-bold">{venue.name}</h1>
+          <h1 className="mb-3 text-4xl font-bold">{venue.name}</h1>
           <p className="text-zinc-200 max-w-2xl text-lg">{venue.description}</p>
           <div className="mt-6 flex gap-3 flex-wrap">
             <Link href={serviceHref} className="inline-flex items-center gap-2 bg-[#f97316] text-white px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-[#ea580c] transition-colors">
@@ -81,7 +81,7 @@ export default function VenueDetailPage({ params }: Props) {
           </main>
           <aside className="space-y-5">
             <div className="bg-white rounded-2xl border border-gray-100 p-6 sticky top-28">
-            <h3 className="hoi-display mb-2 text-lg font-bold text-gray-900">Book HOI Services Here</h3>
+            <h3 className="mb-2 text-lg font-bold text-gray-900">Book HOI Services Here</h3>
               <p className="text-sm text-gray-500 mb-5">Contact our team to plan your exhibition at {venue.name.split(",")[0]}.</p>
               <Link href={serviceHref} className="block w-full text-center bg-[#f97316] text-white py-3 rounded-xl font-semibold hover:bg-[#ea580c] transition-colors mb-3 text-sm">View Services</Link>
               <Link href="/contact" className="block w-full text-center border border-[#f97316] text-[#f97316] py-3 rounded-xl font-semibold hover:bg-orange-50 transition-colors text-sm">Contact Us</Link>
@@ -102,19 +102,19 @@ function VenueStats({ venue }: { venue: CatalogVenue }) {
     { icon: Users, label: "Capacity", value: venue.capacity },
     { icon: Calendar, label: "Established", value: venue.established },
   ];
-  return <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">{stats.map((stat) => <div key={stat.label} className="rounded-2xl border border-gray-100 bg-white p-5 text-center transition-colors hover:border-[#f97316]"><stat.icon size={20} className="mx-auto mb-2 text-[#f97316]" /><p className="hoi-display text-lg font-bold text-gray-900">{stat.value || "-"}</p><p className="mt-0.5 text-xs text-gray-500">{stat.label}</p></div>)}</div>;
+  return <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">{stats.map((stat) => <div key={stat.label} className="rounded-2xl border border-gray-100 bg-white p-5 text-center transition-colors hover:border-[#f97316]"><stat.icon size={20} className="mx-auto mb-2 text-[#f97316]" /><p className="text-lg font-bold text-gray-900">{stat.value || "-"}</p><p className="mt-0.5 text-xs text-gray-500">{stat.label}</p></div>)}</div>;
 }
 
 function InfoBlock({ title, text, address }: { title: string; text: string; address: string }) {
-  return <section className="rounded-2xl border border-gray-100 bg-white p-7"><h2 className="hoi-display mb-4 text-xl font-bold text-gray-900">{title}</h2><p className="leading-relaxed text-gray-600">{text}</p><div className="mt-5 flex items-start gap-2 text-sm text-gray-500"><MapPin size={16} className="mt-0.5 flex-shrink-0 text-[#f97316]" /><span>{address}</span></div></section>;
+  return <section className="rounded-2xl border border-gray-100 bg-white p-7"><h2 className="mb-4 text-xl font-bold text-gray-900">{title}</h2><p className="leading-relaxed text-gray-600">{text}</p><div className="mt-5 flex items-start gap-2 text-sm text-gray-500"><MapPin size={16} className="mt-0.5 flex-shrink-0 text-[#f97316]" /><span>{address}</span></div></section>;
 }
 
 function Specialities({ specialities }: { specialities: string[] }) {
-  return <section className="rounded-2xl border border-gray-100 bg-white p-7"><h2 className="hoi-display mb-4 text-xl font-bold text-gray-900">Known For</h2><div className="flex flex-wrap gap-2">{specialities.map((item) => <span key={item} className="rounded-full border border-orange-100 bg-orange-50 px-4 py-2 text-sm font-medium text-[#f97316]">{item}</span>)}</div></section>;
+  return <section className="rounded-2xl border border-gray-100 bg-white p-7"><h2 className="mb-4 text-xl font-bold text-gray-900">Known For</h2><div className="flex flex-wrap gap-2">{specialities.map((item) => <span key={item} className="rounded-full border border-orange-100 bg-orange-50 px-4 py-2 text-sm font-medium text-[#f97316]">{item}</span>)}</div></section>;
 }
 
 function ServicesBlock({ services, serviceHref }: { services: CatalogService[]; serviceHref: string }) {
-  return <section className="rounded-2xl border border-gray-100 bg-white p-7"><h2 className="hoi-display mb-5 text-xl font-bold text-gray-900">HOI Services Available Here</h2><div className="grid grid-cols-1 gap-3 sm:grid-cols-2">{services.map((service) => <Link key={service.id} href={serviceHref} className="group flex items-center gap-3 rounded-xl border border-gray-100 px-4 py-3 transition-all hover:border-[#f97316] hover:bg-orange-50"><div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-orange-50 transition-colors group-hover:bg-[#f97316]"><ArrowRight size={14} className="text-[#f97316] transition-colors group-hover:text-white" /></div><div><p className="text-sm font-semibold text-gray-800 group-hover:text-[#f97316]">{service.label}</p><p className="text-xs text-gray-400">{service.packages.length} packages</p></div></Link>)}</div><div className="mt-5"><Link href={serviceHref} className="inline-flex items-center gap-2 rounded-lg bg-[#f97316] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#ea580c]">View All Services & Packages <ArrowRight size={14} /></Link></div></section>;
+  return <section className="rounded-2xl border border-gray-100 bg-white p-7"><h2 className="mb-5 text-xl font-bold text-gray-900">HOI Services Available Here</h2><div className="grid grid-cols-1 gap-3 sm:grid-cols-2">{services.map((service) => <Link key={service.id} href={serviceHref} className="group flex items-center gap-3 rounded-xl border border-gray-100 px-4 py-3 transition-all hover:border-[#f97316] hover:bg-orange-50"><div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-orange-50 transition-colors group-hover:bg-[#f97316]"><ArrowRight size={14} className="text-[#f97316] transition-colors group-hover:text-white" /></div><div><p className="text-sm font-semibold text-gray-800 group-hover:text-[#f97316]">{service.label}</p><p className="text-xs text-gray-400">{service.packages.length} packages</p></div></Link>)}</div><div className="mt-5"><Link href={serviceHref} className="inline-flex items-center gap-2 rounded-lg bg-[#f97316] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#ea580c]">View All Services & Packages <ArrowRight size={14} /></Link></div></section>;
 }
 
 function OtherVenues({ locationTitle, venues }: { locationTitle: string; venues: CatalogVenue[] }) {
@@ -123,5 +123,5 @@ function OtherVenues({ locationTitle, venues }: { locationTitle: string; venues:
 }
 
 function CenteredMessage({ title, detail }: { title: string; detail?: string }) {
-  return <div className="flex min-h-screen items-center justify-center bg-[#f5efe4]"><div className="text-center"><h1 className="hoi-display mb-2 text-2xl font-bold text-gray-900">{title}</h1>{detail && <p className="mb-4 text-gray-500">{detail}</p>}<Link href="/service" className="font-medium text-[#f97316] hover:underline">Back to Booking</Link></div></div>;
+  return <div className="flex min-h-screen items-center justify-center bg-[#f5efe4]"><div className="text-center"><h1 className="mb-2 text-2xl font-bold text-gray-900">{title}</h1>{detail && <p className="mb-4 text-gray-500">{detail}</p>}<Link href="/service" className="font-medium text-[#f97316] hover:underline">Back to Booking</Link></div></div>;
 }

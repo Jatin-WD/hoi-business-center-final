@@ -86,7 +86,7 @@ export default function ServiceDetailPage({ params }: Props) {
               <Sparkles size={14} />
               {t("common.serviceDetail", "Service detail")}
             </p>
-            <h1 className="hoi-display mt-4 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
+            <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
             {content.title}
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">
@@ -109,7 +109,7 @@ export default function ServiceDetailPage({ params }: Props) {
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-[1.75rem] border border-black/5 bg-white p-7 shadow-sm">
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.overview", "Overview")}</p>
-            <h2 className="hoi-display mt-3 text-3xl font-black text-slate-900">{serviceLabel}</h2>
+            <h2 className="mt-3 text-3xl font-black text-slate-900">{serviceLabel}</h2>
             <p className="mt-4 text-base leading-7 text-slate-600">{content.overview}</p>
 
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -149,7 +149,7 @@ export default function ServiceDetailPage({ params }: Props) {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.bookingEntry", "Booking entry")}</p>
-                  <h3 className="hoi-display mt-2 text-2xl font-black text-slate-900">{t("service.bookingFor", "Booking for")} {serviceLabel}</h3>
+                  <h3 className="mt-2 text-2xl font-black text-slate-900">{t("service.bookingFor", "Booking for")} {serviceLabel}</h3>
                 </div>
                 <div className="rounded-2xl bg-orange-50 px-3 py-2 text-sm font-bold text-[#f97316]">
                   {t("nav.yashobhoomi", "Yashobhoomi")}
@@ -173,7 +173,7 @@ export default function ServiceDetailPage({ params }: Props) {
 
             <section className="rounded-[1.75rem] border border-black/5 bg-white p-7 shadow-sm">
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.packages", "Packages")}</p>
-              <h3 className="hoi-display mt-2 text-2xl font-black text-slate-900">{t("service.packageLinksFor", "Package links for")} {serviceLabel}</h3>
+              <h3 className="mt-2 text-2xl font-black text-slate-900">{t("service.packageLinksFor", "Package links for")} {serviceLabel}</h3>
               <div className="mt-5 space-y-3">
                 {service.packages.map((pkg) => (
                   <Link
@@ -201,7 +201,7 @@ export default function ServiceDetailPage({ params }: Props) {
 
             <section className="rounded-[1.75rem] border border-black/5 bg-white p-7 shadow-sm">
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("nav.yashobhoomi", "Venue")}</p>
-              <h3 className="hoi-display mt-2 text-2xl font-black text-slate-900">{t("service.alwaysCentered", "Always centered on Yashobhoomi")}</h3>
+              <h3 className="mt-2 text-2xl font-black text-slate-900">{t("service.alwaysCentered", "Always centered on Yashobhoomi")}</h3>
               <p className="mt-3 text-sm leading-7 text-slate-600">
                 {t("service.alwaysCenteredDesc", "HOI keeps the public venue model strict and simple. This service flows into the Yashobhoomi booking path and the associated package flow.")}
               </p>

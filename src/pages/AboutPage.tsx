@@ -77,7 +77,7 @@ export default function AboutPage() {
                 <Sparkles size={14} />
                 {cms("about.badge")}
               </p>
-              <h1 className="hoi-display mt-4 max-w-3xl text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
+              <h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
                 {cms("about.hero.title")}
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">
@@ -99,7 +99,7 @@ export default function AboutPage() {
         <div className="grid gap-8 lg:grid-cols-[1fr_0.95fr]">
           <section className="rounded-[1.75rem] border border-black/5 bg-white p-7 shadow-sm">
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("about.whoWeAre", "Who We Are")}</p>
-            <h2 className="hoi-display mt-3 text-3xl font-black text-slate-900">{cms("about.whoTitle")}</h2>
+            <h2 className="mt-3 text-3xl font-black text-slate-900">{cms("about.whoTitle")}</h2>
             <div className="mt-5 space-y-4 text-base leading-7 text-slate-600">
               <p>{cms("about.body1")}</p>
               <p>{cms("about.body2")}</p>
@@ -121,7 +121,7 @@ export default function AboutPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-7">
                 <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/70">{t("about.ourApproach", "Our approach")}</p>
-                <h3 className="hoi-display mt-2 text-2xl font-black">{t("about.approachTitle", "We combine venue understanding, execution discipline, and client-first planning.")}</h3>
+                <h3 className="mt-2 text-2xl font-black">{t("about.approachTitle", "We combine venue understanding, execution discipline, and client-first planning.")}</h3>
                 <p className="mt-3 max-w-xl text-sm leading-6 text-white/80">
                   {t("about.approachBody", "The result is a service experience that feels premium, organized, and directly tied to how exhibitions actually run on the ground.")}
                 </p>
@@ -134,7 +134,7 @@ export default function AboutPage() {
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{cms("about.coreValues")}</p>
-              <h2 className="hoi-display mt-2 text-2xl font-black text-slate-900">{cms("about.coreValuesTitle")}</h2>
+              <h2 className="mt-2 text-2xl font-black text-slate-900">{cms("about.coreValuesTitle")}</h2>
             </div>
           </div>
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -143,7 +143,7 @@ export default function AboutPage() {
                 <div className="mb-4 h-10 w-10 rounded-2xl bg-[color:var(--hoi-primary)]/10 text-[color:var(--hoi-primary)] ring-1 ring-[color:var(--hoi-primary)]/10 flex items-center justify-center">
                   <Sparkles size={16} />
                 </div>
-                <h3 className="hoi-display text-lg font-black text-slate-900">{value.title}</h3>
+                <h3 className="text-lg font-black text-slate-900">{value.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-slate-600">{value.desc}</p>
               </div>
             ))}
@@ -154,7 +154,7 @@ export default function AboutPage() {
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/70">{cms("about.servicesOverview")}</p>
-              <h2 className="hoi-display mt-2 text-2xl font-black">{cms("about.currentServices")}</h2>
+              <h2 className="mt-2 text-2xl font-black">{cms("about.currentServices")}</h2>
             </div>
             <Link href="/services" className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-900 transition-colors hover:bg-slate-100">
               {t("common.exploreServices", "Explore Services")}

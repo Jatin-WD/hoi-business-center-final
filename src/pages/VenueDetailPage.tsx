@@ -1,14 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
-import { ArrowRight, Building2, Calendar, ChevronRight, Globe, MapPin, Ruler, Users } from "lucide-react";
+import { ArrowRight, Building2, Calendar, Globe, MapPin, Ruler, Users } from "lucide-react";
+import PageBreadcrumb from "@/components/common/PageBreadcrumb";
 import { apiClient } from "@/lib/api-client";
+import { useSiteLanguage } from "@/hooks/useSiteLanguage";
+import { translateSiteText } from "@/lib/site-translations";
 import { loadCatalog, normalizeVenue, type CatalogService, type CatalogVenue } from "@/lib/catalog";
+
+const CANONICAL_YASHOBHOOMI_SUB_VENUE_ID = "india-international-convention-and-expo-centre";
 
 interface Props {
   params?: { locationId?: string; subVenueId?: string };
 }
 
 export default function VenueDetailPage({ params }: Props) {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const locationId = params?.locationId ?? "";
   const subVenueId = params?.subVenueId ?? "";
   const [venue, setVenue] = useState<CatalogVenue | null>(null);
@@ -18,6 +25,12 @@ export default function VenueDetailPage({ params }: Props) {
   const [error, setError] = useState("");
   const serviceHref = `/service/${locationId}/${subVenueId}`;
   const locationTitle = useMemo(() => venue?.city || venue?.state || locationId, [venue, locationId]);
+  const legacyYashobhoomiSlug = locationId === "yashobhoomi" && subVenueId && subVenueId !== CANONICAL_YASHOBHOOMI_SUB_VENUE_ID;
+
+  useEffect(() => {
+    if (!legacyYashobhoomiSlug || typeof window === "undefined") return;
+    window.location.replace(`/venue/yashobhoomi/${CANONICAL_YASHOBHOOMI_SUB_VENUE_ID}`);
+  }, [legacyYashobhoomiSlug]);
 
   useEffect(() => {
     let mounted = true;
@@ -44,15 +57,15 @@ export default function VenueDetailPage({ params }: Props) {
     <div className="min-h-screen bg-[#f5efe4]">
       <div className="bg-[linear-gradient(135deg,#0a0f18_0%,#111827_56%,#f97316_112%)] px-8 py-16 text-white">
         <div className="max-w-[1600px] mx-auto">
-          <div className="flex items-center gap-2 text-zinc-200 text-sm mb-4 flex-wrap">
-            <Link href="/" className="hover:text-white">Home</Link>
-            <ChevronRight size={14} />
-            <Link href="/service" className="hover:text-white">Booking</Link>
-            <ChevronRight size={14} />
-            <Link href={`/service/${locationId}/${subVenueId}`} className="hover:text-white">{locationTitle}</Link>
-            <ChevronRight size={14} />
-            <span className="text-white">{venue.name.split(",")[0]}</span>
-          </div>
+          <PageBreadcrumb
+            items={[
+              { label: t("nav.home", "Home"), href: "/" },
+              { label: t("nav.booking", "Booking"), href: "/service" },
+              { label: locationTitle, href: `/service/${locationId}/${subVenueId}` },
+              { label: venue.name.split(",")[0] },
+            ]}
+            className="mb-5 text-white/72"
+          />
           <div className="flex items-center gap-2 text-yellow-300 text-sm font-semibold uppercase tracking-wider mb-3">
             <MapPin size={14} />
             <span>{venue.city}, {venue.state}</span>

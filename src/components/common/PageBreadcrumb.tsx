@@ -7,11 +7,12 @@ export type BreadcrumbItem = {
 
 interface PageBreadcrumbProps {
   items: BreadcrumbItem[]
+  className?: string
 }
 
-export default function PageBreadcrumb({ items }: PageBreadcrumbProps) {
+export default function PageBreadcrumb({ items, className = "" }: PageBreadcrumbProps) {
   return (
-    <div className="mb-4 flex flex-wrap items-center gap-2 text-sm text-zinc-300">
+    <div className={`flex flex-wrap items-center gap-2 text-sm ${className}`}>
       {items.map((item, index) => (
         <span key={item.label} className="flex items-center gap-2">
           {item.href ? (

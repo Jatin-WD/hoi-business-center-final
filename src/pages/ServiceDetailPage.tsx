@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import { ArrowRight, ChevronRight, Clock3, CheckCircle2, Layers3, MapPin, Sparkles } from "lucide-react";
+import { ArrowRight, Clock3, CheckCircle2, Layers3, MapPin, Sparkles } from "lucide-react";
+import PageBreadcrumb from "@/components/common/PageBreadcrumb";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { loadCatalog, type CatalogService } from "@/lib/catalog";
 import { SERVICE_DETAIL_CONTENT } from "@/lib/serviceContent";
@@ -76,13 +77,14 @@ export default function ServiceDetailPage({ params }: Props) {
           }}
         />
         <div className="relative mx-auto max-w-[1600px] px-6 py-14 sm:px-8 lg:py-20">
-          <div className="mb-4 flex items-center gap-2 text-sm text-zinc-200">
-            <Link href="/" className="hover:text-white">{t("nav.home")}</Link>
-            <ChevronRight size={14} />
-            <Link href="/services" className="hover:text-white">{t("nav.services")}</Link>
-            <ChevronRight size={14} />
-            <span className="text-white">{serviceLabel}</span>
-          </div>
+          <PageBreadcrumb
+            items={[
+              { label: t("nav.home"), href: "/" },
+              { label: t("nav.services"), href: "/services" },
+              { label: serviceLabel },
+            ]}
+            className="mb-5 text-white/72"
+          />
           <div className="max-w-3xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-white/80">
               <Sparkles size={14} />

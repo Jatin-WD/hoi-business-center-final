@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
-import { ArrowRight, ChevronRight, Building2, LayoutGrid, MapPin, Sparkles } from "lucide-react";
+import { ArrowRight, Building2, LayoutGrid, MapPin, Sparkles } from "lucide-react";
 import { Link } from "wouter";
+import PageBreadcrumb from "@/components/common/PageBreadcrumb";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
 import { translateServiceLabel, translateSiteText } from "@/lib/site-translations";
@@ -64,12 +65,14 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-black/55" />
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 18% 22%, white 0, transparent 22%), radial-gradient(circle at 80% 24%, white 0, transparent 16%), radial-gradient(circle at 50% 74%, white 0, transparent 20%)" }} />
 
-        <div className="relative mx-auto max-w-[1600px] px-5 py-14 sm:px-8 sm:py-16 lg:py-20">
-          <div className="flex items-center gap-2 text-white/70 text-sm">
-            <Link href="/" className="transition-colors hover:text-white">{t("nav.home")}</Link>
-            <ChevronRight size={14} />
-            <span className="text-white">{t("nav.aboutUs")}</span>
-          </div>
+        <div className="relative mx-auto max-w-[1600px] px-5 py-16 sm:px-8 lg:py-20">
+          <PageBreadcrumb
+            items={[
+              { label: t("nav.home"), href: "/" },
+              { label: t("nav.aboutUs") },
+            ]}
+            className="mb-5 text-white/72"
+          />
 
           <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
             <div>
@@ -91,6 +94,14 @@ export default function AboutPage() {
               <StatCard icon={<LayoutGrid size={16} />} label={t("about.coreServices")} value="6" />
               <StatCard icon={<Sparkles size={16} />} label={t("about.approach")} value={t("about.endToEnd")} />
             </div>
+          </div>
+
+          <div className="mt-6 overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_18px_50px_rgba(17,17,17,0.18)]">
+            <img
+              src="/assets/hoi-team-opening.webp"
+              alt="HOI Business Center team"
+              className="h-[360px] w-full object-cover object-center"
+            />
           </div>
         </div>
       </section>
@@ -117,7 +128,7 @@ export default function AboutPage() {
 
           <section className="overflow-hidden rounded-[1.75rem] border border-black/5 bg-[#111111] text-white shadow-sm">
             <div className="relative min-h-[420px]">
-              <img src="/assets/hoi-business-center.JPG" alt="HOI Business Center building" className="absolute inset-0 h-full w-full object-cover" />
+              <img src="/assets/hoi-team-group.webp" alt="HOI Business Center team" className="absolute inset-0 h-full w-full object-cover" />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.08)_0%,rgba(17,17,17,0.44)_44%,rgba(17,17,17,0.9)_100%)]" />
               <div className="absolute inset-0 bg-[linear-gradient(130deg,rgba(17,17,17,0.10)_0%,rgba(17,17,17,0)_45%,rgba(249,115,22,0.26)_100%)]" />
               <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/30 to-transparent" />
@@ -133,7 +144,7 @@ export default function AboutPage() {
 
                 <div className="mt-6 grid gap-3 sm:grid-cols-3">
                   <div className="overflow-hidden rounded-2xl border border-white/12 bg-white/8">
-                    <img src="/assets/hoi-team-group.jpg" alt="HOI team group" className="h-24 w-full object-cover" />
+                    <img src="/assets/hoi-team-group.webp" alt="HOI team group" className="h-24 w-full object-cover" />
                   </div>
                   <div className="overflow-hidden rounded-2xl border border-white/12 bg-white/8">
                     <img src="/assets/hoi-team-candid.jpg" alt="HOI team candid" className="h-24 w-full object-cover" />

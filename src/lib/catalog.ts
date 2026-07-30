@@ -144,6 +144,8 @@ type ApiVenue = {
 const defaultVenueImage =
   "/assets/yashobhoomi.png";
 
+const YASHOBHOOMI_SUB_VENUE_ID = "india-international-convention-and-expo-centre";
+
 const slugify = (value: string) =>
   String(value || "")
     .toLowerCase()
@@ -196,7 +198,10 @@ function mergeCanonicalServices(services: CatalogService[]) {
 export const normalizeVenue = (venue: ApiVenue): CatalogVenue => ({
   id: venue.id,
   locationId: venue.location_id || slugify(venue.city || venue.state || venue.name || `venue-${venue.id}`),
-  subVenueId: venue.sub_venue_id || slugify(venue.name || venue.address || `venue-${venue.id}`),
+  subVenueId:
+    venue.location_id === "yashobhoomi"
+      ? YASHOBHOOMI_SUB_VENUE_ID
+      : venue.sub_venue_id || slugify(venue.name || venue.address || `venue-${venue.id}`),
   name: venue.name ?? "Venue",
   address: venue.address ?? "",
   city: venue.city ?? "",

@@ -22,6 +22,12 @@ function slugify(value) {
     .replace(/^-+|-+$/g, '');
 }
 
+const YASHOBHOOMI_SUBVENUE_ALIASES = new Set([
+  'iicc-dwarka',
+  'india-international-convention-and-expo-centre',
+  'yashobhoomi-convention-centre',
+]);
+
 function matchesVenueFallback(row, locationId, subVenueId) {
   const requestedLocation = slugify(locationId);
   const requestedSubVenue = slugify(subVenueId);
@@ -29,10 +35,15 @@ function matchesVenueFallback(row, locationId, subVenueId) {
   const rowSubVenueCandidates = [row.sub_venue_id, row.name, row.address, row.city, row.state];
   const rowLocation = rowLocationCandidates.map(slugify).find(Boolean) || '';
   const rowSubVenue = rowSubVenueCandidates.map(slugify).find(Boolean) || '';
+  const rowName = slugify(row.name);
+  const isYashobhoomi = slugify(row.location_id) === 'yashobhoomi' || rowLocation === 'yashobhoomi';
+  const aliasMatch = isYashobhoomi && YASHOBHOOMI_SUBVENUE_ALIASES.has(requestedSubVenue);
 
   return (
     (rowLocation === requestedLocation && rowSubVenue === requestedSubVenue)
-    || (slugify(row.name) === requestedSubVenue && (slugify(row.location_id) === requestedLocation || slugify(row.city) === requestedLocation || slugify(row.state) === requestedLocation))
+    || (rowLocation === requestedLocation && (rowSubVenue.includes(requestedSubVenue) || requestedSubVenue.includes(rowSubVenue) || rowName.includes(requestedSubVenue)))
+    || (rowName === requestedSubVenue && (slugify(row.location_id) === requestedLocation || slugify(row.city) === requestedLocation || slugify(row.state) === requestedLocation))
+    || aliasMatch
   );
 }
 

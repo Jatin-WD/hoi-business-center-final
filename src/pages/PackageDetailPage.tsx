@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 import { Check, ChevronRight, Mail, Phone } from "lucide-react";
+import PageBreadcrumb from "@/components/common/PageBreadcrumb";
 import { apiClient } from "@/lib/api-client";
+import { useSiteLanguage } from "@/hooks/useSiteLanguage";
+import { translateSiteText } from "@/lib/site-translations";
 
 interface Props {
   params?: { serviceId?: string; packageId?: string };
@@ -22,6 +25,8 @@ type PackageDetail = {
 };
 
 export default function PackageDetailPage({ params }: Props) {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const serviceId = params?.serviceId ?? "";
   const packageId = params?.packageId ?? "";
   const [detail, setDetail] = useState<PackageDetail | null>(null);
@@ -72,15 +77,15 @@ export default function PackageDetailPage({ params }: Props) {
     <div className="min-h-screen bg-[#f5efe4]">
       <div className="bg-[linear-gradient(135deg,#0a0f18_0%,#111827_56%,#f97316_112%)] px-8 py-14 text-white">
         <div className="mx-auto max-w-[1600px]">
-          <div className="mb-4 flex flex-wrap items-center gap-2 text-sm text-zinc-200">
-            <Link href="/" className="hover:text-white">Home</Link>
-            <ChevronRight size={14} />
-            <Link href="/service" className="hover:text-white">Booking</Link>
-            <ChevronRight size={14} />
-            <span className="text-white">{serviceLabel}</span>
-            <ChevronRight size={14} />
-            <span className="text-white">{detail.title}</span>
-          </div>
+          <PageBreadcrumb
+            items={[
+              { label: t("nav.home", "Home"), href: "/" },
+              { label: t("nav.booking", "Booking"), href: "/service" },
+              { label: serviceLabel, href: `/service/${serviceId}` },
+              { label: detail.title },
+            ]}
+            className="mb-5 text-white/72"
+          />
           <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-yellow-300">{serviceLabel}</p>
           <h1 className="mb-2 text-3xl font-bold">{detail.title}</h1>
           {selectedLocation ? <p className="mt-3 inline-flex rounded-lg bg-yellow-400 px-3 py-1.5 text-sm font-bold text-gray-900">Selected location: {selectedLocation}</p> : null}

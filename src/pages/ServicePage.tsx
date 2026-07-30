@@ -31,7 +31,7 @@ export default function ServicePage() {
 
   return (
     <div className="min-h-screen bg-[#f5efe4]">
-      <HeroSection breadcrumbs={[{ label: t("nav.home", "Home"), href: "/" }, { label: t("nav.yashobhoomi", "Yashobhoomi") }]} title={cms("service.hero.title")} description={cms("service.hero.description")}>
+      <HeroSection breadcrumbs={[{ label: t("nav.home", "Home"), href: "/" }, { label: t("nav.booking", "Booking") }]} title={cms("service.hero.title")} description={cms("service.hero.description")}>
         <div className="grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
           <Stat icon={PackageCheck} label={t("common.servicesOverview", "Services")} value={catalog.services.length} />
           <Stat icon={CalendarCheck} label={t("common.packages", "Packages")} value={packageCount} />

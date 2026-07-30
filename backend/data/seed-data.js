@@ -66,7 +66,7 @@ export const SERVICE_PACKAGES = {
 export const VENUE_DETAILS = [
   {
     locationId: "yashobhoomi",
-    subVenueId: "iicc-dwarka",
+    subVenueId: "india-international-convention-and-expo-centre",
     name: "Yashobhoomi, India International Convention and Expo Centre",
     address: "Sector 25, Dwarka, New Delhi - 110061",
     city: "New Delhi",

@@ -1,5 +1,6 @@
 import { Link } from "wouter";
-import { ChevronRight, Building2, Boxes, Languages, Megaphone, PanelTop, Truck, Image as ImageIcon } from "lucide-react";
+import { Building2, Boxes, Languages, Megaphone, PanelTop, Truck, Image as ImageIcon } from "lucide-react";
+import PageBreadcrumb from "@/components/common/PageBreadcrumb";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
 import { translateServiceLabel, translateSiteText } from "@/lib/site-translations";
@@ -50,11 +51,13 @@ export default function YashobhoomiPage() {
       <div className="relative overflow-hidden bg-[linear-gradient(135deg,#0a0f18_0%,#111827_56%,#f97316_112%)] px-6 py-16 text-white sm:px-8">
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 18% 22%, white 0, transparent 20%), radial-gradient(circle at 78% 26%, white 0, transparent 16%), radial-gradient(circle at 50% 76%, white 0, transparent 18%)" }} />
         <div className="mx-auto max-w-[1600px]">
-          <div className="mb-4 flex items-center gap-2 text-sm text-white/72">
-            <Link href="/" className="hover:text-white">{t("nav.home", "Home")}</Link>
-            <ChevronRight size={14} />
-            <span className="text-white">{t("nav.yashobhoomi", "Yashobhoomi")}</span>
-          </div>
+          <PageBreadcrumb
+            items={[
+              { label: t("nav.home", "Home"), href: "/" },
+              { label: t("nav.yashobhoomi", "Yashobhoomi") },
+            ]}
+            className="mb-5 text-white/72"
+          />
           <p className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm">
             {t("common.officialVenueSpotlight", "Official venue spotlight")}
           </p>
@@ -142,11 +145,31 @@ export default function YashobhoomiPage() {
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
               <div className="overflow-hidden rounded-[1.45rem] border border-black/5 bg-[#111111]">
-                <img src="/assets/hoi-business-center.JPG" alt="HOI Business Center building" className="h-44 w-full object-cover" />
+                <img src="/assets/hoi-team-group.webp" alt="HOI Business Center team" className="h-44 w-full object-cover" />
               </div>
               <div className="overflow-hidden rounded-[1.45rem] border border-black/5 bg-[#111111]">
                 <img src="/assets/hoi-event-reg.jpg" alt="HOI event registration area" className="h-44 w-full object-cover" />
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mb-16 rounded-[2rem] border border-black/5 bg-white p-6 shadow-sm sm:p-8">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("yash.team.eyebrow", "HOI on ground")}</p>
+              <h2 className="mt-2 text-2xl font-black text-[#111111]">{t("yash.team.title", "Team presence and venue execution visuals")}</h2>
+            </div>
+          </div>
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
+            <div className="overflow-hidden rounded-[1.5rem] border border-black/5 bg-[#111111]">
+              <img src="/assets/hoi-team-opening.webp" alt="HOI team at the venue opening" className="h-56 w-full object-cover" />
+            </div>
+            <div className="overflow-hidden rounded-[1.5rem] border border-black/5 bg-[#111111]">
+              <img src="/assets/hoi-team-candid.jpg" alt="HOI team candid image" className="h-56 w-full object-cover" />
+            </div>
+            <div className="overflow-hidden rounded-[1.5rem] border border-black/5 bg-[#111111]">
+              <img src="/assets/hoi-business-center.JPG" alt="HOI Business Center exterior" className="h-56 w-full object-cover" />
             </div>
           </div>
         </section>

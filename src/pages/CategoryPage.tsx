@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 import { ArrowRight, ChevronRight } from "lucide-react";
+import PageBreadcrumb from "@/components/common/PageBreadcrumb";
 import { loadCatalog, locationLabel, venuesByLocation, type CatalogService, type CatalogVenue } from "@/lib/catalog";
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
 import { translatePackageLabel, translateServiceLabel, translateSiteText } from "@/lib/site-translations";
@@ -62,14 +63,15 @@ export default function CategoryPage({ params }: Props) {
     <div className="min-h-screen bg-[#f5efe4]">
       <div className="bg-[linear-gradient(135deg,#0a0f18_0%,#111827_56%,#f97316_112%)] px-8 py-14 text-white">
         <div className="max-w-[1600px] mx-auto">
-          <div className="flex items-center gap-2 text-zinc-200 text-sm mb-4 flex-wrap">
-            <Link href="/" className="hover:text-white">{t("nav.home", "Home")}</Link>
-            <ChevronRight size={14} />
-            <Link href="/service" className="hover:text-white">{t("nav.booking", "Booking")} </Link>
-            <ChevronRight size={14} />
-            <span className="text-white">{title}</span>
-            {activeVenue && <><ChevronRight size={14} /><span>{activeVenue.name.split(",")[0]}</span></>}
-          </div>
+          <PageBreadcrumb
+            items={[
+              { label: t("nav.home", "Home"), href: "/" },
+              { label: t("nav.booking", "Booking"), href: "/service" },
+              { label: title },
+              ...(activeVenue ? [{ label: activeVenue.name.split(",")[0] }] : []),
+            ]}
+            className="mb-5 text-white/72"
+          />
           <h1 className="mb-3 text-4xl font-bold">{title}</h1>
           {activeVenue && <p className="text-yellow-300 font-semibold text-lg mb-2">{activeVenue.name}</p>}
           <p className="text-zinc-200 max-w-xl">{t("category.hero.description", "Select a venue below, then choose from available services and packages.")}</p>

@@ -70,7 +70,7 @@ export default function HomePage() {
     useMemo(() => venues.find((venue) => venue.locationId === "yashobhoomi") ?? venues[0] ?? null, [venues]) ??
     ({
       locationId: "yashobhoomi",
-      subVenueId: "iicc-dwarka",
+      subVenueId: "india-international-convention-and-expo-centre",
       name: "Yashobhoomi, India International Convention and Expo Centre",
       city: "New Delhi",
       state: "Delhi",
@@ -159,7 +159,7 @@ export default function HomePage() {
           <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_24px_70px_rgba(17,17,17,0.18)]">
             <div className="relative min-h-[440px]">
               <img
-                src="/assets/hoi-about-team.jpg"
+                src="/assets/hoi-team-opening.webp"
                 alt="HOI Business Center team"
                 className="absolute inset-0 h-full w-full object-cover"
                 loading="eager"

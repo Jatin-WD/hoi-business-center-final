@@ -13,11 +13,12 @@ interface Props {
 
 export default function ServiceDetailPage({ params }: Props) {
   const { language } = useSiteLanguage();
-  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
+  const t = (key: string) => translateSiteText(language, key);
   const serviceId = params?.serviceId ?? "";
+  const serviceLabel = translateServiceLabel(serviceId, language);
   const cms = useCmsContent({
-    [`services.${serviceId}.title`]: SERVICE_DETAIL_CONTENT[serviceId]?.title ?? "Service",
-    [`services.${serviceId}.description`]: SERVICE_DETAIL_CONTENT[serviceId]?.description ?? "Explore the service in detail and move into the booking flow when ready.",
+    [`services.${serviceId}.title`]: SERVICE_DETAIL_CONTENT[serviceId]?.title ?? serviceLabel,
+    [`services.${serviceId}.description`]: SERVICE_DETAIL_CONTENT[serviceId]?.description ?? t("services.detailFallback"),
     [`services.${serviceId}.overview`]: SERVICE_DETAIL_CONTENT[serviceId]?.overview ?? "",
     [`services.${serviceId}.highlights`]: JSON.stringify(SERVICE_DETAIL_CONTENT[serviceId]?.highlights ?? []),
     [`services.${serviceId}.process`]: JSON.stringify(SERVICE_DETAIL_CONTENT[serviceId]?.process ?? []),
@@ -45,8 +46,8 @@ export default function ServiceDetailPage({ params }: Props) {
   const service = services.find((item) => item.id === serviceId) ?? null;
   const detail = SERVICE_DETAIL_CONTENT[serviceId];
   const content = {
-    title: cms(`services.${serviceId}.title`) || detail?.title || "Service",
-    description: cms(`services.${serviceId}.description`) || detail?.description || "Explore the service in detail and move into the booking flow when ready.",
+    title: cms(`services.${serviceId}.title`) || detail?.title || serviceLabel,
+    description: cms(`services.${serviceId}.description`) || detail?.description || t("services.detailFallback"),
     overview: cms(`services.${serviceId}.overview`) || detail?.overview || "",
     highlights: readCmsList(cms(`services.${serviceId}.highlights`), detail?.highlights ?? []),
     process: readCmsList(cms(`services.${serviceId}.process`), detail?.process ?? []),
@@ -54,7 +55,6 @@ export default function ServiceDetailPage({ params }: Props) {
   };
   const selectedLocation = "Yashobhoomi";
   const bookingHref = `/service/${serviceId}`;
-  const serviceLabel = translateServiceLabel(serviceId, language);
 
   if (!service || !detail) {
     return <EmptyState t={t} />;
@@ -75,30 +75,30 @@ export default function ServiceDetailPage({ params }: Props) {
         />
         <div className="relative mx-auto max-w-[1600px] px-6 py-14 sm:px-8 lg:py-20">
           <div className="mb-4 flex items-center gap-2 text-sm text-zinc-200">
-            <Link href="/" className="hover:text-white">{t("nav.home", "Home")}</Link>
+            <Link href="/" className="hover:text-white">{t("nav.home")}</Link>
             <ChevronRight size={14} />
-            <Link href="/services" className="hover:text-white">{t("nav.services", "Services")}</Link>
+            <Link href="/services" className="hover:text-white">{t("nav.services")}</Link>
             <ChevronRight size={14} />
             <span className="text-white">{serviceLabel}</span>
           </div>
           <div className="max-w-3xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-white/80">
               <Sparkles size={14} />
-              {t("common.serviceDetail", "Service detail")}
+              {t("common.serviceDetail")}
             </p>
             <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
             {content.title}
-          </h1>
+            </h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">
             {content.description}
           </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href={bookingHref} className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#111111] transition-colors hover:bg-zinc-100">
-                {t("service.openBooking", "Open Booking")}
+                {t("service.openBooking")}
                 <ArrowRight size={15} />
               </Link>
               <Link href="/services" className="inline-flex items-center gap-2 rounded-xl border border-white/20 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-white/10">
-                {t("service.backToServices", "Back to Services")}
+                {t("service.backToServices")}
               </Link>
             </div>
           </div>
@@ -108,17 +108,17 @@ export default function ServiceDetailPage({ params }: Props) {
       <main className="mx-auto max-w-[1600px] px-6 py-10 sm:px-8 lg:py-14">
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-[1.75rem] border border-black/5 bg-white p-7 shadow-sm">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.overview", "Overview")}</p>
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.overview")}</p>
             <h2 className="mt-3 text-3xl font-black text-slate-900">{serviceLabel}</h2>
             <p className="mt-4 text-base leading-7 text-slate-600">{content.overview}</p>
 
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <InfoCard icon={Layers3} title={t("service.whatCovers", "What this covers")} text={content.highlights.join(" | ")} />
-              <InfoCard icon={Clock3} title={t("service.bookingPath", "Booking path")} text={t("service.bookingPathDesc", "Start here, then move into the booking flow to pick packages and finalise the requirement.")} />
+              <InfoCard icon={Layers3} title={t("service.whatCovers")} text={content.highlights.join(" | ")} />
+              <InfoCard icon={Clock3} title={t("service.bookingPath")} text={t("service.bookingPathDesc")} />
             </div>
 
             <div className="mt-8">
-              <h3 className="text-lg font-black text-slate-900">{t("common.keyHighlights", "Key highlights")}</h3>
+              <h3 className="text-lg font-black text-slate-900">{t("common.keyHighlights")}</h3>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 {content.highlights.map((point) => (
                   <div key={point} className="flex items-start gap-3 rounded-2xl border border-gray-100 bg-[#f7f4ef] p-4">
@@ -130,7 +130,7 @@ export default function ServiceDetailPage({ params }: Props) {
             </div>
 
             <div className="mt-8">
-              <h3 className="text-lg font-black text-slate-900">{t("common.howItWorks", "How it works")}</h3>
+              <h3 className="text-lg font-black text-slate-900">{t("common.howItWorks")}</h3>
               <div className="mt-4 space-y-3">
                 {content.process.map((step, index) => (
                   <div key={step} className="flex gap-3 rounded-2xl border border-gray-100 bg-white p-4">
@@ -148,32 +148,32 @@ export default function ServiceDetailPage({ params }: Props) {
             <section className="rounded-[1.75rem] border border-black/5 bg-white p-7 shadow-sm">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.bookingEntry", "Booking entry")}</p>
-                  <h3 className="mt-2 text-2xl font-black text-slate-900">{t("service.bookingFor", "Booking for")} {serviceLabel}</h3>
+                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.bookingEntry")}</p>
+                  <h3 className="mt-2 text-2xl font-black text-slate-900">{t("service.bookingFor")} {serviceLabel}</h3>
                 </div>
                 <div className="rounded-2xl bg-orange-50 px-3 py-2 text-sm font-bold text-[#f97316]">
-                  {t("nav.yashobhoomi", "Yashobhoomi")}
+                  {t("nav.yashobhoomi")}
                 </div>
               </div>
 
               <p className="mt-4 text-sm leading-7 text-slate-600">
-                {t("service.bookingEntryDesc", "Use the booking path to select packages, confirm requirements, and move into final quotation.")}
+                {t("service.bookingEntryDesc")}
               </p>
 
               <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Link href={bookingHref} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#f97316] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#ea580c]">
-                  {t("common.bookThisService", "Book this service")}
+                  {t("common.bookThisService")}
                   <ArrowRight size={15} />
                 </Link>
                 <Link href={`/contact?type=Service%20Requirement&service=${encodeURIComponent(serviceLabel)}&location=Yashobhoomi`} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#f97316] px-5 py-3 text-sm font-bold text-[#f97316] transition-colors hover:bg-orange-50">
-                  {t("common.requestQuote", "Request a quote")}
+                  {t("common.requestQuote")}
                 </Link>
               </div>
             </section>
 
             <section className="rounded-[1.75rem] border border-black/5 bg-white p-7 shadow-sm">
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.packages", "Packages")}</p>
-              <h3 className="mt-2 text-2xl font-black text-slate-900">{t("service.packageLinksFor", "Package links for")} {serviceLabel}</h3>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.packages")}</p>
+              <h3 className="mt-2 text-2xl font-black text-slate-900">{t("service.packageLinksFor")} {serviceLabel}</h3>
               <div className="mt-5 space-y-3">
                 {service.packages.map((pkg) => (
                   <Link
@@ -189,7 +189,7 @@ export default function ServiceDetailPage({ params }: Props) {
             </section>
 
             <section className="rounded-[1.75rem] border border-black/5 bg-[#111111] p-7 text-white shadow-sm">
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/70">{t("common.bestFor", "Best for")}</p>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/70">{t("common.bestFor")}</p>
               <div className="mt-4 flex flex-wrap gap-3">
                 {content.bestFor.map((item) => (
                   <span key={item} className="rounded-full bg-white/10 px-4 py-2 text-sm font-medium text-white/90">
@@ -200,13 +200,13 @@ export default function ServiceDetailPage({ params }: Props) {
             </section>
 
             <section className="rounded-[1.75rem] border border-black/5 bg-white p-7 shadow-sm">
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("nav.yashobhoomi", "Venue")}</p>
-              <h3 className="mt-2 text-2xl font-black text-slate-900">{t("service.alwaysCentered", "Always centered on Yashobhoomi")}</h3>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("services.detail.venue")}</p>
+              <h3 className="mt-2 text-2xl font-black text-slate-900">{t("service.alwaysCentered")}</h3>
               <p className="mt-3 text-sm leading-7 text-slate-600">
-                {t("service.alwaysCenteredDesc", "HOI keeps the public venue model strict and simple. This service flows into the Yashobhoomi booking path and the associated package flow.")}
+                {t("service.alwaysCenteredDesc")}
               </p>
               <Link href="/yashobhoomi" className="mt-5 inline-flex items-center gap-2 rounded-xl border border-[#f97316] px-4 py-2.5 text-sm font-bold text-[#f97316] transition-colors hover:bg-orange-50">
-                {t("service.viewYashobhoomi", "View Yashobhoomi")}
+                {t("service.viewYashobhoomi")}
                 <MapPin size={15} />
               </Link>
             </section>
@@ -233,10 +233,10 @@ function EmptyState({ t }: { t: (key: string, fallback?: string) => string }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-6">
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-slate-900">{t("service.notFound", "Service not found")}</h1>
-        <p className="mt-2 text-sm text-slate-500">{t("service.notFoundDesc", "This service does not exist in the canonical six-service catalog.")}</p>
+        <h1 className="text-2xl font-bold text-slate-900">{t("service.notFound")}</h1>
+        <p className="mt-2 text-sm text-slate-500">{t("service.notFoundDesc")}</p>
         <Link href="/services" className="mt-5 inline-flex rounded-xl bg-[#f97316] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#ea580c]">
-          {t("service.backToServices", "Back to Services")}
+          {t("service.backToServices")}
         </Link>
       </div>
     </div>

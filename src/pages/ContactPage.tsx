@@ -25,10 +25,10 @@ const blankForm: ContactValues = {
 
 export default function ContactPage() {
   const { language } = useSiteLanguage();
-  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
+  const t = (key: string) => translateSiteText(language, key);
   const cms = useCmsContent({
-    "contact.title": "Contact Us",
-    "contact.description": "Reach out to our team for inquiries, quotations, or to book any of our services.",
+    "contact.title": t("contact.title"),
+    "contact.description": t("contact.description"),
   });
   const { user } = useAuth();
   const [form, setForm] = useState<ContactValues>(blankForm);
@@ -38,7 +38,7 @@ export default function ContactPage() {
   const [popup, setPopup] = useState({ open: false, type: "success" as "success" | "error", title: "", message: "" });
   const { data: catalog, isLoading: catalogLoading, error: catalogError, refetch } = useQuery({ queryKey: ["contact-catalog"], queryFn: loadCatalog });
   const serviceOptions = useMemo(() => (catalog?.services ?? []).map((service) => translateServiceLabel(service.id, language)), [catalog, language]);
-  const locationOptions = useMemo(() => Array.from(new Set((catalog?.venues ?? []).map((venue) => venue.locationId === "yashobhoomi" ? t("nav.yashobhoomi", "Yashobhoomi") : venue.city).filter(Boolean))), [catalog, language]);
+  const locationOptions = useMemo(() => Array.from(new Set((catalog?.venues ?? []).map((venue) => venue.locationId === "yashobhoomi" ? t("nav.yashobhoomi") : venue.city).filter(Boolean))), [catalog, language]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -88,34 +88,34 @@ export default function ContactPage() {
     setStatus("submitting");
     try {
       const params = new URLSearchParams(window.location.search);
-      await apiClient.submitInquiry({ ...result.data, packageName: params.get("package") ?? "", requirementType: params.get("type") ?? "Website requirement" });
-      const message = t("contact.submitSuccess", "Your requirement has been submitted successfully. Our team will contact you shortly.");
+      await apiClient.submitInquiry({ ...result.data, packageName: params.get("package") ?? "", requirementType: params.get("type") ?? t("contact.websiteRequirement") });
+      const message = t("contact.submitSuccess");
       setStatus("success");
       setSubmitMessage(message);
-      setPopup({ open: true, type: "success", title: t("contact.thankYou", "Thank You!"), message });
+      setPopup({ open: true, type: "success", title: t("contact.thankYou"), message });
       resetForm();
     } catch (error) {
-      const message = error instanceof Error ? error.message : t("contact.submissionFailed", "Unable to send inquiry. Please try again later.");
+      const message = error instanceof Error ? error.message : t("contact.submissionFailed");
       setStatus("error");
       setSubmitMessage(message);
-      setPopup({ open: true, type: "error", title: t("contact.submissionFailedTitle", "Submission Failed"), message });
+      setPopup({ open: true, type: "error", title: t("contact.submissionFailedTitle"), message });
     }
   };
 
   return (
     <div className="min-h-screen bg-[#f5efe4]">
-      <HeroSection breadcrumbs={[{ label: t("nav.home", "Home"), href: "/" }, { label: t("nav.contactUs", "Contact Us") }]} title={cms("contact.title")} description={cms("contact.description")} />
+      <HeroSection breadcrumbs={[{ label: t("nav.home"), href: "/" }, { label: t("nav.contactUs") }]} title={cms("contact.title")} description={cms("contact.description")} />
       <div className="max-w-[1600px] mx-auto px-8 py-14">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <ContactInfo />
           <div className="lg:col-span-2">
-            {catalogError ? <button type="button" onClick={() => refetch()} className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700">{t("contact.retryServices", "Service data failed to load. Retry")}</button> : null}
+            {catalogError ? <button type="button" onClick={() => refetch()} className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700">{t("contact.retryServices")}</button> : null}
             <ContactForm form={form} setForm={setForm} fieldErrors={fieldErrors} serviceOptions={catalogLoading ? [] : serviceOptions} locationOptions={catalogLoading ? [] : locationOptions} status={status} submitMessage={submitMessage} onSubmit={handleSubmit} onReset={resetForm} />
           </div>
         </div>
       </div>
       <div className="max-w-[1600px] mx-auto px-8 pb-10">
-        <CTABanner title={t("contact.needHelp", "Need help with a service package?")} description={t("contact.servicePackageCopy", "Our team is ready to guide you through the best HOI service package for your exhibition requirement.")} primaryLabel={t("contact.bookConsultation", "Book a Consultation")} primaryHref="/contact" secondaryLabel={t("contact.serviceCatalog", "Browse Services")} secondaryHref="/services" />
+        <CTABanner title={t("contact.needHelp")} description={t("contact.servicePackageCopy")} primaryLabel={t("contact.bookConsultation")} primaryHref="/contact" secondaryLabel={t("contact.serviceCatalog")} secondaryHref="/services" />
       </div>
       <SubmissionPopup open={popup.open} type={popup.type} title={popup.title} message={popup.message} onClose={() => setPopup((prev) => ({ ...prev, open: false }))} />
     </div>
@@ -124,10 +124,10 @@ export default function ContactPage() {
 
 function buildPrefilledMessage(service: string, packageName: string, location: string, t: (key: string, fallback?: string) => string) {
   return [
-    t("contact.prefilledHeading", "Requirement details:"),
-    service ? `${t("contact.prefilledService", "Service")}: ${service}` : "",
-    packageName ? `${t("contact.prefilledPackage", "Package")}: ${packageName}` : "",
-    location ? `${t("contact.prefilledLocation", "Location")}: ${location}` : "",
-    t("contact.prefilledClosing", "Please contact me with pricing, availability, and next steps."),
+    t("contact.prefilledHeading"),
+    service ? `${t("contact.prefilledService")}: ${service}` : "",
+    packageName ? `${t("contact.prefilledPackage")}: ${packageName}` : "",
+    location ? `${t("contact.prefilledLocation")}: ${location}` : "",
+    t("contact.prefilledClosing"),
   ].filter(Boolean).join("\n");
 }

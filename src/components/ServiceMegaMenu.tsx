@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { ArrowRight, ChevronRight, MapPin, Sparkles } from "lucide-react";
 import { loadCatalog, type CatalogService, type CatalogVenue } from "@/lib/catalog";
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
-import { translateSiteText } from "@/lib/site-translations";
+import { translatePackageLabel, translateServiceLabel, translateSiteText } from "@/lib/site-translations";
 
 interface Props {
   onClose: () => void;
@@ -30,7 +30,8 @@ export default function ServiceMegaMenu({ onClose }: Props) {
     ?? null;
 
   const activeService = catalog.services.find((service) => service.id === activeServiceId) ?? catalog.services[0];
-  const requirementHref = `/contact?type=Service%20Requirement&service=${encodeURIComponent(activeService?.label || "")}&location=Yashobhoomi`;
+  const activeServiceLabel = activeService ? translateServiceLabel(activeService.id, language) : "";
+  const requirementHref = `/contact?type=Service%20Requirement&service=${encodeURIComponent(activeServiceLabel || "")}&location=Yashobhoomi`;
 
   useEffect(() => {
     let mounted = true;
@@ -122,7 +123,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
                       : "text-gray-700 hover:bg-gray-50 hover:text-[#f97316]"
                   }`}
                 >
-                  <span className="leading-tight flex-1">{service.label}</span>
+                  <span className="leading-tight flex-1">{translateServiceLabel(service.id, language)}</span>
                   <ChevronRight size={12} className="flex-shrink-0 opacity-50" />
                 </button>
               ))}
@@ -130,7 +131,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
 
             <div className="min-w-0 border-r border-gray-100 px-5 py-4">
               <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                {activeService?.label ?? t("menu.service", "Service")} {t("menu.packages", "Packages")}
+                {activeService ? translateServiceLabel(activeService.id, language) : t("menu.service", "Service")} {t("menu.packages", "Packages")}
               </p>
               {activeService?.packages.length ? (
                 <div className="space-y-2">
@@ -141,7 +142,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
                       onClick={onClose}
                       className="group flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3.5 transition-all hover:border-[#f97316] hover:bg-[#fff7ed] hover:shadow-sm"
                     >
-                      <span className="text-sm font-medium text-gray-700 group-hover:text-[#f97316]">{pkg.label}</span>
+                      <span className="text-sm font-medium text-gray-700 group-hover:text-[#f97316]">{translatePackageLabel(pkg.label, language)}</span>
                       <ArrowRight size={14} className="text-gray-300 group-hover:text-[#f97316]" />
                     </Link>
                   ))}

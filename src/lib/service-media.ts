@@ -4,7 +4,7 @@ const SERVICE_FALLBACK_IMAGES: Record<string, string> = {
   "booth-install-demolition": "/assets/hoi-booth-install.jpg",
   logistics: "/assets/hoi-booth-construction.jpg",
   marketing: "/assets/hoi-team-candid.jpg",
-  "interpretation-protocol": "/assets/hoi-team-group.jpg",
+  "interpretation-protocol": "/assets/hoi-team-group.webp",
 };
 
 const SERVICE_FALLBACK_VIDEOS: Record<string, string> = {

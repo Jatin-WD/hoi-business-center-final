@@ -1,6 +1,7 @@
 import express from 'express';
 import { getDb } from '../config/database.js';
 import { requireAdmin } from '../middleware/auth.js';
+import { TARGET_LANGUAGES, translateCmsPayload } from '../services/cms-translation.js';
 
 const router = express.Router();
 let defaultContentReady = false;
@@ -286,6 +287,36 @@ router.post('/content', requireAdmin, async (req, res) => {
         await db.prepare('INSERT INTO cms_content (content_key, label, value, type, updated_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)')
           .run(contentKey, label, normalizedValue, type);
       }
+
+      const translatedTargets = [];
+      for (const targetLang of TARGET_LANGUAGES) {
+        try {
+          const translatedLabel = await translateCmsPayload(label, targetLang, 'label');
+          const translatedValue = await translateCmsPayload(normalizedValue, targetLang, contentKey);
+          const translatedValueText = typeof translatedValue === 'string' ? translatedValue : JSON.stringify(translatedValue);
+          const translatedLabelText = typeof translatedLabel === 'string' ? translatedLabel : label;
+          const existingTranslation = await db.prepare('SELECT id FROM content_translations WHERE content_key = ? AND language_code = ?').get(contentKey, targetLang);
+          if (existingTranslation) {
+            await db.prepare('UPDATE content_translations SET label = ?, value = ?, type = ?, updated_at = CURRENT_TIMESTAMP WHERE content_key = ? AND language_code = ?')
+              .run(translatedLabelText, translatedValueText, type, contentKey, targetLang);
+          } else {
+            await db.prepare('INSERT INTO content_translations (content_key, language_code, label, value, type, updated_at) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)')
+              .run(contentKey, targetLang, translatedLabelText, translatedValueText, type);
+          }
+          translatedTargets.push(targetLang);
+        } catch (translationError) {
+          console.warn(`CMS auto-translation skipped for ${contentKey} -> ${targetLang}:`, translationError.message || translationError);
+        }
+      }
+      res.json({
+        success: true,
+        message: 'Content saved successfully',
+        translation: {
+          status: translatedTargets.length ? 'completed' : 'skipped',
+          languages: translatedTargets,
+        },
+      });
+      return;
     } else {
       const existing = await db.prepare('SELECT id FROM content_translations WHERE content_key = ? AND language_code = ?').get(contentKey, lang);
       if (existing) {
@@ -296,7 +327,7 @@ router.post('/content', requireAdmin, async (req, res) => {
           .run(contentKey, lang, label, normalizedValue, type);
       }
     }
-    res.json({ success: true, message: 'Content saved successfully' });
+    res.json({ success: true, message: 'Content saved successfully', translation: { status: lang === DEFAULT_LANGUAGE ? 'completed' : 'manual' } });
   } catch (error) {
     console.error('CMS save error:', error);
     res.status(500).json({ success: false, message: 'Failed to save content' });
@@ -309,6 +340,7 @@ router.delete('/content/:key', requireAdmin, async (req, res) => {
     const db = await getDb();
     if (lang === DEFAULT_LANGUAGE) {
       await db.prepare('DELETE FROM cms_content WHERE content_key = ?').run(req.params.key);
+      await db.prepare('DELETE FROM content_translations WHERE content_key = ?').run(req.params.key);
     } else {
       await db.prepare('DELETE FROM content_translations WHERE content_key = ? AND language_code = ?').run(req.params.key, lang);
     }

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 import { ArrowRight, CheckCircle2, PackageSearch, Sparkles, ArrowUpRight } from "lucide-react";
+import HeroSection from "@/components/common/HeroSection";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { loadCatalog, type CatalogService } from "@/lib/catalog";
 import { SERVICE_DETAIL_CONTENT } from "@/lib/serviceContent";
@@ -50,24 +51,16 @@ export default function ServicesPage() {
 
   return (
     <div className="min-h-screen bg-[#f5efe4]">
-      <section className="relative overflow-hidden text-white">
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,#0a0f18_0%,#111827_56%,#f97316_112%)]" />
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 18% 22%, white 0, transparent 20%), radial-gradient(circle at 78% 26%, white 0, transparent 16%), radial-gradient(circle at 50% 76%, white 0, transparent 18%)" }} />
-        <div className="relative mx-auto max-w-[1600px] px-6 py-16 sm:px-8 lg:py-20">
-          <div className="max-w-3xl">
-            <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-white/80">
-              <Sparkles size={14} />
-              {cms("services.page.eyebrow")}
-            </p>
-            <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
-              {cms("services.page.title")}
-            </h1>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">
-              {cms("services.page.description")}
-            </p>
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        breadcrumbs={[{ label: t("nav.home", "Home"), href: "/" }, { label: t("nav.services", "Services") }]}
+        title={cms("services.page.title")}
+        description={cms("services.page.description")}
+      >
+        <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-white/80">
+          <Sparkles size={14} />
+          {cms("services.page.eyebrow")}
+        </p>
+      </HeroSection>
 
       <main className="mx-auto max-w-[1600px] px-6 py-10 sm:px-8 lg:py-14">
         <section className="hoi-panel mb-8 rounded-[1.75rem] border border-black/5 p-6">

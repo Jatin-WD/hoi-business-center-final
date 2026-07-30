@@ -9,7 +9,7 @@ export default function Footer() {
   const { language } = useSiteLanguage();
   const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const cms = useCmsContent({
-    "footer.about": "HOI Business Center provides end-to-end exhibition services including booth reservation, booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol.",
+    "footer.about": t("footer.about", "HOI Business Center provides end-to-end exhibition services including booth reservation, booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol."),
   });
 
   return (
@@ -22,7 +22,7 @@ export default function Footer() {
               <img src={hoiLogo} alt="HOI Business Center Logo" className="h-14 w-auto logo" />
               <div>
                 <p className="text-sm font-bold uppercase tracking-[0.18em] text-white">{t("footer.brand", "HOI Business Center")}</p>
-                <p className="text-xs uppercase tracking-[0.2em] text-white/50">{t("footer.partner", "Official partner • Yashobhoomi")}</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-white/50">{t("footer.partner", "Official partner - Yashobhoomi")}</p>
               </div>
             </div>
             <p className="max-w-sm text-sm leading-relaxed text-zinc-400">

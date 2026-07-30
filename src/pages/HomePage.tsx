@@ -25,6 +25,21 @@ export default function HomePage() {
     "home.locations.cardDescription": "HOI Business Center's primary exhibition venue.",
     "home.why.title": "Why choose HOI Business Center for Yashobhoomi exhibitions?",
     "home.why.description": "An official, structured service experience built to reduce confusion and keep the content focused.",
+    "home.process.title": "Simple booking sequence",
+    "home.process.description": "The homepage now guides users in a straight line from service discovery to booking.",
+    "home.process.selectService": "Select service",
+    "home.process.review": "Review detail page",
+    "home.process.start": "Start booking",
+    "home.process.coordinate": "Coordinate execution",
+    "home.process.selectServiceBody": "Open the service catalog and choose the required service card.",
+    "home.process.reviewBody": "Read the service description, package links, and Yashobhoomi context.",
+    "home.process.startBody": "Move into the booking flow to confirm scope and requirements.",
+    "home.process.coordinateBody": "HOI team manages delivery, support, and on-ground coordination.",
+    "home.why.item1": "Official venue-first presentation",
+    "home.why.item2": "Only six canonical services on public site",
+    "home.why.item3": "Separate manpower application flow",
+    "home.why.item4": "CMS-backed copy for easy updates",
+    "home.note.body": "This homepage keeps the public information model strict and simple, which makes it easier for users to understand what HOI offers and where each path leads.",
     "home.cta.title": "Plan your Yashobhoomi exhibition with HOI",
     "home.cta.description": "Use the booking flow or contact the team for a direct response. The workflow stays simple and tied to Yashobhoomi.",
   });
@@ -73,10 +88,16 @@ export default function HomePage() {
     description: cms(`services.${service.id}.description`) || service.description || cms("services.canonicalDescriptionFallback"),
   }));
   const processSteps = [
-    { title: t("home.process.selectService", "Select service"), body: t("home.process.selectServiceBody", "Open the service catalog and choose the required service card.") },
-    { title: t("home.process.review", "Review detail page"), body: t("home.process.reviewBody", "Read the service description, package links, and Yashobhoomi context.") },
-    { title: t("home.process.start", "Start booking"), body: t("home.process.startBody", "Move into the booking flow to confirm scope and requirements.") },
-    { title: t("home.process.coordinate", "Coordinate execution"), body: t("home.process.coordinateBody", "HOI team manages delivery, support, and on-ground coordination.") },
+    { title: cms("home.process.selectService"), body: cms("home.process.selectServiceBody") },
+    { title: cms("home.process.review"), body: cms("home.process.reviewBody") },
+    { title: cms("home.process.start"), body: cms("home.process.startBody") },
+    { title: cms("home.process.coordinate"), body: cms("home.process.coordinateBody") },
+  ];
+  const whyItems = [
+    cms("home.why.item1"),
+    cms("home.why.item2"),
+    cms("home.why.item3"),
+    cms("home.why.item4"),
   ];
 
   return (
@@ -258,9 +279,9 @@ export default function HomePage() {
           <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="rounded-[2rem] border border-black/5 bg-[#111111] p-7 text-white shadow-[0_18px_50px_rgba(17,17,17,0.08)]">
               <SectionHeading
-              eyebrow={t("common.howItWorks", "How it works")}
-              title={t("home.process.title", "Simple booking sequence")}
-              description={t("common.howItWorksDesc", "The homepage now guides users in a straight line from service discovery to booking.")}
+                eyebrow={t("common.howItWorks", "How it works")}
+                title={cms("home.process.title")}
+                description={cms("home.process.description")}
                 align="left"
                 tone="light"
               />
@@ -281,18 +302,13 @@ export default function HomePage() {
 
             <div className="rounded-[2rem] border border-black/5 bg-white p-7 shadow-[0_18px_50px_rgba(17,17,17,0.05)] lg:p-8">
               <SectionHeading
-              eyebrow={t("common.whyHoi", "Why HOI")}
+                eyebrow={t("common.whyHoi", "Why HOI")}
                 title={cms("home.why.title")}
                 description={cms("home.why.description")}
                 align="left"
               />
               <div className="mt-6 grid gap-4 md:grid-cols-2">
-                {[
-                  t("home.why.item1", "Official venue-first presentation"),
-                  t("home.why.item2", "Only six canonical services on public site"),
-                  t("home.why.item3", "Separate manpower application flow"),
-                  t("home.why.item4", "CMS-backed copy for easy updates"),
-                ].map((item) => (
+                {whyItems.map((item) => (
                   <div key={item} className="flex items-start gap-3 rounded-2xl border border-black/5 bg-white p-4">
                     <CheckCircle2 size={18} className="mt-0.5 text-[#f97316]" />
                     <span className="text-sm leading-6 text-slate-700">{item}</span>
@@ -302,7 +318,7 @@ export default function HomePage() {
               <div className="mt-6 rounded-[1.5rem] border border-black/5 bg-white p-5">
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#6b4b2d]">{t("common.note", "Note")}</p>
                 <p className="mt-2 text-sm leading-7 text-slate-700">
-                  {t("home.note.body", "This homepage keeps the public information model strict and simple, which makes it easier for users to understand what HOI offers and where each path leads.")}
+                  {cms("home.note.body")}
                 </p>
               </div>
             </div>

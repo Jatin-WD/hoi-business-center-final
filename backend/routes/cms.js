@@ -55,6 +55,22 @@ const HOI_HOME_VALUES = {
   'home.why.description': 'An official, structured service experience built to reduce confusion and keep the content focused.',
   'home.cta.title': 'Plan your Yashobhoomi exhibition with HOI',
   'home.cta.description': 'Use the booking flow or contact the team for a direct response. The workflow stays simple and tied to Yashobhoomi.',
+  'home.process.title': 'Simple booking sequence',
+  'home.process.description': 'The homepage now guides users in a straight line from service discovery to booking.',
+  'home.process.selectService': 'Select service',
+  'home.process.review': 'Review detail page',
+  'home.process.start': 'Start booking',
+  'home.process.coordinate': 'Coordinate execution',
+  'home.process.selectServiceBody': 'Open the service catalog and choose the required service card.',
+  'home.process.reviewBody': 'Read the service description, package links, and Yashobhoomi context.',
+  'home.process.startBody': 'Move into the booking flow to confirm scope and requirements.',
+  'home.process.coordinateBody': 'HOI team manages delivery, support, and on-ground coordination.',
+  'home.why.item1': 'Official venue-first presentation',
+  'home.why.item2': 'Only six canonical services on public site',
+  'home.why.item3': 'Separate manpower application flow',
+  'home.why.item4': 'CMS-backed copy for easy updates',
+  'home.note.body': 'This homepage keeps the public information model strict and simple, which makes it easier for users to understand what HOI offers and where each path leads.',
+  'footer.about': 'HOI Business Center provides end-to-end exhibition services including booth reservation, booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol.',
 };
 
 const DEFAULT_LANGUAGE = 'en';

@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { useCmsContent } from "@/hooks/useCmsContent";
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
 import { translateServiceLabel, translateSiteText } from "@/lib/site-translations";
 
@@ -7,6 +8,9 @@ const hoiLogo = "/assets/hoi.png";
 export default function Footer() {
   const { language } = useSiteLanguage();
   const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
+  const cms = useCmsContent({
+    "footer.about": "HOI Business Center provides end-to-end exhibition services including booth reservation, booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol.",
+  });
 
   return (
     <footer className="bg-[#111111] text-zinc-200 border-t border-white/10">
@@ -15,10 +19,7 @@ export default function Footer() {
           <div>
             <img src={hoiLogo} alt="HOI Business Center Logo" className="mb-4 h-14 w-auto logo" />
             <p className="text-sm leading-relaxed text-zinc-400">
-              {t(
-                "footer.about",
-                "HOI Business Center provides end-to-end exhibition services including booth reservation, booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol.",
-              )}
+              {cms("footer.about")}
             </p>
           </div>
 

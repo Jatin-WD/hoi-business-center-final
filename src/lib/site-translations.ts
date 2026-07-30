@@ -93,6 +93,7 @@ const EN: TranslationMap = {
   "home.fact.halls": "Convention and expo halls",
   "home.fact.established": "Established",
   "home.process.title": "Simple booking sequence",
+  "home.process.description": "The homepage now guides users in a straight line from service discovery to booking.",
   "home.note.body": "This homepage keeps the public information model strict and simple, which makes it easier for users to understand what HOI offers and where each path leads.",
   "common.sendInquiry": "Send Us an Inquiry",
   "common.thankYou": "Thank You!",
@@ -530,6 +531,7 @@ const HI: TranslationMap = {
   "home.fact.halls": "कन्वेंशन और एक्सपो हॉल",
   "home.fact.established": "स्थापित",
   "home.process.title": "सरल बुकिंग क्रम",
+  "home.process.description": "होमपेज अब उपयोगकर्ताओं को सेवा खोज से सीधे बुकिंग तक एक स्पष्ट क्रम में मार्गदर्शन करता है।",
   "home.note.body": "यह होमपेज सार्वजनिक जानकारी मॉडल को सख्त और सरल रखता है, जिससे उपयोगकर्ताओं के लिए HOI क्या प्रदान करता है और हर रास्ता कहाँ ले जाता है, यह समझना आसान हो जाता है।",
   "common.sendInquiry": "अपनी पूछताछ भेजें",
   "common.thankYou": "धन्यवाद!",
@@ -888,6 +890,7 @@ const KO: TranslationMap = {
   "home.fact.halls": "컨벤션 및 엑스포 홀",
   "home.fact.established": "설립",
   "home.process.title": "간단한 예약 순서",
+  "home.process.description": "홈페이지는 이제 사용자를 서비스 탐색에서 예약까지 한 방향으로 안내합니다.",
   "home.note.body": "이 홈페이지는 공개 정보 모델을 엄격하고 단순하게 유지하여 사용자가 HOI가 무엇을 제공하고 각 경로가 어디로 이어지는지 더 쉽게 이해할 수 있게 합니다.",
   "common.sendInquiry": "문의 보내기",
   "common.thankYou": "감사합니다!",
@@ -1421,8 +1424,27 @@ export function translateServiceLabel(serviceId: string, lang: SiteLanguage) {
 }
 
 export function translatePackageLabel(label: string, lang: SiteLanguage) {
-  return SERVICE_PACKAGE_LABELS[lang]?.[label] ?? SERVICE_PACKAGE_LABELS.en?.[label] ?? label;
+  const normalized = normalizeLabelKey(label);
+  return PACKAGE_LABELS_NORMALIZED[lang]?.[normalized] ?? PACKAGE_LABELS_NORMALIZED.en?.[normalized] ?? label;
 }
+
+function normalizeLabelKey(value: string) {
+  return String(value ?? "")
+    .trim()
+    .replace(/[’‘]/g, "'")
+    .replace(/[×]/g, "x")
+    .replace(/\s+/g, " ")
+    .replace(/\s*\(\s*/g, " (")
+    .replace(/\s*\)\s*/g, ")")
+    .replace(/\s*'\s*/g, "'");
+}
+
+const PACKAGE_LABELS_NORMALIZED: Record<SiteLanguage, Record<string, string>> = Object.fromEntries(
+  Object.entries(SERVICE_PACKAGE_LABELS).map(([lang, labels]) => [
+    lang,
+    Object.fromEntries(Object.entries(labels).map(([key, value]) => [normalizeLabelKey(key), value])),
+  ]),
+) as Record<SiteLanguage, Record<string, string>>;
 
 const CMS_TRANSLATIONS: Record<SiteLanguage, TranslationMap> = {
   en: {},

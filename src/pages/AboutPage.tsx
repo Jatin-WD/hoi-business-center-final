@@ -117,7 +117,17 @@ export default function AboutPage() {
 
           <section className="overflow-hidden rounded-[1.75rem] border border-black/5 bg-[#111111] text-white shadow-sm">
             <div className="relative min-h-[320px]">
-              <img src="/assets/hall.jpg" alt="Exhibition hall" className="absolute inset-0 h-full w-full object-cover opacity-65" />
+              <video
+                className="absolute inset-0 h-full w-full object-cover opacity-75"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                poster="/assets/hoi-booth-install.jpg"
+              >
+                <source src="/assets/hoi-booth-video.mov" type="video/quicktime" />
+              </video>
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-7">
                 <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/70">{t("about.ourApproach")}</p>

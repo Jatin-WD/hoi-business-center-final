@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { ArrowRight, Building2, CheckCircle, MapPin, PackageCheck } from "lucide-react";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import type { CatalogService, CatalogVenue } from "@/lib/catalog";
+import { getServiceMediaImage } from "@/lib/service-media";
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
 import { translatePackageLabel, translateServiceLabel, translateSiteText } from "@/lib/site-translations";
 
@@ -13,12 +14,22 @@ export function ServiceCard({ service, selectedVenues, selectedLocation }: { ser
   const serviceLabel = translateServiceLabel(service.id, language);
   const quoteHref = `/contact?type=Service%20Requirement&service=${encodeURIComponent(serviceLabel)}&location=${encodeURIComponent(location)}`;
   return (
-    <article className="rounded-[1.5rem] border border-black/5 bg-white p-5 shadow-[0_12px_32px_rgba(17,17,17,0.05)] transition-all hover:-translate-y-0.5 hover:border-[color:var(--hoi-primary)]/40 hover:shadow-[0_18px_40px_rgba(17,17,17,0.08)]">
-      <div className="mb-4 flex items-start justify-between gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[color:var(--hoi-primary)]/10 text-[color:var(--hoi-primary)] ring-1 ring-[color:var(--hoi-primary)]/10">
+    <article className="group rounded-[1.5rem] border border-black/5 bg-white p-5 shadow-[0_12px_32px_rgba(17,17,17,0.05)] transition-all hover:-translate-y-0.5 hover:border-[color:var(--hoi-primary)]/40 hover:shadow-[0_18px_40px_rgba(17,17,17,0.08)]">
+      <div className="relative mb-4 h-40 overflow-hidden rounded-[1.15rem] bg-slate-100">
+        <img
+          src={getServiceMediaImage(service.id, service.images)}
+          alt={serviceLabel}
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+          decoding="async"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,15,24,0.04)_0%,rgba(10,15,24,0.48)_62%,rgba(10,15,24,0.82)_100%)]" />
+        <div className="absolute left-4 top-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-white/12 text-white ring-1 ring-white/20 backdrop-blur">
           <PackageCheck size={20} />
         </div>
-        <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">{location}</span>
+        <span className="absolute right-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-600 backdrop-blur">
+          {location}
+        </span>
       </div>
       <h3 className="text-lg font-black text-slate-900">{serviceLabel}</h3>
       <p className="mt-2 text-sm leading-relaxed text-slate-600 line-clamp-3">{cms(`services.${service.id}.description`) || t("service.packageCount", `${service.packages.length} package option${service.packages.length === 1 ? "" : "s"} available`)}</p>

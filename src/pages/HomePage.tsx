@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { ArrowRight, CalendarDays, CheckCircle2, Clock3, MapPin, ShieldCheck, Sparkles, Users } from "lucide-react";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { loadCatalog, type CatalogService, type CatalogVenue } from "@/lib/catalog";
+import { getServiceMediaImage } from "@/lib/service-media";
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
 import { translateServiceLabel, translateSiteText } from "@/lib/site-translations";
 
@@ -121,8 +122,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden border-b border-black/5 bg-[#0b1120] text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_28%),radial-gradient(circle_at_78%_30%,rgba(249,115,22,0.24),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.06),transparent_25%)]" />
+      <section className="relative overflow-hidden border-b border-black/5 text-white">
+        <img
+          src="/assets/yashobhoomi.png"
+          alt="Yashobhoomi exhibition venue"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+          loading="eager"
+          decoding="async"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,15,24,0.96)_0%,rgba(10,15,24,0.90)_34%,rgba(10,15,24,0.72)_58%,rgba(10,15,24,0.48)_74%,rgba(249,115,22,0.24)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_28%),radial-gradient(circle_at_78%_30%,rgba(249,115,22,0.20),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.05),transparent_25%)]" />
         <div className="relative mx-auto grid max-w-[1600px] gap-10 px-6 py-14 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-20">
           <div className="max-w-3xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-[#111111]/10 bg-white px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-[#8b4d22] shadow-[0_10px_25px_rgba(17,17,17,0.06)]">
@@ -150,21 +159,21 @@ export default function HomePage() {
           <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_24px_70px_rgba(17,17,17,0.18)]">
             <div className="relative min-h-[440px]">
               <img
-                src="/assets/hall.jpg"
-                alt="HOI exhibition venue"
+                src="/assets/yashobhoomi.png"
+                alt="Yashobhoomi exhibition venue"
                 className="absolute inset-0 h-full w-full object-cover"
                 loading="eager"
                 decoding="async"
               />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,15,24,0.08)_0%,rgba(10,15,24,0.48)_50%,rgba(10,15,24,0.92)_100%)]" />
-              <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(10,15,24,0.08)_0%,rgba(10,15,24,0.00)_42%,rgba(249,115,22,0.22)_100%)]" />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,15,24,0.10)_0%,rgba(10,15,24,0.36)_42%,rgba(10,15,24,0.84)_100%)]" />
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(10,15,24,0.06)_0%,rgba(10,15,24,0.00)_42%,rgba(249,115,22,0.26)_100%)]" />
               <div className="absolute inset-x-0 bottom-0 h-52 bg-gradient-to-t from-[#0a0f18]/92 via-[#0a0f18]/35 to-transparent" />
               <div className="absolute inset-0 p-6 text-white">
                 <div className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-white/80 backdrop-blur-md">
                   {cms("home.locations.cardBadge")}
                 </div>
                 <div className="mt-auto flex h-full flex-col justify-end">
-                  <div className="max-w-md rounded-[1.75rem] border border-white/14 bg-[linear-gradient(135deg,rgba(10,15,24,0.86),rgba(10,15,24,0.60),rgba(249,115,22,0.34))] p-5 shadow-[0_16px_40px_rgba(17,17,17,0.24)] backdrop-blur-xl">
+                  <div className="max-w-md rounded-[1.75rem] border border-white/14 bg-[linear-gradient(135deg,rgba(10,15,24,0.88),rgba(10,15,24,0.68),rgba(249,115,22,0.38))] p-5 shadow-[0_16px_40px_rgba(17,17,17,0.24)] backdrop-blur-xl">
                     <div className="mb-3 h-1.5 w-24 rounded-full bg-[linear-gradient(90deg,#f97316,rgba(255,255,255,0.1))]" />
                     <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/72">{t("common.venueFocus", "Venue focus")}</p>
                     <h2 className="mt-2 text-2xl font-black leading-tight">{cms("home.hero.focusTitle")}</h2>
@@ -204,27 +213,37 @@ export default function HomePage() {
               <Link
                 key={service.id}
                 href={`/services/${service.id}`}
-              className="group rounded-[1.75rem] border border-white/10 bg-gradient-to-br from-[#151923] via-[#1a2030] to-[#0f141d] p-6 text-white shadow-[0_18px_50px_rgba(0,0,0,0.28)] transition-all hover:-translate-y-0.5 hover:border-[#f97316]/30 hover:shadow-[0_24px_70px_rgba(0,0,0,0.38)]"
+                className="group overflow-hidden rounded-[1.75rem] border border-white/10 bg-gradient-to-br from-[#151923] via-[#1a2030] to-[#0f141d] text-white shadow-[0_18px_50px_rgba(0,0,0,0.28)] transition-all hover:-translate-y-0.5 hover:border-[#f97316]/30 hover:shadow-[0_24px_70px_rgba(0,0,0,0.38)]"
               >
-                <div className="flex items-center justify-between">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#111111] shadow-sm">
-                        <span className="text-sm font-black">{String(index + 1).padStart(2, "0")}</span>
-                      </div>
-                  <span className="rounded-full border border-white/15 bg-white/8 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/75 backdrop-blur">
+                <div className="relative h-40 overflow-hidden">
+                  <img
+                    src={getServiceMediaImage(service.id, service.images)}
+                    alt={service.label}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,15,24,0.04)_0%,rgba(10,15,24,0.38)_46%,rgba(10,15,24,0.84)_100%)]" />
+                  <div className="absolute left-4 top-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-[#111111] shadow-sm">
+                    <span className="text-sm font-black">{String(index + 1).padStart(2, "0")}</span>
+                  </div>
+                  <span className="absolute right-4 top-4 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/80 backdrop-blur">
                     {t("common.bookingReady", "Booking ready")}
                   </span>
                 </div>
 
-                <h3 className="mt-5 text-2xl font-black text-white transition-colors group-hover:text-[#ffb37a]">
-                  {service.label}
-                </h3>
-                <p className="mt-3 line-clamp-3 text-sm leading-7 text-white/72">
-                  {service.description}
-                </p>
+                <div className="p-6">
+                  <h3 className="text-2xl font-black text-white transition-colors group-hover:text-[#ffb37a]">
+                    {service.label}
+                  </h3>
+                  <p className="mt-3 line-clamp-3 text-sm leading-7 text-white/72">
+                    {service.description}
+                  </p>
 
-                <div className="mt-5 flex items-center gap-2 text-sm font-bold text-[#ff9d5c]">
-                  {t("common.openServiceDetail", "Open service detail")}
-                  <ArrowRight size={15} />
+                  <div className="mt-5 flex items-center gap-2 text-sm font-bold text-[#ff9d5c]">
+                    {t("common.openServiceDetail", "Open service detail")}
+                    <ArrowRight size={15} />
+                  </div>
                 </div>
               </Link>
             ))}

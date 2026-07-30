@@ -4,6 +4,7 @@ import { ArrowRight, CheckCircle2, PackageSearch, Sparkles, ArrowUpRight } from 
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { loadCatalog, type CatalogService } from "@/lib/catalog";
 import { SERVICE_DETAIL_CONTENT } from "@/lib/serviceContent";
+import { getServiceMediaImage } from "@/lib/service-media";
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
 import { translateServiceLabel, translateSiteText } from "@/lib/site-translations";
 
@@ -92,15 +93,26 @@ export default function ServicesPage() {
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {cards.map((service) => (
               <article key={service.id} className="group overflow-hidden rounded-[1.65rem] border border-black/5 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(17,17,17,0.08)]">
-                <div className="bg-[linear-gradient(135deg,#0a0f18_0%,#111827_55%,#f97316_118%)] px-6 py-5 text-white">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/70">{cms("services.card.tag")}</p>
-                  <h3 className="mt-2 text-2xl font-black">{service.label}</h3>
-                  <p className="mt-2 max-w-xl text-sm leading-6 text-white/80">
-                    {cms(`services.${service.id}.description`) || service.detail?.description || service.description || cms("services.card.defaultDesc")}
-                  </p>
+                <div className="relative h-44 overflow-hidden bg-slate-100">
+                  <img
+                    src={getServiceMediaImage(service.id, service.images)}
+                    alt={service.label}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,15,24,0.08)_0%,rgba(10,15,24,0.48)_58%,rgba(10,15,24,0.82)_100%)]" />
+                  <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#0a0f18]/80 to-transparent" />
+                  <div className="absolute left-5 top-5">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/75">{cms("services.card.tag")}</p>
+                  </div>
                 </div>
 
                 <div className="p-6">
+                  <h3 className="text-2xl font-black text-slate-900">{service.label}</h3>
+                  <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">
+                    {cms(`services.${service.id}.description`) || service.detail?.description || service.description || cms("services.card.defaultDesc")}
+                  </p>
                   <div className="space-y-2">
                     {(service.detail?.highlights ?? []).slice(0, 3).map((point) => (
                       <div key={point} className="flex items-start gap-2 text-sm text-slate-600">

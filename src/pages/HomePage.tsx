@@ -160,7 +160,7 @@ export default function HomePage() {
             <div className="relative min-h-[440px]">
               <img
                 src="/assets/hoi-about-team.jpg"
-                alt="Yashobhoomi exhibition venue"
+                alt="HOI Business Center team"
                 className="absolute inset-0 h-full w-full object-cover"
                 loading="eager"
                 decoding="async"
@@ -168,21 +168,6 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,15,24,0.10)_0%,rgba(10,15,24,0.36)_42%,rgba(10,15,24,0.84)_100%)]" />
               <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(10,15,24,0.06)_0%,rgba(10,15,24,0.00)_42%,rgba(249,115,22,0.26)_100%)]" />
               <div className="absolute inset-x-0 bottom-0 h-52 bg-gradient-to-t from-[#0a0f18]/92 via-[#0a0f18]/35 to-transparent" />
-              <div className="absolute inset-0 p-6 text-white">
-                <div className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-white/80 backdrop-blur-md">
-                  {cms("home.locations.cardBadge")}
-                </div>
-                <div className="mt-auto flex h-full flex-col justify-end">
-                  <div className="max-w-md rounded-[1.75rem] border border-white/14 bg-[linear-gradient(135deg,rgba(10,15,24,0.88),rgba(10,15,24,0.68),rgba(249,115,22,0.38))] p-5 shadow-[0_16px_40px_rgba(17,17,17,0.24)] backdrop-blur-xl">
-                    <div className="mb-3 h-1.5 w-24 rounded-full bg-[linear-gradient(90deg,#f97316,rgba(255,255,255,0.1))]" />
-                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/72">{t("common.venueFocus", "Venue focus")}</p>
-                    <h2 className="mt-2 text-2xl font-black leading-tight">{cms("home.hero.focusTitle")}</h2>
-                    <p className="mt-3 text-sm leading-6 text-white/82">
-                      {cms("home.hero.focusDesc")}
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -273,18 +258,14 @@ export default function HomePage() {
 
           <Link href={`/venue/${yashobhoomi.locationId}/${yashobhoomi.subVenueId}`} className="group relative min-h-[360px] overflow-hidden rounded-[2rem] border border-black/5 bg-[#111111] shadow-[0_18px_50px_rgba(17,17,17,0.08)]">
             <img
-              src={yashobhoomi.image || "/assets/yashobhoomi.png"}
-              alt={yashobhoomi.name}
+              src="/assets/hoi-about-team.jpg"
+              alt="HOI Business Center team"
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.26)_34%,rgba(17,17,17,0.82)_100%)]" />
             <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(17,17,17,0.06)_0%,rgba(17,17,17,0.00)_42%,rgba(249,115,22,0.22)_100%)]" />
             <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#111111]/90 via-[#111111]/40 to-transparent" />
             <div className="absolute inset-0 flex flex-col justify-end p-7 text-white lg:p-8">
-              <span className="inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/75 backdrop-blur-sm">
-                {t("common.officialVenueSpotlight", "Official venue spotlight")}
-              </span>
-              <h3 className="mt-4 max-w-xl text-3xl font-black leading-tight">{cms("home.locations.cardTitle")}</h3>
               <p className="mt-3 max-w-lg text-sm leading-7 text-white/86">
                 {cms("home.locations.cardDescription")}
               </p>

@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { loadCatalog, locationLabel, venuesByLocation, type CatalogService, type CatalogVenue } from "@/lib/catalog";
+import { useSiteLanguage } from "@/hooks/useSiteLanguage";
+import { translatePackageLabel, translateServiceLabel, translateSiteText } from "@/lib/site-translations";
 import ServiceDetailBySlug from "./service/ServiceDetailBySlug";
 
 interface Props {
@@ -14,6 +16,8 @@ type CatalogState = {
 };
 
 export default function CategoryPage({ params }: Props) {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const locationId = params?.category ?? "";
   const requestedVenue = params?.location ?? "";
   const [catalog, setCatalog] = useState<CatalogState>({ venues: [], services: [] });
@@ -25,7 +29,7 @@ export default function CategoryPage({ params }: Props) {
   const activeVenue = venues.find((venue) => venue.subVenueId === activeVenueId) ?? venues[0];
   const activeService = catalog.services.find((service) => service.id === locationId);
   const isYashobhoomi = locationId === "yashobhoomi";
-  const title = isYashobhoomi ? "Yashobhoomi" : locationLabel(catalog.venues, locationId);
+  const title = isYashobhoomi ? t("nav.yashobhoomi", "Yashobhoomi") : locationLabel(catalog.venues, locationId);
 
   useEffect(() => {
     let mounted = true;
@@ -59,34 +63,34 @@ export default function CategoryPage({ params }: Props) {
       <div className="bg-gradient-to-r from-[#111111] via-[#1f1f1f] to-[#f97316] text-white py-14 px-8">
         <div className="max-w-[1600px] mx-auto">
           <div className="flex items-center gap-2 text-zinc-200 text-sm mb-4 flex-wrap">
-            <Link href="/" className="hover:text-white">Home</Link>
+            <Link href="/" className="hover:text-white">{t("nav.home", "Home")}</Link>
             <ChevronRight size={14} />
-            <Link href="/service" className="hover:text-white">Booking</Link>
+            <Link href="/service" className="hover:text-white">{t("nav.booking", "Booking")} </Link>
             <ChevronRight size={14} />
             <span className="text-white">{title}</span>
             {activeVenue && <><ChevronRight size={14} /><span>{activeVenue.name.split(",")[0]}</span></>}
           </div>
           <h1 className="text-4xl font-bold mb-3">{title}</h1>
           {activeVenue && <p className="text-yellow-300 font-semibold text-lg mb-2">{activeVenue.name}</p>}
-          <p className="text-zinc-200 max-w-xl">Select a venue below, then choose from available services and packages.</p>
+          <p className="text-zinc-200 max-w-xl">{t("category.hero.description", "Select a venue below, then choose from available services and packages.")}</p>
         </div>
       </div>
 
       <div className="max-w-[1600px] mx-auto px-8 py-12">
-        {loading && <StateCard title="Loading services..." />}
-        {error && <StateCard title="Could not load services" detail={error} />}
+        {loading && <StateCard title={t("common.loading", "Loading...")} />}
+        {error && <StateCard title={t("common.couldNotLoad", "Could not load content")} detail={error} />}
 
         {!loading && !error && (
           <>
             {!isYashobhoomi && <div className="mb-10">
               <div className="flex items-center gap-3 mb-6 text-sm overflow-x-auto">
-                <StepItem n={1} label="Location Selected" status="done" />
+                <StepItem n={1} label={t("category.step.locationSelected", "Location Selected")} status="done" />
                 <ChevronRight size={14} className="text-gray-300 flex-shrink-0" />
-                <StepItem n={2} label="Select Venue" status="active" />
+                <StepItem n={2} label={t("category.step.selectVenue", "Select Venue")} status="active" />
                 <ChevronRight size={14} className="text-gray-300 flex-shrink-0" />
-                <StepItem n={3} label="Select Service" status="inactive" />
+                <StepItem n={3} label={t("category.step.selectService", "Select Service")} status="inactive" />
               </div>
-              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Venues in {title}</h3>
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">{t("category.venuesIn", "Venues in")} {title}</h3>
               <div className="flex flex-wrap gap-2">
                 {venues.map((venue) => (
                   <button key={venue.id} onClick={() => setActiveVenueId(venue.subVenueId)} className={`px-4 py-2.5 rounded-xl text-sm font-medium border transition-all ${activeVenue?.id === venue.id ? "bg-[#f97316] text-white border-[#f97316] shadow-md" : "bg-white text-gray-700 border-gray-200 hover:border-[#f97316] hover:text-[#f97316]"}`}>
@@ -97,7 +101,7 @@ export default function CategoryPage({ params }: Props) {
             </div>}
 
             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-5">
-              Services at {activeVenue?.name.split(",")[0] ?? title}
+              {t("category.servicesAt", "Services at")} {activeVenue?.name.split(",")[0] ?? title}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               {catalog.services.map((service) => (
@@ -112,36 +116,41 @@ export default function CategoryPage({ params }: Props) {
 }
 
 function ServiceCard({ service, venueName }: { service: CatalogService; venueName: string }) {
-  const requirementHref = `/contact?type=Service%20Requirement&service=${encodeURIComponent(service.label)}&location=${encodeURIComponent(venueName)}`;
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
+  const serviceLabel = translateServiceLabel(service.id, language);
+  const requirementHref = `/contact?type=Service%20Requirement&service=${encodeURIComponent(serviceLabel)}&location=${encodeURIComponent(venueName)}`;
   const locationParam = `?location=${encodeURIComponent(venueName)}`;
   return (
     <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all">
       <div className="p-5 border-b border-gray-100">
-        <h2 className="font-bold text-gray-900">{service.label}</h2>
-        <p className="text-xs text-gray-400 mt-0.5">{service.packages.length} package options</p>
+        <h2 className="font-bold text-gray-900">{serviceLabel}</h2>
+        <p className="text-xs text-gray-400 mt-0.5">{service.packages.length} {t("common.packageOptions", "package options")}</p>
       </div>
       <div className="p-5 space-y-2">
         {service.packages.map((pkg, idx) => (
           <Link key={`${service.id}-${idx}`} href={`${pkg.href}${locationParam}`} className="flex items-center justify-between px-4 py-2.5 rounded-xl border border-gray-100 hover:border-[#f97316] hover:bg-orange-50 transition-all group">
-            <span className="text-sm text-gray-700 group-hover:text-[#f97316] font-medium">{pkg.label}</span>
+            <span className="text-sm text-gray-700 group-hover:text-[#f97316] font-medium">{translatePackageLabel(pkg.label, language)}</span>
             <ArrowRight size={14} className="text-gray-300 group-hover:text-[#f97316] transition-colors flex-shrink-0" />
           </Link>
         ))}
       </div>
       <div className="px-5 pb-5 flex gap-2">
-        <Link href={requirementHref} className="flex-1 text-center bg-[#f97316] text-white py-2 rounded-lg text-sm font-semibold hover:bg-[#ea580c] transition-colors">Book Now</Link>
-        <Link href={requirementHref} className="flex-1 text-center border border-[#f97316] text-[#f97316] py-2 rounded-lg text-sm font-semibold hover:bg-orange-50 transition-colors">Get Quote</Link>
+        <Link href={requirementHref} className="flex-1 text-center bg-[#f97316] text-white py-2 rounded-lg text-sm font-semibold hover:bg-[#ea580c] transition-colors">{t("common.bookNow", "Book Now")}</Link>
+        <Link href={requirementHref} className="flex-1 text-center border border-[#f97316] text-[#f97316] py-2 rounded-lg text-sm font-semibold hover:bg-orange-50 transition-colors">{t("common.requestQuote", "Get Quote")}</Link>
       </div>
     </div>
   );
 }
 
 function NotFound() {
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Location Not Found</h1>
-        <Link href="/service" className="text-[#f97316] hover:underline">Back to Booking</Link>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("category.locationNotFound", "Location Not Found")}</h1>
+        <Link href="/service" className="text-[#f97316] hover:underline">{t("common.backToBooking", "Back to Booking")}</Link>
       </div>
     </div>
   );

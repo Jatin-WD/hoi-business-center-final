@@ -6,7 +6,7 @@ import CTABanner from "@/components/common/CTABanner";
 import SubmissionPopup from "@/components/common/SubmissionPopup";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
-import { translateSiteText } from "@/lib/site-translations";
+import { translateServiceLabel, translateSiteText } from "@/lib/site-translations";
 import { contactSchema, type ContactValues } from "@/lib/validators";
 import { useAuth } from "@/hooks/useAuth";
 import { ContactForm } from "./contact/ContactForm";
@@ -37,8 +37,8 @@ export default function ContactPage() {
   const [submitMessage, setSubmitMessage] = useState("");
   const [popup, setPopup] = useState({ open: false, type: "success" as "success" | "error", title: "", message: "" });
   const { data: catalog, isLoading: catalogLoading, error: catalogError, refetch } = useQuery({ queryKey: ["contact-catalog"], queryFn: loadCatalog });
-  const serviceOptions = useMemo(() => (catalog?.services ?? []).map((service) => service.label), [catalog]);
-  const locationOptions = useMemo(() => Array.from(new Set((catalog?.venues ?? []).map((venue) => venue.locationId === "yashobhoomi" ? "Yashobhoomi" : venue.city).filter(Boolean))), [catalog]);
+  const serviceOptions = useMemo(() => (catalog?.services ?? []).map((service) => translateServiceLabel(service.id, language)), [catalog, language]);
+  const locationOptions = useMemo(() => Array.from(new Set((catalog?.venues ?? []).map((venue) => venue.locationId === "yashobhoomi" ? t("nav.yashobhoomi", "Yashobhoomi") : venue.city).filter(Boolean))), [catalog, language]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -51,7 +51,7 @@ export default function ContactPage() {
       ...prev,
       service: service || prev.service,
       location: location || prev.location,
-      message: prev.message || buildPrefilledMessage(service, packageName, location),
+      message: prev.message || buildPrefilledMessage(service, packageName, location, t),
     }));
   }, []);
 
@@ -89,16 +89,16 @@ export default function ContactPage() {
     try {
       const params = new URLSearchParams(window.location.search);
       await apiClient.submitInquiry({ ...result.data, packageName: params.get("package") ?? "", requirementType: params.get("type") ?? "Website requirement" });
-      const message = "Your requirement has been submitted successfully. Our team will contact you shortly.";
+      const message = t("contact.submitSuccess", "Your requirement has been submitted successfully. Our team will contact you shortly.");
       setStatus("success");
       setSubmitMessage(message);
-      setPopup({ open: true, type: "success", title: "Requirement Submitted", message });
+      setPopup({ open: true, type: "success", title: t("contact.thankYou", "Thank You!"), message });
       resetForm();
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unable to send inquiry. Please try again later.";
+      const message = error instanceof Error ? error.message : t("contact.submissionFailed", "Unable to send inquiry. Please try again later.");
       setStatus("error");
       setSubmitMessage(message);
-      setPopup({ open: true, type: "error", title: "Submission Failed", message });
+      setPopup({ open: true, type: "error", title: t("contact.submissionFailedTitle", "Submission Failed"), message });
     }
   };
 
@@ -115,19 +115,19 @@ export default function ContactPage() {
         </div>
       </div>
       <div className="max-w-[1600px] mx-auto px-8 pb-10">
-        <CTABanner title={t("contact.cta.title", "Need help with a service package?")} description={t("contact.cta.description", "Our team is ready to guide you through the best HOI service package for your exhibition requirement.")} primaryLabel={t("contact.cta.primary", "Book a Consultation")} primaryHref="/contact" secondaryLabel={t("common.browseServices", "Browse Services")} secondaryHref="/services" />
+        <CTABanner title={t("contact.needHelp", "Need help with a service package?")} description={t("contact.servicePackageCopy", "Our team is ready to guide you through the best HOI service package for your exhibition requirement.")} primaryLabel={t("contact.bookConsultation", "Book a Consultation")} primaryHref="/contact" secondaryLabel={t("contact.serviceCatalog", "Browse Services")} secondaryHref="/services" />
       </div>
       <SubmissionPopup open={popup.open} type={popup.type} title={popup.title} message={popup.message} onClose={() => setPopup((prev) => ({ ...prev, open: false }))} />
     </div>
   );
 }
 
-function buildPrefilledMessage(service: string, packageName: string, location: string) {
+function buildPrefilledMessage(service: string, packageName: string, location: string, t: (key: string, fallback?: string) => string) {
   return [
-    "Requirement details:",
-    service ? `Service: ${service}` : "",
-    packageName ? `Package: ${packageName}` : "",
-    location ? `Location: ${location}` : "",
-    "Please contact me with pricing, availability, and next steps.",
+    t("contact.prefilledHeading", "Requirement details:"),
+    service ? `${t("contact.prefilledService", "Service")}: ${service}` : "",
+    packageName ? `${t("contact.prefilledPackage", "Package")}: ${packageName}` : "",
+    location ? `${t("contact.prefilledLocation", "Location")}: ${location}` : "",
+    t("contact.prefilledClosing", "Please contact me with pricing, availability, and next steps."),
   ].filter(Boolean).join("\n");
 }

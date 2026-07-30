@@ -5,7 +5,7 @@ import { useCmsContent } from "@/hooks/useCmsContent";
 import { loadCatalog, type CatalogService } from "@/lib/catalog";
 import { SERVICE_DETAIL_CONTENT } from "@/lib/serviceContent";
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
-import { translateServiceLabel, translateSiteText } from "@/lib/site-translations";
+import { translatePackageLabel, translateServiceLabel, translateSiteText } from "@/lib/site-translations";
 
 interface Props {
   params?: { serviceId?: string };
@@ -149,7 +149,7 @@ export default function ServiceDetailPage({ params }: Props) {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.bookingEntry", "Booking entry")}</p>
-                  <h3 className="mt-2 text-2xl font-black text-slate-900">{t("service.bookingFor", `Booking for ${serviceLabel}`)}</h3>
+                  <h3 className="mt-2 text-2xl font-black text-slate-900">{t("service.bookingFor", "Booking for")} {serviceLabel}</h3>
                 </div>
                 <div className="rounded-2xl bg-orange-50 px-3 py-2 text-sm font-bold text-[#f97316]">
                   {t("nav.yashobhoomi", "Yashobhoomi")}
@@ -165,15 +165,15 @@ export default function ServiceDetailPage({ params }: Props) {
                   {t("common.bookThisService", "Book this service")}
                   <ArrowRight size={15} />
                 </Link>
-                <Link href={`/contact?type=Service%20Requirement&service=${encodeURIComponent(detail.title)}&location=Yashobhoomi`} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#f97316] px-5 py-3 text-sm font-bold text-[#f97316] transition-colors hover:bg-orange-50">
-                  Request a quote
+                <Link href={`/contact?type=Service%20Requirement&service=${encodeURIComponent(serviceLabel)}&location=Yashobhoomi`} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#f97316] px-5 py-3 text-sm font-bold text-[#f97316] transition-colors hover:bg-orange-50">
+                  {t("common.requestQuote", "Request a quote")}
                 </Link>
               </div>
             </section>
 
             <section className="rounded-[1.75rem] border border-black/5 bg-white p-7 shadow-sm">
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--hoi-primary)]">{t("common.packages", "Packages")}</p>
-              <h3 className="mt-2 text-2xl font-black text-slate-900">{t("service.packageLinksFor", `Package links for ${serviceLabel}`)}</h3>
+              <h3 className="mt-2 text-2xl font-black text-slate-900">{t("service.packageLinksFor", "Package links for")} {serviceLabel}</h3>
               <div className="mt-5 space-y-3">
                 {service.packages.map((pkg) => (
                   <Link
@@ -181,7 +181,7 @@ export default function ServiceDetailPage({ params }: Props) {
                     href={packageHref(pkg.href)}
                     className="group flex items-center justify-between rounded-2xl border border-gray-100 bg-[#f7f4ef] px-4 py-3.5 transition-all hover:border-[#f97316] hover:bg-orange-50"
                   >
-                    <span className="text-sm font-semibold text-slate-700 group-hover:text-[#f97316]">{pkg.label}</span>
+                    <span className="text-sm font-semibold text-slate-700 group-hover:text-[#f97316]">{translatePackageLabel(pkg.label, language)}</span>
                     <ArrowRight size={14} className="text-gray-300 group-hover:text-[#f97316]" />
                   </Link>
                 ))}
@@ -206,7 +206,7 @@ export default function ServiceDetailPage({ params }: Props) {
                 {t("service.alwaysCenteredDesc", "HOI keeps the public venue model strict and simple. This service flows into the Yashobhoomi booking path and the associated package flow.")}
               </p>
               <Link href="/yashobhoomi" className="mt-5 inline-flex items-center gap-2 rounded-xl border border-[#f97316] px-4 py-2.5 text-sm font-bold text-[#f97316] transition-colors hover:bg-orange-50">
-                {t("nav.yashobhoomi", "View Yashobhoomi")}
+                {t("service.viewYashobhoomi", "View Yashobhoomi")}
                 <MapPin size={15} />
               </Link>
             </section>

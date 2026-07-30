@@ -2,6 +2,8 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "wouter";
 import { ArrowRight, ChevronRight, MapPin, Sparkles } from "lucide-react";
 import { loadCatalog, type CatalogService, type CatalogVenue } from "@/lib/catalog";
+import { useSiteLanguage } from "@/hooks/useSiteLanguage";
+import { translateSiteText } from "@/lib/site-translations";
 
 interface Props {
   onClose: () => void;
@@ -19,6 +21,8 @@ export default function ServiceMegaMenu({ onClose }: Props) {
   const [activeServiceId, setActiveServiceId] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { language } = useSiteLanguage();
+  const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
 
   const yashobhoomiVenue =
     catalog.venues.find((venue) => venue.locationId === YASHOBHOOMI_LOCATION.id)
@@ -48,19 +52,19 @@ export default function ServiceMegaMenu({ onClose }: Props) {
     <div className="w-full border-t-2 border-[#f97316] bg-white" style={{ boxShadow: "0 18px 40px rgba(0,0,0,0.16)" }}>
       <div className="mx-auto w-full max-w-[1600px] px-5">
         <div className="flex items-center gap-0 overflow-x-auto border-b border-gray-100 py-2.5">
-          <StepBadge n={1} label="Yashobhoomi" status="active" />
+          <StepBadge n={1} label={t("menu.step.yashobhoomi", "Yashobhoomi")} status="active" />
           <StepArrow />
-          <StepBadge n={2} label="Services" status={activeService ? "active" : "inactive"} />
+          <StepBadge n={2} label={t("menu.step.services", "Services")} status={activeService ? "active" : "inactive"} />
           <StepArrow />
-          <StepBadge n={3} label="Packages" status={activeService ? "active" : "inactive"} />
+          <StepBadge n={3} label={t("menu.step.packages", "Packages")} status={activeService ? "active" : "inactive"} />
           <div className="ml-auto hidden whitespace-nowrap pl-6 text-xs text-gray-400 xl:flex items-center gap-1.5">
             <MapPin size={11} />
-            <span className="font-semibold text-[#f97316]">Yashobhoomi</span>
+            <span className="font-semibold text-[#f97316]">{t("menu.step.yashobhoomi", "Yashobhoomi")}</span>
           </div>
         </div>
 
-        {loading && <MenuState title="Loading services..." />}
-        {error && <MenuState title="Could not load menu" detail={error} />}
+        {loading && <MenuState title={t("menu.loadingServices", "Loading services...")} />}
+        {error && <MenuState title={t("menu.couldNotLoad", "Could not load menu")} detail={error} />}
 
         {!loading && !error && (
           <div className="grid min-h-[410px] grid-cols-[270px_minmax(250px,260px)_minmax(300px,1fr)_180px]">
@@ -79,31 +83,34 @@ export default function ServiceMegaMenu({ onClose }: Props) {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/10" />
                   <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/65 to-transparent" />
                   <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-[#111111] px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
-                    <Sparkles size={12} /> Official Venue
+                    <Sparkles size={12} /> {t("menu.officialVenue", "Official Venue")}
                   </div>
                   <div className="absolute bottom-4 left-4 right-4">
-                    <p className="text-sm font-semibold text-white drop-shadow">Yashobhoomi Convention Centre</p>
-                    <p className="mt-1 text-xs text-zinc-200/90">India International Convention and Expo Centre</p>
+                    <p className="text-sm font-semibold text-white drop-shadow">{t("menu.yashTitle", "Yashobhoomi Convention Centre")}</p>
+                    <p className="mt-1 text-xs text-zinc-200/90">{t("menu.yashSubtitle", "India International Convention and Expo Centre")}</p>
                   </div>
                 </div>
                 <div className="-mt-6 h-6 bg-gradient-to-b from-black/20 to-transparent" />
 
                 <div className="flex flex-1 flex-col gap-2.5 p-4">
                   <p className="text-[13px] leading-6 text-gray-600">
-                    HOI's primary exhibition base. All six services and packages are routed through Yashobhoomi for a focused, premium experience.
+                    {t(
+                      "menu.yashBody",
+                      "HOI's primary exhibition base. All six services and packages are routed through Yashobhoomi for a focused, premium experience.",
+                    )}
                   </p>
 
                   <div className="flex flex-wrap gap-2">
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1.5 text-[11px] font-semibold text-gray-700 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
                       <MapPin size={12} className="text-[#f97316]" />
-                      Primary HOI venue
+                      {t("menu.primaryVenue", "Primary HOI venue")}
                     </span>
                   </div>
                 </div>
               </Link>
             </div>
 
-            <Panel title="Services Available">
+            <Panel title={t("menu.servicesAvailable", "Services Available")}>
               {catalog.services.map((service) => (
                 <button
                   key={service.id}
@@ -123,7 +130,7 @@ export default function ServiceMegaMenu({ onClose }: Props) {
 
             <div className="min-w-0 border-r border-gray-100 px-5 py-4">
               <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                {activeService?.label ?? "Service"} Packages
+                {activeService?.label ?? t("menu.service", "Service")} {t("menu.packages", "Packages")}
               </p>
               {activeService?.packages.length ? (
                 <div className="space-y-2">
@@ -142,25 +149,25 @@ export default function ServiceMegaMenu({ onClose }: Props) {
               ) : (
                 <div className="space-y-3">
                   <p className="text-sm leading-relaxed text-gray-600">
-                    {activeService?.description || "Service details are available, but no package links are stored for this row yet."}
+                    {activeService?.description || t("menu.serviceDetailsAvailable", "Service details are available, but no package links are stored for this row yet.")}
                   </p>
                   {activeService?.price || activeService?.durationType || activeService?.durationValue ? (
                     <div className="grid grid-cols-1 gap-2 rounded-2xl border border-[#fed7aa] bg-[#fff7ed] p-4">
                       {activeService.price ? (
                         <p className="text-sm font-semibold text-gray-900">
-                          Price: <span className="text-[#f97316]">{activeService.price}</span>
+                          {t("menu.price", "Price")}: <span className="text-[#f97316]">{activeService.price}</span>
                         </p>
                       ) : null}
                       {activeService.durationType || activeService.durationValue ? (
                         <p className="text-sm text-gray-700">
-                          Duration: {activeService.durationType || "duration"} {activeService.durationValue ? `- ${activeService.durationValue}` : ""}
+                          {t("menu.duration", "Duration")}: {activeService.durationType || t("menu.duration", "duration")} {activeService.durationValue ? `- ${activeService.durationValue}` : ""}
                         </p>
                       ) : null}
                     </div>
                   ) : null}
                   {activeService?.features?.length ? (
                     <div className="space-y-2">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Features</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{t("menu.features", "Features")}</p>
                       <div className="flex flex-wrap gap-2">
                         {activeService.features.slice(0, 12).map((feature) => (
                           <span key={feature} className="rounded-full border border-[#fed7aa] bg-white px-3 py-1 text-xs font-medium text-gray-700">
@@ -175,13 +182,15 @@ export default function ServiceMegaMenu({ onClose }: Props) {
             </div>
 
             <div className="bg-gradient-to-b from-gray-50 to-white px-4 py-5">
-              <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-400">Quick Actions</p>
-              <p className="mb-3 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#111111]">Location: Yashobhoomi</p>
+              <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-400">{t("menu.quickActions", "Quick Actions")}</p>
+              <p className="mb-3 rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#111111]">
+                {t("menu.location", "Location")}: {t("menu.step.yashobhoomi", "Yashobhoomi")}
+              </p>
               <Link href={requirementHref} onClick={onClose} className="mb-2.5 block w-full rounded-lg bg-[#111111] px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-[#f97316]">
-                Book Now
+                {t("common.bookNow", "Book Now")}
               </Link>
               <Link href={requirementHref} onClick={onClose} className="block w-full rounded-lg border border-[#111111] px-3 py-2.5 text-center text-sm font-semibold text-[#111111] transition-colors hover:bg-gray-50">
-                Get Quote
+                {t("common.requestQuote", "Request a quote")}
               </Link>
             </div>
           </div>

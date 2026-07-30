@@ -86,14 +86,14 @@ export default function HomePage() {
           <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 font-semibold uppercase tracking-[0.18em] text-white/80">
               <ShieldCheck size={14} />
-              Official information
+              {t("common.officialInformation", "Official information")}
             </span>
-            <span className="text-white/70">HOI Business Center</span>
+            <span className="text-white/70">{t("header.topline", "HOI Business Center")}</span>
           </div>
           <div className="flex flex-wrap items-center gap-2 text-xs text-white/70 sm:text-sm">
-            <span>Yashobhoomi</span>
+            <span>{t("nav.yashobhoomi", "Yashobhoomi")}</span>
             <span className="opacity-50">|</span>
-            <span>Dwarka, New Delhi</span>
+            <span>{t("contact.location", "Dwarka, New Delhi, India")}</span>
             <span className="opacity-50">|</span>
             <a href="tel:+919810097323" className="hover:text-white">+91 98100 97323</a>
           </div>

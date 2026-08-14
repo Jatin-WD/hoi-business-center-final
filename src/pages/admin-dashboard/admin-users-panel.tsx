@@ -31,27 +31,16 @@ export function AdminUsersPanel({ data, adminDraft, setAdminDraft, onSaveAdmin, 
             </label>
           </div>
           <div className="grid grid-cols-1 gap-3 p-4 md:grid-cols-2">
-            {data?.admin?.envAdmin ? <EnvironmentAdmin admin={data.admin} /> : null}
             {shownRows.map((admin) => (
               <AdminCard key={admin.id} admin={admin} onEdit={() => setAdminDraft({ ...admin, password: "" })} onDelete={() => onDeleteAdmin(admin)} />
             ))}
-            {!filteredRows.length && !data?.admin?.envAdmin && <p className="p-8 text-center text-sm text-slate-400 md:col-span-2">No admin accounts found</p>}
+            {!filteredRows.length && <p className="p-8 text-center text-sm text-slate-400 md:col-span-2">No admin accounts found</p>}
           </div>
           <PaginationControls page={page} totalPages={totalPages} setPage={setPage} />
         </div>
         <AdminAccessForm adminDraft={adminDraft} setAdminDraft={setAdminDraft} onSaveAdmin={onSaveAdmin} saving={saving} />
       </div>
     </Panel>
-  );
-}
-
-function EnvironmentAdmin({ admin }: { admin: Row }) {
-  return (
-    <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-      <p className="font-bold">{admin.email}</p>
-      <p className="text-sm text-amber-700">Default environment admin</p>
-      <p className="mt-2 inline-block rounded-full bg-white px-2 py-1 text-xs font-bold capitalize text-amber-700">{admin.role || "admin"}</p>
-    </div>
   );
 }
 

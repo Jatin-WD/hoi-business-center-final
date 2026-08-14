@@ -1,1 +1,3 @@
-import './backend/server.js';
+import { startServer } from './backend/server.js';
+
+void startServer();

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Edit2, Image as ImageIcon, Plus, Save, Search, Trash2, Upload } from "lucide-react";
 import { RESOURCE_FIELDS, RESOURCE_LABELS, blankResource, type ResourceKey, type Row } from "./shared";
 import { PaginationControls, Panel, safeJson, usePagedRows } from "./common";
@@ -33,6 +33,12 @@ export function ResourceManager({
   const meta = RESOURCE_LABELS[resource];
   const Icon = meta.icon;
   const { page, totalPages, shownRows, setPage } = usePagedRows(rows, 10);
+
+  useEffect(() => {
+    if (selected && !rows.some((row) => String(row.id) === String(selected.id))) {
+      setSelected(null);
+    }
+  }, [rows, selected, setSelected]);
 
   return (
     <Panel title={meta.title} hint={meta.hint}>

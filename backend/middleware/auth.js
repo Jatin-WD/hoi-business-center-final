@@ -1,19 +1,5 @@
-import jwt from 'jsonwebtoken';
-import { getDb } from '../config/database.js';
-
-export function getJwtSecret() {
-  const secret = process.env.JWT_SECRET;
-  if (secret) return secret;
-  throw new Error('JWT_SECRET is required');
-}
-
-export function signToken(payload, options) {
-  return jwt.sign(payload, getJwtSecret(), options);
-}
-
-export function verifyToken(token) {
-  return jwt.verify(token, getJwtSecret());
-}
+import { getAuth } from 'firebase-admin/auth';
+import { getUserFromToken } from '../services/firestore.js';
 
 export async function authenticate(req, res, next) {
   const token = req.headers.authorization?.replace('Bearer ', '');
@@ -22,16 +8,15 @@ export async function authenticate(req, res, next) {
   }
 
   try {
-    const decoded = verifyToken(token);
-    const db = await getDb();
-    const user = await db.prepare('SELECT id, email, status FROM users WHERE id = ?').get(decoded.id);
+    const decoded = await getAuth().verifyIdToken(token);
+    const user = await getUserFromToken(decoded);
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid or expired session' });
     }
     if (String(user.status || 'active').toLowerCase() === 'suspended') {
       return res.status(403).json({ success: false, message: 'This account is suspended. Please contact support.' });
     }
-    req.user = { ...decoded, email: user.email };
+    req.user = { ...decoded, ...user, uid: decoded.uid, id: user.id || decoded.uid };
     next();
   } catch {
     res.status(401).json({ success: false, message: 'Invalid or expired session' });
@@ -45,9 +30,8 @@ export async function requireAdmin(req, res, next) {
   }
 
   try {
-    const decoded = verifyToken(token);
-    const db = await getDb();
-    const user = await db.prepare('SELECT id, email, role, status FROM users WHERE id = ?').get(decoded.id);
+    const decoded = await getAuth().verifyIdToken(token);
+    const user = await getUserFromToken(decoded);
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid admin session' });
     }
@@ -57,7 +41,7 @@ export async function requireAdmin(req, res, next) {
     if (!['admin', 'sub-admin', 'editor'].includes(String(user.role || '').toLowerCase())) {
       return res.status(403).json({ success: false, message: 'Admin access required' });
     }
-    req.admin = { ...decoded, role: user.role, email: user.email };
+    req.admin = { ...decoded, ...user, role: user.role, email: user.email, uid: decoded.uid, id: user.id || decoded.uid };
     next();
   } catch {
     res.status(401).json({ success: false, message: 'Invalid admin session' });

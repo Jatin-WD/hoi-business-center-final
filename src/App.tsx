@@ -55,16 +55,16 @@ function Router() {
           <Route path="/venue/:locationId/:subVenueId" component={VenueDetailPage} />
 
           {/* Exhibition Staff Services */}
-          <Route path="/exhibition-staff">{() => <ProtectedPage><ManPowerPage /></ProtectedPage>}</Route>
-          <Route path="/exhibition-staff/:sub">{() => <ProtectedPage><ManPowerPage /></ProtectedPage>}</Route>
-          <Route path="/exhibition-staff/:sub/:child">{() => <ProtectedPage><ManPowerPage /></ProtectedPage>}</Route>
+          <Route path="/exhibition-staff" component={ManPowerPage} />
+          <Route path="/exhibition-staff/:sub" component={ManPowerPage} />
+          <Route path="/exhibition-staff/:sub/:child" component={ManPowerPage} />
 
           {/* Legacy manpower routes */}
-          <Route path="/manpower">{() => <ProtectedPage><ManPowerPage /></ProtectedPage>}</Route>
-          <Route path="/manpower/:sub">{() => <ProtectedPage><ManPowerPage /></ProtectedPage>}</Route>
-          <Route path="/man-power">{() => <ProtectedPage><ManPowerPage /></ProtectedPage>}</Route>
-          <Route path="/apply-manpower">{() => <ProtectedPage><ManPowerPage /></ProtectedPage>}</Route>
-          <Route path="/apply-manpower/:sub">{() => <ProtectedPage><ManPowerPage /></ProtectedPage>}</Route>
+          <Route path="/manpower" component={ManPowerPage} />
+          <Route path="/manpower/:sub" component={ManPowerPage} />
+          <Route path="/man-power" component={ManPowerPage} />
+          <Route path="/apply-manpower" component={ManPowerPage} />
+          <Route path="/apply-manpower/:sub" component={ManPowerPage} />
 
           {/* Event Calendar */}
           <Route path="/event-calendar" component={EventCalendarPage} />

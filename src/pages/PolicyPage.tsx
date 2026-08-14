@@ -13,7 +13,7 @@ const content = {
     sections: [
       ["Information We Collect", "We collect account details, contact information, company details, service requirements, booking details, manpower application details, and uploaded documents submitted through this website."],
       ["How We Use Data", "Your information is used to respond to inquiries, manage bookings, review manpower applications, send service notifications, and improve exhibition support operations."],
-      ["Data Storage", "Website data is stored in the configured PostgreSQL project database."],
+      ["Data Storage", "Website data is stored in the configured cloud database and storage services."],
       ["Contact", "For privacy questions, contact thlim@kilindia.in or call +91 98100 97323."],
     ],
   },

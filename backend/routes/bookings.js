@@ -1,7 +1,8 @@
 import express from 'express';
-import { getDb } from '../config/database.js';
 import { authenticate } from '../middleware/auth.js';
 import { buildRequirementHtml, REQUIREMENT_EMAIL, sendRequirementMail } from '../utils/mailer.js';
+import { FIRESTORE_COLLECTIONS, getFirestoreDb, serverTimestamp } from '../services/firestore.js';
+import { serializeFirestoreDoc, serializeFirestoreDocs } from '../services/firestore-serialize.js';
 
 const router = express.Router();
 
@@ -15,18 +16,26 @@ router.post('/', authenticate, async (req, res) => {
       });
     }
 
-    const db = await getDb();
-    const result = await db.prepare(`
-      INSERT INTO bookings (user_id, service_id, package_id, event_id, notes)
-      VALUES (?, ?, ?, ?, ?)
-    `).run(req.user.id, serviceId || null, packageId || null, eventId || null, notes || null);
+    const db = getFirestoreDb();
+    const docRef = db.collection(FIRESTORE_COLLECTIONS.bookings).doc();
+    await docRef.set({
+      id: docRef.id,
+      user_id: req.user.uid || req.user.id,
+      service_id: serviceId || null,
+      package_id: packageId || null,
+      event_id: eventId || null,
+      notes: notes || null,
+      status: 'pending',
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
+    });
 
     try {
-      const user = await db.prepare('SELECT name, email, phone, company FROM users WHERE id = ?').get(req.user.id) || {};
+      const user = (await db.collection(FIRESTORE_COLLECTIONS.users).doc(String(req.user.uid || req.user.id)).get()).data() || {};
       await sendRequirementMail({
-        subject: `New Booking Request #${result.lastID}`,
+        subject: `New Booking Request #${docRef.id}`,
         html: buildRequirementHtml('New Booking Request', {
-          'Booking ID': result.lastID,
+          'Booking ID': docRef.id,
           Name: user.name,
           Email: user.email || req.user.email,
           Phone: user.phone,
@@ -45,7 +54,7 @@ router.post('/', authenticate, async (req, res) => {
     res.status(201).json({
       success: true,
       message: 'Booking created successfully',
-      data: { bookingId: result.lastID },
+      data: { bookingId: docRef.id },
     });
   } catch (error) {
     console.error('Create booking error:', error);
@@ -58,13 +67,13 @@ router.post('/', authenticate, async (req, res) => {
 
 router.get('/', authenticate, async (req, res) => {
   try {
-    const db = await getDb();
-    const bookings = await db.prepare(`
-      SELECT id, user_id, service_id, package_id, event_id, notes, status, created_at, updated_at
-      FROM bookings
-      WHERE user_id = ?
-      ORDER BY created_at DESC
-    `).all(req.user.id);
+    const db = getFirestoreDb();
+    const snap = await db
+      .collection(FIRESTORE_COLLECTIONS.bookings)
+      .where('user_id', '==', String(req.user.uid || req.user.id))
+      .get();
+    const bookings = serializeFirestoreDocs(snap)
+      .sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
 
     res.json({
       success: true,

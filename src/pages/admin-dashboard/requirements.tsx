@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, Mail, Trash2 } from "lucide-react";
 import { type DashboardData, type Row } from "./shared";
 import { PaginationControls, Panel, usePagedRows } from "./common";
@@ -12,8 +12,14 @@ const REQUIREMENT_TABS = [
 
 export function RequirementsPanel({ data, replyDraft, setReplyDraft, onAction }: { data: DashboardData | null; replyDraft: Row; setReplyDraft: (draft: any) => void; onAction: (source: string, id: string | number, action: "delete" | "status" | "reply", value?: string) => void }) {
   const [activeTab, setActiveTab] = useState(REQUIREMENT_TABS[0].id);
+  const isValidTab = REQUIREMENT_TABS.some((tab) => tab.id === activeTab);
   const current = REQUIREMENT_TABS.find((tab) => tab.id === activeTab) ?? REQUIREMENT_TABS[0];
   const rows = (data?.[current.id as keyof DashboardData] as Row[]) ?? [];
+  useEffect(() => {
+    if (!isValidTab) {
+      setActiveTab(REQUIREMENT_TABS[0].id);
+    }
+  }, [isValidTab]);
 
   return (
     <Panel title="Requirements" hint="Each category is separated into tabs with pagination at the bottom.">
@@ -49,8 +55,8 @@ export function NotificationsPanel({ data, onAction, onClear }: { data: Dashboar
             {shownRows.map((item) => {
               const parts = String(item.id).split("-");
               const source = item.type === "inquiry" ? "inquiries" : item.type === "booking" ? "bookings" : item.type;
-              const recordId = parts[1];
-              const actionable = ["inquiries", "manpower", "bookings"].includes(source);
+              const recordId = parts[1] || item.record_id || item.related_id || item.notification_id || item.id;
+              const actionable = ["inquiries", "manpower", "bookings"].includes(source) && Boolean(String(recordId || "").trim());
               const open = expanded === item.id;
               return (
                 <div key={item.id} className={open ? "bg-blue-50/40" : ""}>

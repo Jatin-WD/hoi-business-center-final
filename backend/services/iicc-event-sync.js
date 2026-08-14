@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { getDb } from '../config/database.js';
+import { FIRESTORE_COLLECTIONS, getFirestoreDb, serverTimestamp } from './firestore.js';
 
 const IICC_BASE_URL = 'https://www.iiccnewdelhi.com';
 const DEFAULT_WINDOW_DAYS = 365;
@@ -81,7 +81,8 @@ export function buildSourceKey({ sourceUrl, name, date, venue, category }) {
 
 function normalizeSourceUrl(href) {
   const raw = String(href || '').trim();
-  if (!raw) return IICC_BASE_URL;
+  if (!raw) return '';
+  if (/^javascript:/i.test(raw) || raw === '#') return '';
   if (/^https?:\/\//i.test(raw)) return raw;
   return new URL(raw, IICC_BASE_URL).toString();
 }
@@ -95,13 +96,17 @@ function parseIiccEventCards(html) {
     const block = match[2];
     const category = clean((block.match(/<span>([\s\S]*?)<\/span>/) || [])[1] || '');
     const name = clean((block.match(/<h3>([\s\S]*?)<\/h3>/) || [])[1] || '');
+    const description = clean((block.match(/<h5>([\s\S]*?)<\/h5>/i) || [])[1] || '');
     const venue = clean((block.match(/fa-map-marker[^>]*><\/i>\s*([\s\S]*?)<\/p>/) || [])[1] || '');
     const date = clean((block.match(/fa-calendar[^>]*><\/i>\s*([\s\S]*?)<\/b>/) || [])[1] || '');
+    const imageUrl = normalizeSourceUrl((block.match(/<img[^>]+src="([^"]+)"/i) || [])[1] || '');
 
     if (!name || !date || !venue) continue;
 
     events.push({
       name,
+      description,
+      imageUrl,
       date,
       venue,
       locationId: 'yashobhoomi',
@@ -120,6 +125,82 @@ function parseIiccEventCards(html) {
   }
 
   return events;
+}
+
+function pickFirst(...values) {
+  for (const value of values) {
+    const text = clean(value);
+    if (text) return text;
+  }
+  return '';
+}
+
+function extractPagePreview(html) {
+  const title = pickFirst(
+    html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/i)?.[1],
+    html.match(/<meta[^>]+name="twitter:title"[^>]+content="([^"]+)"/i)?.[1],
+    html.match(/<title>([\s\S]*?)<\/title>/i)?.[1],
+    html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1]
+  );
+  const description = pickFirst(
+    html.match(/<meta[^>]+property="og:description"[^>]+content="([^"]+)"/i)?.[1],
+    html.match(/<meta[^>]+name="twitter:description"[^>]+content="([^"]+)"/i)?.[1],
+    html.match(/<meta[^>]+name="description"[^>]+content="([^"]+)"/i)?.[1],
+    html.match(/<p[^>]*>([\s\S]*?)<\/p>/i)?.[1]
+  );
+  const imageUrl = normalizeSourceUrl(
+    html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/i)?.[1]
+    || html.match(/<meta[^>]+name="twitter:image"[^>]+content="([^"]+)"/i)?.[1]
+    || html.match(/<img[^>]+src="([^"]+)"/i)?.[1]
+    || ''
+  );
+
+  return {
+    title,
+    description,
+    imageUrl,
+  };
+}
+
+export async function fetchSourcePreview(sourceUrl) {
+  const normalizedUrl = normalizeSourceUrl(sourceUrl);
+  if (!normalizedUrl) {
+    return {
+      description: '',
+      imageUrl: '',
+      title: '',
+    };
+  }
+
+  const response = await fetch(normalizedUrl, { redirect: 'follow' });
+  if (!response.ok) {
+    return {
+      description: '',
+      imageUrl: '',
+      title: '',
+    };
+  }
+
+  const html = await response.text();
+  return extractPagePreview(html);
+}
+
+export async function enrichEventMetadata(event) {
+  const sourceUrl = event.sourceUrl || event.source_url || '';
+  if (!sourceUrl) return event;
+  if (event.description && event.imageUrl) return event;
+
+  try {
+    const preview = await fetchSourcePreview(sourceUrl);
+    return {
+      ...event,
+      description: event.description || preview.description || '',
+      imageUrl: event.imageUrl || preview.imageUrl || '',
+      sourceTitle: event.sourceTitle || preview.title || '',
+    };
+  } catch {
+    return event;
+  }
 }
 
 export function buildIiccEventListUrl({
@@ -153,50 +234,44 @@ export async function fetchIiccEvents(options = {}) {
 }
 
 async function deleteMissingSyncedEvents(db, sourceKeys) {
-  if (!sourceKeys.length) return;
-
-  const placeholderList = sourceKeys.map(() => '?').join(', ');
-  await db.run(
-    `DELETE FROM events WHERE source_provider = ? AND source_key NOT IN (${placeholderList})`,
-    [SYNC_PROVIDER, ...sourceKeys]
-  );
+  const syncedSnap = await db.collection(FIRESTORE_COLLECTIONS.events)
+    .where('source_provider', '==', SYNC_PROVIDER)
+    .get();
+  const allowed = new Set(sourceKeys);
+  const deletions = [];
+  for (const docSnap of syncedSnap.docs) {
+    const row = docSnap.data();
+    if (!allowed.has(row.source_key)) {
+      deletions.push(docSnap.ref.delete());
+    }
+  }
+  await Promise.all(deletions);
 }
 
 async function upsertEvent(db, event) {
-  await db.run(
-    `
-      INSERT INTO events (
-        name, date, venue, location_id, category, status,
-        source_provider, source_key, source_url, source_synced_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-      ON DUPLICATE KEY UPDATE
-        name = VALUES(name),
-        date = VALUES(date),
-        venue = VALUES(venue),
-        location_id = VALUES(location_id),
-        category = VALUES(category),
-        status = VALUES(status),
-        source_provider = VALUES(source_provider),
-        source_url = VALUES(source_url),
-        source_synced_at = CURRENT_TIMESTAMP,
-        updated_at = CURRENT_TIMESTAMP
-    `,
-    [
-      event.name,
-      event.date,
-      event.venue,
-      event.locationId,
-      event.category,
-      event.status,
-      event.sourceProvider,
-      event.sourceKey,
-      event.sourceUrl,
-    ]
-  );
+  const ref = db.collection(FIRESTORE_COLLECTIONS.events).doc(event.sourceKey);
+  const existing = await ref.get();
+  await ref.set({
+    id: event.sourceKey,
+    name: event.name,
+    description: event.description,
+    date: event.date,
+    venue: event.venue,
+    location_id: event.locationId,
+    category: event.category,
+    status: event.status,
+    source_provider: event.sourceProvider,
+    source_key: event.sourceKey,
+    source_url: event.sourceUrl,
+    source_synced_at: serverTimestamp(),
+      created_at: existing.exists ? existing.data()?.created_at || serverTimestamp() : serverTimestamp(),
+      updated_at: serverTimestamp(),
+      image_url: event.imageUrl || '',
+    }, { merge: true });
 }
 
 export async function syncIiccEvents({ db = null, options = {}, pruneMissing = true } = {}) {
-  const targetDb = db || await getDb();
+  const targetDb = db || getFirestoreDb();
   const events = await fetchIiccEvents(options);
 
   for (const event of events) {
@@ -267,4 +342,6 @@ export default {
   syncIiccEvents,
   scheduleIiccEventSync,
   buildIiccEventListUrl,
+  fetchSourcePreview,
+  enrichEventMetadata,
 };

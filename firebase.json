@@ -1,0 +1,26 @@
+{
+  "functions": {
+    "source": "backend"
+  },
+  "hosting": {
+    "public": "dist",
+    "predeploy": [
+      "pnpm run build"
+    ],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "function": "api"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

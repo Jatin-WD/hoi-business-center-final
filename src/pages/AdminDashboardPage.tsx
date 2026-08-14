@@ -4,6 +4,25 @@ import { apiClient } from "@/lib/api-client";
 import { PAGE_GROUPS, RESOURCE_LABELS, blankResource, normalizeDashboardData, type DashboardData, type ResourceKey, type Row } from "./admin-dashboard/shared";
 import { ErrorState, InlineFeedback, LoadingState, safeJson } from "./admin-dashboard/common";
 import { AdminHeader, AdminSidebar, AdminUsersPanel, ManpowerPanel, NotificationsPanel, Overview, PageContentPanel, RequirementsPanel, ResourceManager, SettingsPanel, ThemePanel, UsersPanel } from "./admin-dashboard/sections";
+
+const DASHBOARD_TABS = new Set([
+  "overview",
+  "notifications",
+  "requirements",
+  "users",
+  "pages",
+  "services",
+  "packages",
+  "venues",
+  "events",
+  "manpower",
+  "theme",
+  "admins",
+  "settings",
+]);
+
+const RESOURCE_TABS = new Set<ResourceKey>(["services", "packages", "venues", "events"]);
+
 export default function AdminDashboardPage() {
   const [, setLocation] = useLocation();
   const [data, setData] = useState<DashboardData | null>(null);
@@ -20,7 +39,7 @@ export default function AdminDashboardPage() {
   const [loadError, setLoadError] = useState("");
   const [replyDraft, setReplyDraft] = useState({ source: "", id: "", subject: "Reply from HOI Business Center", message: "" });
   const [adminDraft, setAdminDraft] = useState<Row>({ name: "", email: "", phone: "", company: "", role: "editor", password: "" });
-  const [passwordDraft, setPasswordDraft] = useState({ currentPassword: "", newPassword: "" });
+  const [passwordDraft, setPasswordDraft] = useState({ newPassword: "" });
   const adminToken = () => sessionStorage.getItem("hoi_admin_token") || "";
   const load = async () => {
     const token = adminToken();
@@ -47,8 +66,22 @@ export default function AdminDashboardPage() {
       })
       .finally(() => setLoading(false));
   }, [setLocation, contentLanguage]);
+  useEffect(() => {
+    if (!DASHBOARD_TABS.has(active)) {
+      setActive("overview");
+    }
+  }, [active]);
+  useEffect(() => {
+    setSelected(null);
+    setQuery("");
+  }, [active]);
+  useEffect(() => {
+    if (active === "pages" && !PAGE_GROUPS.some((group) => group.id === activePage)) {
+      setActivePage(PAGE_GROUPS[0].id);
+    }
+  }, [active, activePage]);
   const contentMap = useMemo(() => Object.fromEntries((data?.content ?? []).map((item) => [item.content_key, item])), [data]);
-  const currentResource = (["services", "packages", "venues", "events"].includes(active) ? active : "services") as ResourceKey;
+  const currentResource = (RESOURCE_TABS.has(active as ResourceKey) ? active : "services") as ResourceKey;
   const resourceRows = (data?.[currentResource] ?? []).filter((row) => JSON.stringify(row).toLowerCase().includes(query.toLowerCase()));
   const currentDraft = resourceDrafts[currentResource] ?? blankResource(currentResource);
   const runAction = async (action: () => Promise<void>, success: string) => {
@@ -101,10 +134,14 @@ export default function AdminDashboardPage() {
     event.preventDefault();
     await runAction(async () => {
       await apiClient.changeAdminPassword(adminToken(), passwordDraft);
-      setPasswordDraft({ currentPassword: "", newPassword: "" });
+      setPasswordDraft({ newPassword: "" });
     }, "Password changed");
   };
   const submissionAction = async (source: string, id: string | number, action: "delete" | "status" | "reply", value?: string) => {
+    if (!source || !String(id || "").trim()) {
+      setError("Missing submission reference");
+      return;
+    }
     await runAction(async () => {
       if (action === "delete") await apiClient.deleteSubmission(adminToken(), source, id);
       if (action === "status") await apiClient.updateSubmissionStatus(adminToken(), source, id, value || "pending");
@@ -161,7 +198,10 @@ export default function AdminDashboardPage() {
               selected={selected}
               setSelected={setSelected}
               onSubmit={saveResource}
-              onDelete={(row) => runAction(() => apiClient.deleteAdminResource(adminToken(), currentResource, row.id), "Record deleted")}
+              onDelete={(row) => runAction(async () => {
+                await apiClient.deleteAdminResource(adminToken(), currentResource, row.id);
+                setSelected(null);
+              }, "Record deleted")}
               onImageUpload={uploadResourceImage}
               saving={saving}
             />

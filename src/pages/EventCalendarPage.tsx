@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Clock3,
   MapPin,
+  Search,
   X,
 } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
@@ -22,11 +23,17 @@ type EventItem = {
   category?: string;
   status?: string;
   locationId?: string;
+  description?: string;
+  sourceUrl?: string;
+  source_url?: string;
+  imageUrl?: string;
+  image_url?: string;
   created_at?: string;
   updated_at?: string;
 };
 
 const PAGE_SIZE = 8;
+const ALL_VALUE = "all";
 
 const LOCATION_LABELS: Record<string, string> = {
   all: "All Locations",
@@ -55,6 +62,10 @@ export default function EventCalendarPage() {
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [query, setQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState(ALL_VALUE);
+  const [locationFilter, setLocationFilter] = useState(ALL_VALUE);
+  const [statusFilter, setStatusFilter] = useState(ALL_VALUE);
 
   useEffect(() => {
     let mounted = true;
@@ -69,6 +80,9 @@ export default function EventCalendarPage() {
           items.map((event: any) => ({
             ...event,
             locationId: event.locationId || event.location_id || "",
+            sourceUrl: event.sourceUrl || event.source_url || "",
+            description: event.description || "",
+            imageUrl: event.imageUrl || event.image_url || "",
           }))
         );
       })
@@ -85,17 +99,52 @@ export default function EventCalendarPage() {
     };
   }, []);
 
+  const categoryOptions = useMemo(
+    () => [ALL_VALUE, ...Array.from(new Set(events.map((event) => String(event.category || "").trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b))],
+    [events]
+  );
+  const locationOptions = useMemo(
+    () => [ALL_VALUE, ...Array.from(new Set(events.map((event) => String(event.locationId || "").trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b))],
+    [events]
+  );
+  const statusOptions = useMemo(
+    () => [ALL_VALUE, ...Array.from(new Set(events.map((event) => String(event.status || "").trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b))],
+    [events]
+  );
+
+  const filteredEvents = useMemo(() => {
+    const text = query.trim().toLowerCase();
+    const matchesText = (event: EventItem) => {
+      if (!text) return true;
+      return [event.name, event.date, event.venue, event.category, event.status, event.description, event.sourceUrl]
+        .filter(Boolean)
+        .some((value) => String(value).toLowerCase().includes(text));
+    };
+
+    return events.filter((event) => {
+      const categoryMatch = categoryFilter === ALL_VALUE || String(event.category || "").toLowerCase() === categoryFilter.toLowerCase();
+      const locationMatch = locationFilter === ALL_VALUE || String(event.locationId || "").toLowerCase() === locationFilter.toLowerCase();
+      const statusMatch = statusFilter === ALL_VALUE || String(event.status || "").toLowerCase() === statusFilter.toLowerCase();
+      return categoryMatch && locationMatch && statusMatch && matchesText(event);
+    });
+  }, [events, query, categoryFilter, locationFilter, statusFilter]);
+
   const totalEvents = events.length;
-  const totalPages = Math.max(1, Math.ceil(totalEvents / PAGE_SIZE));
+  const filteredCount = filteredEvents.length;
+  const totalPages = Math.max(1, Math.ceil(filteredCount / PAGE_SIZE));
 
   const visibleEvents = useMemo(() => {
     const start = (currentPage - 1) * PAGE_SIZE;
-    return events.slice(start, start + PAGE_SIZE);
-  }, [events, currentPage]);
+    return filteredEvents.slice(start, start + PAGE_SIZE);
+  }, [filteredEvents, currentPage]);
 
   useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(totalPages);
   }, [currentPage, totalPages]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [query, categoryFilter, locationFilter, statusFilter]);
 
   useEffect(() => {
     if (!selectedEvent) return;
@@ -153,10 +202,41 @@ export default function EventCalendarPage() {
             {loading ? t("events.loading", "Loading events...") : (
               <>
                 {t("events.listings.showing", "Showing")} <span className="font-semibold text-slate-900">{visibleEvents.length}</span> {t("common.of", "of")}{" "}
-                <span className="font-semibold text-slate-900">{totalEvents}</span> {t("events.listings.eventsWord", "events")}
+                <span className="font-semibold text-slate-900">{filteredCount}</span> {t("events.listings.filteredWord", "filtered events")}
+                <span className="mx-2 text-slate-300">|</span>
+                <span className="font-semibold text-slate-900">{totalEvents}</span> {t("events.listings.eventsWord", "total events")}
               </>
             )}
           </p>
+        </div>
+
+        <div className="mb-5 rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="grid gap-3 lg:grid-cols-[1.4fr_repeat(3,minmax(0,1fr))]">
+            <SearchInput value={query} onChange={setQuery} placeholder={t("events.filters.search", "Search by event, venue, or description")} />
+            <SelectField label={t("events.filters.category", "Category")} value={categoryFilter} onChange={setCategoryFilter} options={categoryOptions} />
+            <SelectField label={t("events.filters.location", "Location")} value={locationFilter} onChange={setLocationFilter} options={locationOptions} />
+            <SelectField label={t("events.filters.status", "Status")} value={statusFilter} onChange={setStatusFilter} options={statusOptions} />
+          </div>
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap gap-2">
+              <FilterChip active={categoryFilter === ALL_VALUE} onClick={() => setCategoryFilter(ALL_VALUE)}>{t("events.filters.allCategories", "All categories")}</FilterChip>
+              {categoryOptions.filter((item) => item !== ALL_VALUE).slice(0, 5).map((item) => (
+                <FilterChip key={item} active={categoryFilter === item} onClick={() => setCategoryFilter(item)}>{item}</FilterChip>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setQuery("");
+                setCategoryFilter(ALL_VALUE);
+                setLocationFilter(ALL_VALUE);
+                setStatusFilter(ALL_VALUE);
+              }}
+              className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:border-[color:var(--hoi-primary)] hover:text-[color:var(--hoi-primary)]"
+            >
+              {t("events.filters.clear", "Clear filters")}
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -165,11 +245,11 @@ export default function EventCalendarPage() {
               <div key={index} className="h-40 animate-pulse rounded-[1.5rem] border border-black/5 bg-white" />
             ))}
           </div>
-        ) : totalEvents === 0 ? (
+        ) : filteredCount === 0 ? (
           <div className="rounded-[1.75rem] border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm">
             <CalendarDays size={42} className="mx-auto text-slate-300" />
-            <h3 className="mt-4 text-xl font-bold text-slate-900">{t("events.empty.title", "No events available")}</h3>
-            <p className="mt-2 text-sm text-slate-600">{t("events.empty.description", "Add event records in the admin panel and they will appear here as cards.")}</p>
+            <h3 className="mt-4 text-xl font-bold text-slate-900">{t("events.empty.title", "No matching events")}</h3>
+            <p className="mt-2 text-sm text-slate-600">{t("events.empty.description", "Try changing the filters or search terms to find the event you want.")}</p>
           </div>
         ) : (
           <>
@@ -201,6 +281,7 @@ export default function EventCalendarPage() {
                         <div className="mt-2 space-y-1.25 text-[13px] text-slate-600">
                           <MetaRow icon={<Clock3 size={14} />} text={event.date} />
                           <MetaRow icon={<MapPin size={14} />} text={event.venue} />
+                          {event.description ? <p className="line-clamp-2 pt-1 text-[12px] leading-5 text-slate-500">{event.description}</p> : null}
                         </div>
                       </div>
                     </div>
@@ -343,6 +424,7 @@ function EventDetailModal({ event, onClose }: { event: EventItem; onClose: () =>
   }, [onClose]);
 
   const contactHref = `/contact?type=Event%20Booking&event=${encodeURIComponent(event.name)}&location=${encodeURIComponent(locationLabel(event.locationId, language))}`;
+  const officialSite = event.sourceUrl || event.source_url || "";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4 py-6 backdrop-blur-sm" onMouseDown={onClose}>
@@ -371,13 +453,30 @@ function EventDetailModal({ event, onClose }: { event: EventItem; onClose: () =>
         </div>
 
         <div className="max-h-[calc(100vh-10rem)] overflow-y-auto px-6 py-6">
+          {event.imageUrl || event.image_url ? (
+            <div className="mb-5 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+              <img
+                src={event.imageUrl || event.image_url}
+                alt={event.name}
+                className="h-56 w-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          ) : null}
+
+          {event.description ? (
+            <div className="mb-5 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">{t("events.about", "About this event")}</p>
+              <p className="mt-2 text-sm leading-6 text-slate-700">{event.description}</p>
+            </div>
+          ) : null}
+
           <div className="grid gap-3 sm:grid-cols-2">
             <InfoTile label={t("events.field.date", "Date")} value={event.date} />
             <InfoTile label={t("events.field.venue", "Venue")} value={event.venue} />
-            <InfoTile label={t("events.field.location", "Location")} value={locationLabel(event.locationId)} />
+            <InfoTile label={t("events.field.location", "Location")} value={locationLabel(event.locationId, language)} />
             <InfoTile label={t("events.field.category", "Category")} value={event.category || "-"} />
             <InfoTile label={t("events.field.status", "Status")} value={event.status || t("events.status.upcoming", "Upcoming")} />
-            <InfoTile label={t("events.field.recordId", "Record ID")} value={String(event.id)} />
           </div>
 
           <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-5">
@@ -386,7 +485,13 @@ function EventDetailModal({ event, onClose }: { event: EventItem; onClose: () =>
               {t("events.nextStepDesc", "Open the contact flow with this event preselected, or close this popup and continue browsing the calendar.")}
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
-              <Link href={contactHref} className="inline-flex items-center gap-2 rounded-xl bg-[color:var(--hoi-primary)] px-4 py-2.5 text-sm font-bold text-white transition-colors hover:opacity-95">
+              {officialSite ? (
+                <a href={officialSite} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-[color:var(--hoi-primary)] px-4 py-2.5 text-sm font-bold text-white transition-colors hover:opacity-95">
+                  {t("events.officialSite", "Official Site")}
+                  <ArrowRight size={16} />
+                </a>
+              ) : null}
+              <Link href={contactHref} className="inline-flex items-center gap-2 rounded-xl border border-[color:var(--hoi-primary)]/15 bg-white px-4 py-2.5 text-sm font-bold text-[color:var(--hoi-primary)] transition-colors hover:border-[color:var(--hoi-primary)]/30">
                 {t("events.bookBooth", "Book Booth")}
                 <ArrowRight size={16} />
               </Link>
@@ -411,6 +516,73 @@ function InfoTile({ label, value }: { label: string; value: string }) {
       <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">{label}</p>
       <p className="mt-2 text-sm font-semibold text-slate-900">{value || "-"}</p>
     </div>
+  );
+}
+
+function SearchInput({ value, onChange, placeholder }: { value: string; onChange: (value: string) => void; placeholder: string }) {
+  return (
+    <label className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 focus-within:border-[color:var(--hoi-primary)]">
+      <span className="text-slate-400"><Search size={15} /></span>
+      <input
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
+        className="w-full bg-transparent outline-none"
+      />
+    </label>
+  );
+}
+
+function SelectField({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: string[];
+}) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">{label}</span>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 focus:border-[color:var(--hoi-primary)] focus:outline-none"
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option === ALL_VALUE ? "All" : option}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function FilterChip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-full border px-3 py-1.5 text-xs font-bold transition-colors ${
+        active
+          ? "border-[color:var(--hoi-primary)] bg-[color:var(--hoi-primary)] text-white"
+          : "border-slate-200 bg-white text-slate-600 hover:border-[color:var(--hoi-primary)] hover:text-[color:var(--hoi-primary)]"
+      }`}
+    >
+      {children}
+    </button>
   );
 }
 

@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { Lock } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
+import { firebaseAuth, isFirebaseClientConfigured } from "@/lib/firebase";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 export default function AdminLoginPage() {
   const [, setLocation] = useLocation();
-  const [email, setEmail] = useState("LKMALLSHOP@GMAIL.COM");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,10 +17,16 @@ export default function AdminLoginPage() {
     setError("");
     setLoading(true);
     try {
-      const response = await apiClient.adminLogin({ email, password });
-      sessionStorage.setItem("hoi_admin_token", response.data.token);
+      if (!firebaseAuth || !isFirebaseClientConfigured) {
+        throw new Error("Firebase client config is missing. Set VITE_FIREBASE_* values in .env before admin login.");
+      }
+      const credential = await signInWithEmailAndPassword(firebaseAuth, email, password);
+      const idToken = await credential.user.getIdToken();
+      const response = await apiClient.adminLogin({ idToken });
+      sessionStorage.setItem("hoi_admin_token", response.data.token || idToken);
       setLocation("/admin");
     } catch (err) {
+      await signOut(firebaseAuth).catch(() => undefined);
       setError(err instanceof Error ? err.message : "Admin login failed");
     } finally {
       setLoading(false);

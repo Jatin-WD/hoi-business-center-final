@@ -1,7 +1,8 @@
-import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { Link } from "wouter";
 import { AlertCircle, CheckCircle, ChevronRight, FileText, Sparkles } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
+import { useAuth } from "@/hooks/useAuth";
 import { useCmsContent } from "@/hooks/useCmsContent";
 import { useSiteLanguage } from "@/hooks/useSiteLanguage";
 import { translateSiteText } from "@/lib/site-translations";
@@ -24,6 +25,7 @@ const emptyForm: ManpowerFormState = {
 };
 
 export default function ManPowerPage() {
+  const { user, loading: authLoading } = useAuth();
   const { language } = useSiteLanguage();
   const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
   const cms = useCmsContent({
@@ -40,6 +42,16 @@ export default function ManPowerPage() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
   const selectedRole = roles.find((item) => item.id === role);
+
+  useEffect(() => {
+    if (!user || authLoading) return;
+    setForm((prev) => ({
+      ...prev,
+      fullName: prev.fullName || user.name || "",
+      email: prev.email || user.email || "",
+      phone: prev.phone || user.phone || "",
+    }));
+  }, [authLoading, user?.id, user?.name, user?.email, user?.phone]);
 
   const update = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [event.target.name]: event.target.value }));

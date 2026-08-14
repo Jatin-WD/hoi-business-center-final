@@ -1,6 +1,7 @@
 import express from 'express';
-import { getDb } from '../config/database.js';
 import { SERVICE_PACKAGES } from '../data/seed-data.js';
+import { FIRESTORE_COLLECTIONS, getFirestoreDb } from '../services/firestore.js';
+import { serializeFirestoreDocs } from '../services/firestore-serialize.js';
 
 const router = express.Router();
 const CANONICAL_SERVICE_ORDER = [
@@ -51,23 +52,41 @@ function mergeCanonicalServices(rows) {
     .filter(Boolean);
 }
 
-// Get all services
+async function loadServices() {
+  try {
+    const db = getFirestoreDb();
+    const snap = await db.collection(FIRESTORE_COLLECTIONS.services).get();
+    const services = serializeFirestoreDocs(snap);
+    if (services.length) {
+      return services;
+    }
+  } catch (error) {
+    console.warn('Falling back to seed services:', error?.message || error);
+  }
+
+  return Object.entries(SERVICE_PACKAGES).map(([serviceId, fallback]) => ({
+    service_id: serviceId,
+    label: fallback.label,
+    description: '',
+    packages: fallback.packages,
+    features: [],
+    images: [],
+    price: '',
+    duration_type: '',
+    duration_value: '',
+  }));
+}
+
 router.get('/', async (req, res) => {
   try {
-    const db = await getDb();
-    const services = await db.prepare(`
-      SELECT *
-      FROM services
-      ORDER BY service_id
-    `).all();
-
+    const services = await loadServices();
     const parsedServices = mergeCanonicalServices(
       services.filter((service) => CANONICAL_SERVICE_IDS.has(service.service_id))
     );
 
     res.json({
       success: true,
-      data: { services: parsedServices }
+      data: { services: parsedServices },
     });
   } catch (error) {
     console.error('Get services error:', error);
@@ -75,25 +94,16 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get service by ID
 router.get('/:serviceId', async (req, res) => {
   try {
     const { serviceId } = req.params;
-    const db = await getDb();
-
-    const service = await db.prepare(`
-      SELECT *
-      FROM services
-      WHERE service_id = ?
-    `).get(serviceId);
+    const services = await loadServices();
+    const service = services.find((item) => item.service_id === serviceId);
 
     if (!service) {
       const fallback = CANONICAL_SERVICE_MAP.get(serviceId);
       if (!fallback) {
-        return res.status(404).json({
-          success: false,
-          message: 'Service not found'
-        });
+        return res.status(404).json({ success: false, message: 'Service not found' });
       }
 
       return res.json({
@@ -115,17 +125,14 @@ router.get('/:serviceId', async (req, res) => {
     }
 
     if (!CANONICAL_SERVICE_IDS.has(service.service_id)) {
-      return res.status(404).json({
-        success: false,
-        message: 'Service not found'
-      });
+      return res.status(404).json({ success: false, message: 'Service not found' });
     }
 
     const parsedService = mergeCanonicalServices([service])[0];
 
     res.json({
       success: true,
-      data: { service: parsedService }
+      data: { service: parsedService },
     });
   } catch (error) {
     console.error('Get service error:', error);

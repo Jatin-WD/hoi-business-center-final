@@ -1,5 +1,7 @@
 import express from 'express';
-import { getDb } from '../config/database.js';
+import { VENUE_DETAILS } from '../data/seed-data.js';
+import { getFirestoreDb, FIRESTORE_COLLECTIONS } from '../services/firestore.js';
+import { serializeFirestoreDoc, serializeFirestoreDocs } from '../services/firestore-serialize.js';
 
 const router = express.Router();
 
@@ -47,205 +49,80 @@ function matchesVenueFallback(row, locationId, subVenueId) {
   );
 }
 
-// Get all venues
-router.get('/', async (req, res) => {
+async function listVenues() {
   try {
-    const db = await getDb();
-    const venues = await db.prepare(`
-      SELECT
-        id,
-        location_id,
-        sub_venue_id,
-        name,
-        address,
-        city,
-        state,
-        description,
-        about,
-        total_area,
-        halls,
-        capacity,
-        established,
-        website,
-        specialities,
-        image,
-        created_at,
-        updated_at
-      FROM venues
-      ORDER BY state, city, name
-    `).all();
-
-    // Parse JSON fields
-    const parsedVenues = venues.map((venue) => ({
+    const db = getFirestoreDb();
+    const snap = await db.collection(FIRESTORE_COLLECTIONS.venues).get();
+    const venues = serializeFirestoreDocs(snap).map((venue) => ({
       ...venue,
       specialities: parseJsonArray(venue.specialities),
     }));
 
-    res.json({
-      success: true,
-      data: { venues: parsedVenues }
-    });
+    if (venues.length) {
+      return venues;
+    }
+  } catch (error) {
+    console.warn('Falling back to seed venues:', error?.message || error);
+  }
+
+  return VENUE_DETAILS.map((venue, index) => ({
+    id: index + 1,
+    ...venue,
+    specialities: parseJsonArray(venue.specialities),
+  }));
+}
+
+router.get('/', async (req, res) => {
+  try {
+    const venues = (await listVenues()).sort((a, b) => `${a.state || ''}${a.city || ''}${a.name || ''}`.localeCompare(`${b.state || ''}${b.city || ''}${b.name || ''}`));
+    res.json({ success: true, data: { venues } });
   } catch (error) {
     console.error('Get venues error:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch venues from database' });
   }
 });
 
-// Get venue by database ID
 router.get('/:id', async (req, res, next) => {
   if (!/^\d+$/.test(req.params.id)) return next();
   try {
-    const db = await getDb();
-    const venue = await db.prepare(`
-      SELECT id, location_id, sub_venue_id, name, address, city, state, description, about,
-             total_area, halls, capacity, established, website, specialities, image, created_at, updated_at
-      FROM venues
-      WHERE id = ?
-    `).get(req.params.id);
-
+    const db = getFirestoreDb();
+    const snap = await db.collection(FIRESTORE_COLLECTIONS.venues).where('id', '==', req.params.id).limit(1).get();
+    const venue = serializeFirestoreDocs(snap)[0];
     if (!venue) {
       return res.status(404).json({ success: false, message: 'Venue not found' });
     }
-
-    res.json({
-      success: true,
-      data: { venue: { ...venue, specialities: parseJsonArray(venue.specialities) } }
-    });
+    res.json({ success: true, data: { venue: { ...venue, specialities: parseJsonArray(venue.specialities) } } });
   } catch (error) {
     console.error('Get venue by id error:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch venue from database' });
   }
 });
 
-// Get venue by location and sub-venue ID
 router.get('/:locationId/:subVenueId', async (req, res) => {
   try {
     const { locationId, subVenueId } = req.params;
-    const db = await getDb();
+    const venues = await listVenues();
+    const venue = venues.find((row) => row.location_id === locationId && row.sub_venue_id === subVenueId)
+      || venues.find((row) => matchesVenueFallback(row, locationId, subVenueId));
 
-    const venue = await db.prepare(`
-      SELECT
-        id,
-        location_id,
-        sub_venue_id,
-        name,
-        address,
-        city,
-        state,
-        description,
-        about,
-        total_area,
-        halls,
-        capacity,
-        established,
-        website,
-        specialities,
-        image,
-        created_at,
-        updated_at
-      FROM venues
-      WHERE location_id = ? AND sub_venue_id = ?
-    `).get(locationId, subVenueId);
-
-    if (venue) {
-      const parsedVenue = {
-        ...venue,
-        specialities: parseJsonArray(venue.specialities),
-      };
-
-      return res.json({
-        success: true,
-        data: { venue: parsedVenue }
-      });
+    if (!venue) {
+      return res.status(404).json({ success: false, message: 'Venue not found' });
     }
 
-    const allVenues = await db.prepare(`
-      SELECT
-        id,
-        location_id,
-        sub_venue_id,
-        name,
-        address,
-        city,
-        state,
-        description,
-        about,
-        total_area,
-        halls,
-        capacity,
-        established,
-        website,
-        specialities,
-        image,
-        created_at,
-        updated_at
-      FROM venues
-    `).all();
-    const fallbackVenue = allVenues.find((row) => matchesVenueFallback(row, locationId, subVenueId));
-
-    if (!fallbackVenue) {
-      return res.status(404).json({
-        success: false,
-        message: 'Venue not found'
-      });
-    }
-
-    return res.json({
-      success: true,
-      data: {
-        venue: {
-          ...fallbackVenue,
-          specialities: parseJsonArray(fallbackVenue.specialities),
-        }
-      }
-    });
+    return res.json({ success: true, data: { venue } });
   } catch (error) {
     console.error('Get venue error:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch venue from database' });
   }
 });
 
-// Get venues by location
 router.get('/:locationId', async (req, res) => {
   try {
     const { locationId } = req.params;
-    const db = await getDb();
+    const venues = (await listVenues()).filter((venue) => venue.location_id === locationId)
+      .sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
 
-    const venues = await db.prepare(`
-      SELECT
-        id,
-        location_id,
-        sub_venue_id,
-        name,
-        address,
-        city,
-        state,
-        description,
-        about,
-        total_area,
-        halls,
-        capacity,
-        established,
-        website,
-        specialities,
-        image,
-        created_at,
-        updated_at
-      FROM venues
-      WHERE location_id = ?
-      ORDER BY name
-    `).all(locationId);
-
-    // Parse JSON fields
-    const parsedVenues = venues.map((venue) => ({
-      ...venue,
-      specialities: parseJsonArray(venue.specialities),
-    }));
-
-    res.json({
-      success: true,
-      data: { venues: parsedVenues }
-    });
+    res.json({ success: true, data: { venues } });
   } catch (error) {
     console.error('Get venues by location error:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch venues from database' });

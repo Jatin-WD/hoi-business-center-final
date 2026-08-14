@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react"
+import { createUserWithEmailAndPassword, onIdTokenChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth"
 import { apiClient } from "@/lib/api-client"
+import { firebaseAuth, isFirebaseClientConfigured } from "@/lib/firebase"
 import type { LoginValues, SignUpValues } from "@/lib/validators"
 
 export type AuthUser = {
@@ -17,7 +19,7 @@ interface AuthContextValue {
   error: string | null
   login: (values: LoginValues) => Promise<void>
   register: (values: SignUpValues) => Promise<void>
-  logout: () => void
+  logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
@@ -26,15 +28,6 @@ const STORAGE_TOKEN_KEY = "hoi_auth_token"
 const STORAGE_USER_KEY = "hoi_auth_user"
 const AUTH_SESSION_EXPIRED_EVENT = "hoi-auth-session-expired"
 
-function isJwtExpired(token: string) {
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1] || ""))
-    return typeof payload.exp === "number" && payload.exp * 1000 <= Date.now()
-  } catch {
-    return true
-  }
-}
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [token, setToken] = useState<string | null>(null)
@@ -42,51 +35,59 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    if (!firebaseAuth) {
+      setLoading(false)
+      setUser(null)
+      setToken(null)
+      return
+    }
+
     const clearLocalSession = () => {
       setToken(null)
       setUser(null)
     }
 
     window.addEventListener(AUTH_SESSION_EXPIRED_EVENT, clearLocalSession)
-    const storedToken = sessionStorage.getItem(STORAGE_TOKEN_KEY)
-    if (storedToken) {
-      if (isJwtExpired(storedToken)) {
+    const unsubscribe = onIdTokenChanged(firebaseAuth, async (firebaseUser) => {
+      if (!firebaseUser) {
         apiClient.clearAuthSession()
+        clearLocalSession()
         setLoading(false)
-      } else {
-        setLoading(true)
-        setToken(storedToken)
-        apiClient
-          .getProfile()
-          .then((response) => {
-            setUser(response.data.user)
-            apiClient.setAuthSession(storedToken, response.data.user)
-          })
-          .catch(() => {
-            apiClient.clearAuthSession()
-            setToken(null)
-            setUser(null)
-          })
-          .finally(() => setLoading(false))
+        return
       }
-    } else {
-      const storedUser = sessionStorage.getItem(STORAGE_USER_KEY)
-      if (storedUser) {
-        setUser(null)
-      }
-    }
 
-    return () => window.removeEventListener(AUTH_SESSION_EXPIRED_EVENT, clearLocalSession)
+      setLoading(true)
+      try {
+        const idToken = await firebaseUser.getIdToken()
+        const response = await apiClient.getProfile()
+        setToken(idToken)
+        setUser(response.data.user)
+        apiClient.setAuthSession(idToken, response.data.user)
+      } catch {
+        apiClient.clearAuthSession()
+        clearLocalSession()
+        await signOut(firebaseAuth).catch(() => undefined)
+      } finally {
+        setLoading(false)
+      }
+    })
+
+    return () => {
+      window.removeEventListener(AUTH_SESSION_EXPIRED_EVENT, clearLocalSession)
+      unsubscribe()
+    }
   }, [])
 
   const login = async (values: LoginValues) => {
+    if (!firebaseAuth || !isFirebaseClientConfigured) {
+      const error = new Error("Firebase client config is missing. Add VITE_FIREBASE_* values in .env to use login.");
+      setError(error.message)
+      throw error
+    }
     setLoading(true)
     setError(null)
     try {
-      const response = await apiClient.login(values)
-      setToken(response.data.token)
-      setUser(response.data.user)
-      apiClient.setAuthSession(response.data.token, response.data.user)
+      await signInWithEmailAndPassword(firebaseAuth, values.email, values.password)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed")
       throw err
@@ -96,16 +97,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const register = async (values: SignUpValues) => {
+    if (!firebaseAuth || !isFirebaseClientConfigured) {
+      const error = new Error("Firebase client config is missing. Add VITE_FIREBASE_* values in .env to use signup.");
+      setError(error.message)
+      throw error
+    }
     setLoading(true)
     setError(null)
     try {
-      const response = await apiClient.register(values)
-      if (response.data?.token && response.data?.user) {
-        setToken(response.data.token)
+      const credential = await createUserWithEmailAndPassword(firebaseAuth, values.email, values.password)
+      await updateProfile(credential.user, { displayName: values.name })
+      const idToken = await credential.user.getIdToken()
+      const response = await apiClient.register({
+        idToken,
+        name: values.name,
+        email: values.email,
+        phone: values.phone,
+        company: values.company || "",
+      })
+      if (response?.data?.user) {
         setUser(response.data.user)
-        apiClient.setAuthSession(response.data.token, response.data.user)
+        setToken(idToken)
+        apiClient.setAuthSession(idToken, response.data.user)
       }
     } catch (err) {
+      await firebaseAuth.currentUser?.delete().catch(() => undefined)
+      await signOut(firebaseAuth).catch(() => undefined)
       setError(err instanceof Error ? err.message : "Registration failed")
       throw err
     } finally {
@@ -113,8 +130,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const logout = () => {
-    apiClient.logout().catch(() => undefined)
+  const logout = async () => {
+    await signOut(firebaseAuth).catch(() => undefined)
     setUser(null)
     setToken(null)
     apiClient.clearAuthSession()

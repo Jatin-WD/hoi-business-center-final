@@ -18,7 +18,7 @@ export function AdminHeader({ data, onLogout }: { data: DashboardData | null; on
           </div>
           <div className="hidden rounded-lg border border-slate-200 px-4 py-2 text-right text-sm sm:block">
             <p className="font-semibold">{data?.admin?.email}</p>
-            <p className="text-xs capitalize text-slate-500">{data?.admin?.role}{data?.admin?.envAdmin ? " - default admin" : ""}</p>
+            <p className="text-xs capitalize text-slate-500">{data?.admin?.role || "admin"}</p>
           </div>
           <button type="button" onClick={onLogout} className="inline-flex items-center gap-2 rounded-md border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
             <LogOut size={16} /> Logout

@@ -1,15 +1,56 @@
 # HOI Business Center
 
-Full-stack React + Express app for HOI Business Center services, venues, packages, bookings, user authentication, inquiries, and manpower submissions.
+Full-stack React + Express app for HOI Business Center services, venues, packages, bookings, user authentication, inquiries, manpower submissions, and admin workflows.
 
 ## Stack
 
 - Frontend: React, TypeScript, Vite, Tailwind CSS
-- Backend: Express REST API
-- Database: PostgreSQL, including Supabase on Hostinger
-- Auth: JWT with email/password
+- Backend: Express REST API on Firebase Functions or local Node.js
+- Database: Firestore
+- File storage: Firebase Storage for uploads, with local fallback in development
+- Auth: Firebase Auth
 
-## Required API Surface
+## Runtime Behavior
+
+- The public catalog prefers Firestore, but falls back to bundled seed data if Firestore is unavailable.
+- This keeps the website usable locally even when the Firebase project has not enabled Firestore yet.
+- The admin panel, auth, and writes still use the Firebase-oriented backend routes.
+
+## Firebase Setup
+
+Firebase Hosting serves the frontend, and `firebase.json` rewrites `/api/**` to the backend function.
+
+Firebase deployment:
+
+```bash
+pnpm install
+pnpm run build
+firebase deploy --only hosting,functions
+```
+
+Firebase project:
+
+- Project ID: `hoi-business-center`
+- Hosting URL: `https://hoi-business-center.web.app`
+
+Required Firebase-related env vars:
+
+```env
+GOOGLE_APPLICATION_CREDENTIALS=/absolute/path/to/service-account.json
+FIREBASE_PROJECT_ID=hoi-business-center
+FIREBASE_STORAGE_BUCKET=your-project-id.appspot.com
+FRONTEND_URL=https://hoi-business-center.web.app
+```
+
+For local development, copy `.env.example` to `.env` and fill the values you need. If you use a Firebase service account JSON file, point `GOOGLE_APPLICATION_CREDENTIALS` to that file before starting the backend.
+
+If you are deploying locally with the Firebase CLI, run:
+
+```bash
+firebase use hoi-business-center
+```
+
+## API Surface
 
 - `POST /api/auth/register`
 - `POST /api/auth/login`
@@ -18,62 +59,40 @@ Full-stack React + Express app for HOI Business Center services, venues, package
 - `POST /api/inquiries`
 - `POST /api/manpower`
 - `GET /api/venues`
-- `GET /api/venues/:id`
+- `GET /api/venues/:locationId`
+- `GET /api/venues/:locationId/:subVenueId`
 - `GET /api/services`
 - `GET /api/packages`
-- `GET /api/packages/:id`
+- `GET /api/packages/:category`
+- `GET /api/packages/category/:category`
+- `GET /api/packages/:category/:subcategory`
 - `GET /api/events`
 - `POST /api/bookings`
 - `GET /api/bookings`
 
-## Hostinger Deployment
-
-Deploy this repository as a Hostinger Node.js web app from GitHub.
-
-```text
-Build command: npm run build
-Start command: npm start
-Startup file: app.js
-Output directory: leave default / empty
-```
-
-Required environment variables:
-
-```env
-NODE_ENV=production
-PORT=3000
-DB_CLIENT=postgres
-DATABASE_URL=postgresql://user:password@host:6543/postgres
-DB_SSL=true
-JWT_SECRET=use-a-long-random-secret
-FRONTEND_URL=https://your-hostinger-domain.com
-REQUIREMENT_EMAIL=team@example.com
-EMAIL_USER=your-gmail@gmail.com
-EMAIL_PASS=your-gmail-app-password
-```
-
-The backend creates tables and seeds catalog data from `backend/data/seed-data.js` on startup. You can also run:
-
-```bash
-npm run init-db
-```
-
 ## Local Development
 
-Create `backend/.env` with PostgreSQL credentials, then run:
+Create `.env` from `.env.example`, then run:
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 Frontend: `http://localhost:5173`
-
 Backend health: `http://localhost:3000/api/health`
+
+## Backend Notes
+
+- The backend seeds Firestore CMS/catalog defaults on demand.
+- If Firestore reads fail, public catalog routes fall back to the bundled seed catalog so the site keeps rendering.
+- Uploaded admin images and manpower documents use Firebase Storage when the Firebase bucket is configured.
+- The same codebase still runs locally with `pnpm start`, which is useful while Firebase is being rolled out.
+- Create your first admin account with Firebase Auth and then promote it through the admin access flow if needed.
 
 ## Quality Checks
 
 ```bash
-npm run lint
-npm run build
+pnpm run lint
+pnpm run build
 ```

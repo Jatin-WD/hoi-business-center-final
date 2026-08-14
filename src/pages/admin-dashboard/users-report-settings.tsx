@@ -75,19 +75,17 @@ export function SettingsPanel({ data, passwordDraft, setPasswordDraft, onChangeP
           <h3 className="font-bold">Current Admin</h3>
           <div className="mt-4 rounded-lg bg-slate-50 p-4">
             <p className="font-bold">{data?.admin?.email || "Admin"}</p>
-            <p className="mt-1 text-sm capitalize text-slate-500">{data?.admin?.role || "admin"}{data?.admin?.envAdmin ? " - default environment admin" : ""}</p>
+            <p className="mt-1 text-sm capitalize text-slate-500">{data?.admin?.role || "admin"}</p>
           </div>
         </div>
 
         <form onSubmit={onChangePassword} className="rounded-lg border border-slate-200 bg-white p-4">
           <h3 className="font-bold">Change My Password</h3>
-          {data?.admin?.envAdmin ? <p className="mt-2 text-sm text-slate-500">The default admin password is managed through server environment variables. Create a database admin account to use the password change flow.</p> : (
-            <div className="mt-4 space-y-3">
-              <TextInput label="Current password" value={passwordDraft.currentPassword || ""} onChange={(value) => setPasswordDraft({ ...passwordDraft, currentPassword: value })} type="password" />
-              <TextInput label="New password" value={passwordDraft.newPassword || ""} onChange={(value) => setPasswordDraft({ ...passwordDraft, newPassword: value })} type="password" />
-              <button disabled={saving} className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-slate-200 px-4 py-3 text-sm font-bold"><KeyRound size={16} /> Change Password</button>
-            </div>
-          )}
+          <p className="mt-2 text-sm text-slate-500">Firebase Auth updates the password for the current signed-in admin session.</p>
+          <div className="mt-4 space-y-3">
+            <TextInput label="New password" value={passwordDraft.newPassword || ""} onChange={(value) => setPasswordDraft({ ...passwordDraft, newPassword: value })} type="password" />
+            <button disabled={saving} className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-slate-200 px-4 py-3 text-sm font-bold"><KeyRound size={16} /> Change Password</button>
+          </div>
         </form>
       </div>
     </Panel>

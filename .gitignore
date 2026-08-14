@@ -1,15 +1,44 @@
+# Dependencies
 node_modules/
-dist/
+backend/node_modules/
 .pnpm-store/
 
+# Build output
+dist/
+backend/dist/
+coverage/
+
+# Environment files
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Logs and temporary files
 *.log
 *.err.log
-
-.env
+*.out
 _tmp_*
-backend/.env
 backend/_tmp_*
-backend/uploads/*
+tmp_*
 
+# Runtime uploads and generated media
+uploads/
+backend/uploads/
+!uploads/.gitkeep
+!backend/uploads/.gitkeep
+
+# OS / editor files
 .DS_Store
 Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Misc caches
+.cache/
+.eslintcache
+.turbo/
+.firebase/

@@ -1,27 +1,76 @@
-import fs from 'fs';
-import path from 'path';
-import bcrypt from 'bcryptjs';
-import { pathToFileURL } from 'url';
-import { EVENTS, PACKAGE_DETAILS, SERVICE_PACKAGES, VENUE_DETAILS } from '../data/seed-data.js';
+import { FIRESTORE_COLLECTIONS, getFirestoreDb, serverTimestamp } from './firestore.js';
+import { TARGET_LANGUAGES, translateCmsPayload } from './cms-translation.js';
 
-const schemaPath = path.join(process.cwd(), 'backend', 'mysql-schema.sql');
-function getBootstrapAdminRow() {
-  const email = String(process.env.ADMIN_EMAIL || '').trim().toLowerCase();
-  const password = String(process.env.ADMIN_PASSWORD || '');
-  if (!email || !password) return null;
+export const DEFAULT_LANGUAGE = 'en';
+export const SUPPORTED_LANGUAGE_CODES = new Set(['en', 'hi', 'ko']);
 
-  return {
-    name: String(process.env.ADMIN_NAME || 'Admin').trim() || 'Admin',
-    email,
-    passwordHash: bcrypt.hashSync(password, 10),
-    phone: String(process.env.ADMIN_PHONE || '').trim(),
-    company: String(process.env.ADMIN_COMPANY || '').trim(),
-    role: String(process.env.ADMIN_ROLE || 'admin').trim() || 'admin',
-    status: String(process.env.ADMIN_STATUS || 'active').trim() || 'active',
-  };
-}
+const LEGACY_THEME_VALUES = {
+  'theme.primary': '#1a3a8f',
+  'theme.primaryDark': '#0f2460',
+};
 
-const DEFAULT_CONTENT = [
+const HOI_THEME_VALUES = {
+  'theme.primary': '#f97316',
+  'theme.primaryDark': '#111111',
+};
+
+const LEGACY_HOME_VALUES = {
+  'home.hero.focusTitle': 'Official exhibition venue for every public service flow',
+  'home.hero.focusDesc': 'The homepage stays centered on one venue so users do not have to decode multiple locations or mixed service models.',
+  'home.locations.body': 'Yashobhoomi is the official HOI showcase venue for exhibitions and convention-led services.',
+  'home.locations.cardBadge': 'Official venue spotlight',
+  'home.locations.cardTitle': "Yashobhoomi, India International Convention and Expo Centre",
+  'home.locations.cardDescription': "HOI Business Center's primary exhibition venue.",
+  'home.hero.badge': "India's Premier Exhibition & Business Center Service",
+  'home.hero.title': 'Your Complete Exhibition Partner at HOI Business Center',
+  'home.hero.description': 'From booth reservation to booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol - we handle every aspect of your exhibition journey at Yashobhoomi and beyond.',
+  'home.services.title': 'Our Services',
+  'home.services.description': 'Comprehensive exhibition solutions designed to make your presence unforgettable. Select any service to begin your journey.',
+  'home.locations.title': 'Where We Operate',
+  'home.locations.description': "From India's premier MICE destination to global exhibition hubs",
+  'home.why.title': 'Why Choose KIL - HOI Business Center?',
+  'home.why.description': "We are the official HOI partner at Yashobhoomi - India's largest MICE destination. Our end-to-end services ensure your exhibition is seamless, professional, and impactful.",
+  'home.cta.title': 'Ready to Elevate Your Exhibition Presence?',
+  'home.cta.description': 'Contact our team today and let us create an unforgettable exhibition experience for your brand.',
+};
+
+const HOI_HOME_VALUES = {
+  'home.hero.focusTitle': 'Official venue spotlight for Yashobhoomi',
+  'home.hero.focusDesc': 'The homepage keeps every public path centered on one venue and six official services so the content stays simple and clear.',
+  'home.hero.badge': 'Official Yashobhoomi exhibition portal',
+  'home.hero.title': 'Yashobhoomi Exhibition Services by HOI Business Center',
+  'home.hero.description': 'Book the six HOI exhibition services at Yashobhoomi in one place: booth reservation, booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol.',
+  'home.services.title': 'Yashobhoomi Exhibition Services',
+  'home.services.description': 'The public site uses one simple model: Yashobhoomi as the venue, and only these six service paths.',
+  'home.locations.title': 'Yashobhoomi venue spotlight',
+  'home.locations.description': 'Venue-led presentation with factual details and a clean image-first layout.',
+  'home.locations.body': 'Yashobhoomi is the official HOI venue for exhibition and convention-led services.',
+  'home.locations.cardBadge': 'Official venue spotlight',
+  'home.locations.cardTitle': 'Yashobhoomi, India International Convention and Expo Centre',
+  'home.locations.cardDescription': 'HOI Business Center primary exhibition venue at Yashobhoomi.',
+  'home.why.title': 'Why choose HOI Business Center for Yashobhoomi exhibitions?',
+  'home.why.description': 'An official, structured service experience built to reduce confusion and keep the content focused.',
+  'home.cta.title': 'Plan your Yashobhoomi exhibition with HOI',
+  'home.cta.description': 'Use the booking flow or contact the team for a direct response. The workflow stays simple and tied to Yashobhoomi.',
+  'home.process.title': 'Simple booking sequence',
+  'home.process.description': 'The homepage now guides users in a straight line from service discovery to booking.',
+  'home.process.selectService': 'Select service',
+  'home.process.review': 'Review detail page',
+  'home.process.start': 'Start booking',
+  'home.process.coordinate': 'Coordinate execution',
+  'home.process.selectServiceBody': 'Open the service catalog and choose the required service card.',
+  'home.process.reviewBody': 'Read the service description, package links, and Yashobhoomi context.',
+  'home.process.startBody': 'Move into the booking flow to confirm scope and requirements.',
+  'home.process.coordinateBody': 'HOI team manages delivery, support, and on-ground coordination.',
+  'home.why.item1': 'Official venue-first presentation',
+  'home.why.item2': 'Only six canonical services on public site',
+  'home.why.item3': 'Separate manpower application flow',
+  'home.why.item4': 'CMS-backed copy for easy updates',
+  'home.note.body': 'This homepage keeps the public information model strict and simple, which makes it easier for users to understand what HOI offers and where each path leads.',
+  'footer.about': 'HOI Business Center provides end-to-end exhibition services including booth reservation, booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol.',
+};
+
+export const DEFAULT_CONTENT = [
   ['home.hero.badge', 'Home hero badge', 'Official Yashobhoomi exhibition portal'],
   ['home.hero.title', 'Home hero title', 'Yashobhoomi Exhibition Services by HOI Business Center'],
   ['home.hero.highlight', 'Home hero highlight', 'Exhibition Partner'],
@@ -40,33 +89,12 @@ const DEFAULT_CONTENT = [
   ['home.why.description', 'Home why choose description', 'An official, structured service experience built to reduce confusion and keep the content focused.'],
   ['home.cta.title', 'Home CTA title', 'Plan your Yashobhoomi exhibition with HOI'],
   ['home.cta.description', 'Home CTA description', 'Use the booking flow or contact the team for a direct response. The workflow stays simple and tied to Yashobhoomi.'],
-  ['home.process.title', 'Home process title', 'Simple booking sequence'],
-  ['home.process.description', 'Home process description', 'The homepage now guides users in a straight line from service discovery to booking.'],
-  ['home.process.selectService', 'Home process select service', 'Select service'],
-  ['home.process.review', 'Home process review', 'Review detail page'],
-  ['home.process.start', 'Home process start', 'Start booking'],
-  ['home.process.coordinate', 'Home process coordinate', 'Coordinate execution'],
-  ['home.process.selectServiceBody', 'Home process select service body', 'Open the service catalog and choose the required service card.'],
-  ['home.process.reviewBody', 'Home process review body', 'Read the service description, package links, and Yashobhoomi context.'],
-  ['home.process.startBody', 'Home process start body', 'Move into the booking flow to confirm scope and requirements.'],
-  ['home.process.coordinateBody', 'Home process coordinate body', 'HOI team manages delivery, support, and on-ground coordination.'],
-  ['home.why.item1', 'Home why item 1', 'Official venue-first presentation'],
-  ['home.why.item2', 'Home why item 2', 'Only six canonical services on public site'],
-  ['home.why.item3', 'Home why item 3', 'Separate manpower application flow'],
-  ['home.why.item4', 'Home why item 4', 'CMS-backed copy for easy updates'],
-  ['home.note.body', 'Home note body', 'This homepage keeps the public information model strict and simple, which makes it easier for users to understand what HOI offers and where each path leads.'],
-  ['footer.about', 'Footer about text', 'HOI Business Center provides end-to-end exhibition services including booth reservation, booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol.'],
   ['service.hero.title', 'Service page hero title', 'Exhibition Services'],
   ['service.hero.description', 'Service page hero description', 'Explore the six HOI services centered on Yashobhoomi: booth reservation, booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol. Services, packages, and venue content are managed from the admin panel.'],
   ['service.overview.title', 'Service catalog title', 'Service Catalog'],
   ['service.overview.description', 'Service catalog description', 'Choose a service to view package options, or open the Yashobhoomi venue flow to see how each package can be arranged there.'],
   ['services.page.title', 'Services page title', 'Services'],
   ['services.page.description', 'Services page description', 'Explore the six canonical HOI services at Yashobhoomi. Each card opens a dedicated description page, and every service can flow into the booking path.'],
-  ['services.page.eyebrow', 'Services page eyebrow', 'Service catalog'],
-  ['services.section.eyebrow', 'Services section eyebrow', 'Service cards'],
-  ['services.section.title', 'Services section title', 'Tap a service to see the full description'],
-  ['services.card.tag', 'Services card tag', 'HOI Service'],
-  ['services.card.defaultDesc', 'Services card default description', 'Explore the service in detail and move into the booking path when ready.'],
   ['services.booth-reservation.title', 'Booth Reservation detail title', 'Booth Reservation'],
   ['services.booth-reservation.description', 'Booth Reservation detail description', 'Reserve exhibition space at Yashobhoomi with HOI managing availability, coordination, and booking support.'],
   ['services.booth-reservation.overview', 'Booth Reservation overview', 'Booth Reservation is the starting point for every exhibition journey. HOI helps clients secure the right space at Yashobhoomi, align the booking with event objectives, and keep the reservation process clear and coordinated.'],
@@ -108,15 +136,13 @@ const DEFAULT_CONTENT = [
   ['about.hero.title', 'About hero title', 'About HOI Business Center'],
   ['about.hero.description', 'About hero description', 'Your trusted exhibition service partner for booth reservation, booth design, booth install & demolition, logistics services, marketing services, and interpretation & protocol.'],
   ['about.badge', 'About badge', 'About HOI'],
-  ['about.whoTitle', 'About who title', 'Built around Yashobhoomi and the full exhibition journey.'],
+  ['about.whoTitle', 'About who we are title', 'Built around Yashobhoomi and the full exhibition journey.'],
   ['about.body1', 'About body 1', "HOI Business Center is the premier exhibition and event services provider at Yashobhoomi - India's largest MICE (Meetings, Incentives, Conferences & Exhibitions) venue, located in Dwarka, New Delhi."],
   ['about.body2', 'About body 2', 'Our team of seasoned professionals provides comprehensive end-to-end services for exhibitors, ensuring that every aspect of your exhibition journey - from initial booth reservation to final demolition - is handled with expertise and care.'],
   ['about.body3', 'About body 3', 'Everything we present on the public site is centered on Yashobhoomi and the six canonical HOI services, so the experience stays simple and consistent.'],
   ['about.ourApproach', 'About approach badge', 'Our approach'],
   ['about.approachTitle', 'About approach title', 'We combine venue understanding, execution discipline, and client-first planning.'],
   ['about.approachBody', 'About approach body', 'The result is a service experience that feels premium, organized, and directly tied to how exhibitions actually run on the ground.'],
-  ['about.coreValues', 'About core values badge', 'Our Core Values'],
-  ['about.coreValuesTitle', 'About core values title', 'What we stand for'],
   ['about.value.excellence', 'About value excellence', 'Excellence'],
   ['about.value.excellenceDesc', 'About value excellence description', 'We deliver the highest standards in every service.'],
   ['about.value.reliability', 'About value reliability', 'Reliability'],
@@ -125,8 +151,6 @@ const DEFAULT_CONTENT = [
   ['about.value.innovationDesc', 'About value innovation description', 'Creative booth designs and marketing strategies that stand out.'],
   ['about.value.partnership', 'About value partnership', 'Partnership'],
   ['about.value.partnershipDesc', 'About value partnership description', 'We treat every client as a long-term partner, not a transaction.'],
-  ['about.servicesOverview', 'About services overview badge', 'Our Services Overview'],
-  ['about.currentServices', 'About services overview title', 'Current services, arranged like a premium venue section'],
   ['manpower.hero.title', 'Manpower page hero title', 'Apply for Manpower'],
   ['manpower.hero.description', 'Manpower page hero description', 'Select your role, add the role-specific details, and upload your CV. All submissions are stored in the project database.'],
   ['yashobhoomi.hero.title', 'Yashobhoomi hero title', 'Yashobhoomi Exhibition Services'],
@@ -147,135 +171,177 @@ const DEFAULT_CONTENT = [
   ])],
 ];
 
-function escapeSql(value) {
-  return String(value ?? '')
-    .replace(/\\/g, '\\\\')
-    .replace(/'/g, "''")
-    .replace(/\r?\n/g, '\\n');
+function normalizeLanguageCode(value) {
+  const code = String(value || DEFAULT_LANGUAGE).toLowerCase();
+  return SUPPORTED_LANGUAGE_CODES.has(code) ? code : DEFAULT_LANGUAGE;
 }
 
-function row(values) {
-  return `(${values.map((value) => `'${escapeSql(value)}'`).join(', ')})`;
-}
-
-function buildMultiInsert(table, columns, rows) {
-  if (!rows.length) return '';
-  return [
-    `INSERT INTO ${table} (${columns.join(', ')}) VALUES`,
-    rows.map((item) => `  ${row(item)}`).join(',\n'),
-    'ON DUPLICATE KEY UPDATE',
-    columns
-      .filter((column) => !['id', 'created_at'].includes(column))
-      .map((column) => `${column} = VALUES(${column})`)
-      .join(',\n'),
-    ';',
-    '',
-  ].join('\n');
-}
-
-function buildSchemaSeed() {
-  const parts = [];
-
-  parts.push('-- Seed data generated from backend/data/seed-data.js');
-  parts.push('');
-
-  const bootstrapAdmin = getBootstrapAdminRow();
-  if (bootstrapAdmin) {
-    parts.push(buildMultiInsert(
-      'users',
-      ['name', 'email', 'password', 'phone', 'company', 'role', 'status'],
-      [[
-        bootstrapAdmin.name,
-        bootstrapAdmin.email,
-        bootstrapAdmin.passwordHash,
-        bootstrapAdmin.phone,
-        bootstrapAdmin.company,
-        bootstrapAdmin.role,
-        bootstrapAdmin.status,
-      ]],
-    ));
+function normalizeThemeValue(contentKey, value) {
+  if (contentKey in LEGACY_THEME_VALUES && value === LEGACY_THEME_VALUES[contentKey]) {
+    return HOI_THEME_VALUES[contentKey];
   }
+  return value;
+}
 
-  parts.push(buildMultiInsert(
-    'services',
-    ['service_id', 'label', 'packages'],
-    Object.entries(SERVICE_PACKAGES).map(([serviceId, service]) => [
-      serviceId,
-      service.label,
-      JSON.stringify(service.packages),
-    ]),
-  ));
+function normalizeStoredValue(contentKey, value) {
+  return normalizeThemeValue(contentKey, value);
+}
 
-  parts.push(buildMultiInsert(
-    'venues',
-    ['location_id', 'sub_venue_id', 'name', 'address', 'city', 'state', 'description', 'about', 'total_area', 'halls', 'capacity', 'established', 'website', 'specialities', 'image'],
-    VENUE_DETAILS.map((venue) => [
-      venue.locationId,
-      venue.subVenueId,
-      venue.name,
-      venue.address,
-      venue.city,
-      venue.state,
-      venue.description,
-      venue.about,
-      venue.totalArea,
-      venue.halls,
-      venue.capacity,
-      venue.established,
-      venue.website || '',
-      JSON.stringify(venue.specialities || []),
-      venue.image || '',
-    ]),
-  ));
+function normalizeContentRow(row) {
+  return {
+    ...row,
+    value: normalizeStoredValue(row.content_key, row.value),
+  };
+}
 
-  const packageRows = [];
-  for (const [category, subcategories] of Object.entries(PACKAGE_DETAILS)) {
-    for (const [subcategory, pkg] of Object.entries(subcategories)) {
-      packageRows.push([
-        category,
-        subcategory,
-        pkg.title,
-        pkg.subtitle,
-        pkg.price,
-        pkg.priceNote,
-        pkg.description,
-        JSON.stringify(pkg.includes || []),
-        JSON.stringify(pkg.notIncludes || []),
-        pkg.duration,
-      ]);
+async function writeTranslationDoc(db, contentKey, lang, label, value, type) {
+  const ref = db.collection(FIRESTORE_COLLECTIONS.translations).doc(`${contentKey}__${lang}`);
+  await ref.set({
+    id: ref.id,
+    content_key: contentKey,
+    language_code: lang,
+    label,
+    value,
+    type,
+    updated_at: serverTimestamp(),
+    created_at: serverTimestamp(),
+  }, { merge: true });
+}
+
+export async function ensureDefaultCmsContent() {
+  const db = getFirestoreDb();
+  for (const [contentKey, label, value] of DEFAULT_CONTENT) {
+    const ref = db.collection(FIRESTORE_COLLECTIONS.cmsContent).doc(contentKey);
+    const existing = await ref.get();
+    if (!existing.exists) {
+      await ref.set({
+        id: contentKey,
+        content_key: contentKey,
+        label,
+        value,
+        type: 'text',
+        created_at: serverTimestamp(),
+        updated_at: serverTimestamp(),
+      });
     }
   }
-  parts.push(buildMultiInsert(
-    'packages',
-    ['category', 'subcategory', 'title', 'subtitle', 'price', 'price_note', 'description', 'includes', 'not_includes', 'duration'],
-    packageRows,
-  ));
-
-  parts.push(buildMultiInsert(
-    'events',
-    ['name', 'date', 'venue', 'location_id', 'category', 'status'],
-    EVENTS.map(([name, date, venue, locationId, category]) => [name, date, venue, locationId, category, 'Upcoming']),
-  ));
-
-  parts.push(buildMultiInsert(
-    'cms_content',
-    ['content_key', 'label', 'value', 'type'],
-    DEFAULT_CONTENT.map(([key, label, value]) => [key, label, value, 'text']),
-  ));
-
-  return parts.filter(Boolean).join('\n');
 }
 
-function main() {
-  if (!fs.existsSync(schemaPath)) {
-    throw new Error(`Schema file not found at ${schemaPath}`);
+export async function loadCmsContent(lang = DEFAULT_LANGUAGE) {
+  await ensureDefaultCmsContent();
+  const db = getFirestoreDb();
+  const baseSnap = await db.collection(FIRESTORE_COLLECTIONS.cmsContent).get();
+  const baseRows = baseSnap.docs.map((docSnap) => normalizeContentRow({ id: docSnap.id, ...docSnap.data() }));
+
+  if (lang === DEFAULT_LANGUAGE) {
+    return baseRows.sort((a, b) => String(a.content_key || '').localeCompare(String(b.content_key || '')));
   }
 
-  const schemaSql = fs.readFileSync(schemaPath, 'utf8').replace(/\n-- Seed data generated from backend\/data\/seed-data\.js[\s\S]*$/, '').trimEnd();
-  const next = `${schemaSql}\n\n${buildSchemaSeed()}\n`;
-  fs.writeFileSync(schemaPath, next, 'utf8');
-  console.log(`Updated ${schemaPath}`);
+  const translationSnap = await db.collection(FIRESTORE_COLLECTIONS.translations)
+    .where('language_code', '==', lang)
+    .get();
+  const translationMap = new Map(
+    translationSnap.docs.map((docSnap) => {
+      const row = docSnap.data();
+      return [row.content_key, {
+        label: row.label,
+        value: normalizeStoredValue(row.content_key, row.value),
+        type: row.type,
+        updated_at: row.updated_at,
+      }];
+    }),
+  );
+
+  return baseRows
+    .map((row) => {
+      const translation = translationMap.get(row.content_key);
+      if (!translation) return row;
+      return {
+        ...row,
+        label: translation.label || row.label,
+        value: translation.value ?? row.value,
+        type: translation.type || row.type,
+        updated_at: translation.updated_at || row.updated_at,
+      };
+    })
+    .sort((a, b) => String(a.content_key || '').localeCompare(String(b.content_key || '')));
 }
 
-const scriptUrl = process.argv[1] ? pathToFileURL(process.argv[1]).href : '';
-if (import.meta.url === scriptUrl) main();
+export async function saveCmsContent({ contentKey, label, value, type = 'text', languageCode }) {
+  if (!contentKey || !label || typeof value !== 'string') {
+    throw new Error('Content key, label, and value are required');
+  }
+
+  const lang = normalizeLanguageCode(languageCode);
+  const normalizedValue = normalizeThemeValue(contentKey, value);
+  const db = getFirestoreDb();
+
+  if (lang === DEFAULT_LANGUAGE) {
+    const ref = db.collection(FIRESTORE_COLLECTIONS.cmsContent).doc(contentKey);
+    const existing = await ref.get();
+    await ref.set({
+      id: contentKey,
+      content_key: contentKey,
+      label,
+      value: normalizedValue,
+      type,
+      created_at: existing.exists ? existing.data()?.created_at || serverTimestamp() : serverTimestamp(),
+      updated_at: serverTimestamp(),
+    }, { merge: true });
+
+    const translatedTargets = [];
+    for (const targetLang of TARGET_LANGUAGES) {
+      try {
+        const translatedLabel = await translateCmsPayload(label, targetLang, 'label');
+        const translatedValue = await translateCmsPayload(normalizedValue, targetLang, contentKey);
+        const translatedLabelText = typeof translatedLabel === 'string' ? translatedLabel : label;
+        const translatedValueText = typeof translatedValue === 'string' ? translatedValue : JSON.stringify(translatedValue);
+        await writeTranslationDoc(db, contentKey, targetLang, translatedLabelText, translatedValueText, type);
+        translatedTargets.push(targetLang);
+      } catch (translationError) {
+        console.warn(`CMS auto-translation skipped for ${contentKey} -> ${targetLang}:`, translationError.message || translationError);
+      }
+    }
+
+    return {
+      translation: {
+        status: translatedTargets.length ? 'completed' : 'skipped',
+        languages: translatedTargets,
+      },
+    };
+  }
+
+  await writeTranslationDoc(db, contentKey, lang, label, normalizedValue, type);
+  return {
+    translation: {
+      status: 'manual',
+      language: lang,
+    },
+  };
+}
+
+export async function deleteCmsContent(contentKey, languageCode) {
+  const lang = normalizeLanguageCode(languageCode);
+  const db = getFirestoreDb();
+
+  if (lang === DEFAULT_LANGUAGE) {
+    await db.collection(FIRESTORE_COLLECTIONS.cmsContent).doc(contentKey).delete();
+    const translationSnap = await db.collection(FIRESTORE_COLLECTIONS.translations).where('content_key', '==', contentKey).get();
+    await Promise.all(translationSnap.docs.map((docSnap) => docSnap.ref.delete()));
+    return;
+  }
+
+  const translationSnap = await db.collection(FIRESTORE_COLLECTIONS.translations)
+    .where('content_key', '==', contentKey)
+    .get();
+  const matchedDocs = translationSnap.docs.filter((docSnap) => String(docSnap.data()?.language_code || '') === lang);
+  await Promise.all(matchedDocs.map((docSnap) => docSnap.ref.delete()));
+}
+
+export function normalizeCmsLanguageCode(value) {
+  return normalizeLanguageCode(value);
+}
+
+export function normalizeCmsValue(contentKey, value) {
+  return normalizeThemeValue(contentKey, value);
+}

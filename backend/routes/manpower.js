@@ -1,12 +1,10 @@
 import express from 'express';
 import multer from 'multer';
-import fs from 'fs';
-import path from 'path';
-import { getDb } from '../config/database.js';
 import { buildRequirementHtml, REQUIREMENT_EMAIL, sendRequirementMail } from '../utils/mailer.js';
+import { FIRESTORE_COLLECTIONS, getFirestoreDb, serverTimestamp } from '../services/firestore.js';
+import { saveUploadedFile } from '../services/storage.js';
 
 const router = express.Router();
-const uploadDir = path.join(process.cwd(), 'uploads');
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^\+?[0-9][0-9\s-]{7,}[0-9]$/;
 
@@ -27,40 +25,24 @@ function stringifyList(value) {
   return JSON.stringify(parseList(value));
 }
 
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
 const upload = multer({
-  storage: storage,
+  storage: multer.memoryStorage(),
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
+    fileSize: 5 * 1024 * 1024,
   },
   fileFilter: (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|pdf|doc|docx/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
+    const allowedMimeTypes = /image\/(jpeg|jpg|png)|application\/pdf|application\/msword|application\/vnd.openxmlformats-officedocument.wordprocessingml.document/;
+    const allowedExtensions = /\.(jpeg|jpg|png|pdf|doc|docx)$/i;
+    const extname = allowedExtensions.test(file.originalname.toLowerCase());
+    const mimetype = allowedMimeTypes.test(file.mimetype);
 
     if (mimetype && extname) {
       return cb(null, true);
-    } else {
-      cb(new Error('Invalid file type'));
     }
-  }
+    cb(new Error('Invalid file type'));
+  },
 });
 
-// Create manpower request
 router.post('/', upload.array('documents', 5), async (req, res) => {
   try {
     const {
@@ -73,48 +55,60 @@ router.post('/', upload.array('documents', 5), async (req, res) => {
       languages,
       industries,
       tasks,
-      availability
+      availability,
     } = req.body;
 
     if (!role || !name || !emailRegex.test(email || '') || !phoneRegex.test(phone || '')) {
       return res.status(400).json({
         success: false,
-        message: 'Enter a valid role, name, email, and phone number'
+        message: 'Enter a valid role, name, email, and phone number',
       });
     }
 
-    // Handle file uploads
-    const documents = req.files ? req.files.map(file => file.filename) : [];
-
-    const db = await getDb();
+    const uploadedDocuments = [];
+    for (const file of req.files || []) {
+      const uploadResult = await saveUploadedFile({
+        folder: 'manpower-documents',
+        originalname: file.originalname,
+        buffer: file.buffer,
+        mimetype: file.mimetype,
+        makePublic: false,
+      });
+      uploadedDocuments.push({
+        filename: uploadResult.filename,
+        originalName: file.originalname,
+        storagePath: uploadResult.storagePath,
+      });
+    }
 
     const languageList = parseList(languages);
     const industryList = parseList(industries);
     const taskList = parseList(tasks);
 
-    // Insert manpower request
-    const result = await db.run(
-      `INSERT INTO manpower_requests
-       (role, name, email, phone, company, experience, languages, industries, tasks, availability, documents)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        role,
-        name,
-        email,
-        phone,
-        company,
-        experience,
-        stringifyList(languages),
-        stringifyList(industries),
-        stringifyList(tasks),
-        availability,
-        JSON.stringify(documents)
-      ]
-    );
+    const db = getFirestoreDb();
+    const docRef = db.collection(FIRESTORE_COLLECTIONS.manpowerRequests).doc();
+    await docRef.set({
+      id: docRef.id,
+      role,
+      name,
+      email,
+      phone,
+      company: company || '',
+      experience: experience || '',
+      languages: stringifyList(languages),
+      industries: stringifyList(industries),
+      tasks: stringifyList(tasks),
+      availability: availability || '',
+      documents: JSON.stringify(uploadedDocuments),
+      status: 'pending',
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
+    });
 
     const attachments = (req.files || []).map((file) => ({
       filename: file.originalname,
-      path: file.path,
+      content: file.buffer,
+      contentType: file.mimetype,
     }));
 
     try {
@@ -132,7 +126,7 @@ router.post('/', upload.array('documents', 5), async (req, res) => {
           Industries: industryList.join(', '),
           Tasks: taskList.join('<br>'),
           Availability: availability,
-          Documents: documents.join(', '),
+          Documents: uploadedDocuments.map((doc) => doc.originalName || doc.filename).join(', '),
           'Submitted To': REQUIREMENT_EMAIL,
         }),
         attachments,
@@ -144,13 +138,13 @@ router.post('/', upload.array('documents', 5), async (req, res) => {
     res.status(201).json({
       success: true,
       message: `Manpower request submitted successfully to ${REQUIREMENT_EMAIL}`,
-      data: { requestId: result.lastID }
+      data: { requestId: docRef.id },
     });
   } catch (error) {
     console.error('Create manpower request error:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to submit manpower request'
+      message: 'Failed to submit manpower request',
     });
   }
 });

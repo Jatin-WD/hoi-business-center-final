@@ -1,6 +1,7 @@
 import express from 'express';
-import { getDb } from '../config/database.js';
 import { PACKAGE_DETAILS } from '../data/seed-data.js';
+import { FIRESTORE_COLLECTIONS, getFirestoreDb } from '../services/firestore.js';
+import { serializeFirestoreDocs } from '../services/firestore-serialize.js';
 
 const router = express.Router();
 
@@ -55,29 +56,37 @@ function mergeCanonicalPackages(rows, category) {
   });
 }
 
-// Get all packages
+async function loadPackages() {
+  try {
+    const db = getFirestoreDb();
+    const snap = await db.collection(FIRESTORE_COLLECTIONS.packages).get();
+    const packages = serializeFirestoreDocs(snap);
+    if (packages.length) {
+      return packages;
+    }
+  } catch (error) {
+    console.warn('Falling back to seed packages:', error?.message || error);
+  }
+
+  return CANONICAL_PACKAGE_CATEGORIES.flatMap((category) => (
+    Object.entries(PACKAGE_DETAILS[category] || {}).map(([subcategory, data]) => ({
+      category,
+      subcategory,
+      title: data.title,
+      subtitle: data.subtitle,
+      price: data.price,
+      price_note: data.priceNote,
+      description: data.description,
+      includes: data.includes,
+      not_includes: data.notIncludes,
+      duration: data.duration,
+    }))
+  ));
+}
+
 router.get('/', async (req, res) => {
   try {
-    const db = await getDb();
-    const packages = await db.prepare(`
-      SELECT
-        id,
-        category,
-        subcategory,
-        title,
-        subtitle,
-        price,
-        price_note,
-        description,
-        includes,
-        not_includes,
-        duration,
-        created_at,
-        updated_at
-      FROM packages
-      ORDER BY category, subcategory
-    `).all();
-
+    const packages = await loadPackages();
     const parsedPackages = CANONICAL_PACKAGE_CATEGORIES.flatMap((category) => {
       const categoryRows = packages.filter((pkg) => pkg.category === category);
       return mergeCanonicalPackages(categoryRows, category);
@@ -85,7 +94,7 @@ router.get('/', async (req, res) => {
 
     res.json({
       success: true,
-      data: { packages: parsedPackages }
+      data: { packages: parsedPackages },
     });
   } catch (error) {
     console.error('Get packages error:', error);
@@ -93,37 +102,15 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get packages by category
 router.get('/category/:category', async (req, res) => {
   try {
     const { category } = req.params;
-    const db = await getDb();
-
-    const packages = await db.prepare(`
-      SELECT
-        id,
-        category,
-        subcategory,
-        title,
-        subtitle,
-        price,
-        price_note,
-        description,
-        includes,
-        not_includes,
-        duration,
-        created_at,
-        updated_at
-      FROM packages
-      WHERE category = ?
-      ORDER BY subcategory
-    `).all(category);
-
+    const packages = (await loadPackages()).filter((pkg) => pkg.category === category);
     const parsedPackages = mergeCanonicalPackages(packages, category);
 
     res.json({
       success: true,
-      data: { packages: parsedPackages }
+      data: { packages: parsedPackages },
     });
   } catch (error) {
     console.error('Get packages by category error:', error);
@@ -131,35 +118,14 @@ router.get('/category/:category', async (req, res) => {
   }
 });
 
-// Get package by database ID
 router.get('/:id', async (req, res, next) => {
   if (!/^\d+$/.test(req.params.id)) return next();
   try {
-    const db = await getDb();
-    const pkg = await db.prepare(`
-      SELECT
-        id,
-        category,
-        subcategory,
-        title,
-        subtitle,
-        price,
-        price_note,
-        description,
-        includes,
-        not_includes,
-        duration,
-        created_at,
-        updated_at
-      FROM packages
-      WHERE id = ?
-    `).get(req.params.id);
+    const packages = await loadPackages();
+    const pkg = packages.find((item) => String(item.id) === String(req.params.id));
 
     if (!pkg) {
-      return res.status(404).json({
-        success: false,
-        message: 'Package not found'
-      });
+      return res.status(404).json({ success: false, message: 'Package not found' });
     }
 
     res.json({
@@ -168,9 +134,9 @@ router.get('/:id', async (req, res, next) => {
         package: {
           ...pkg,
           includes: parseJsonArray(pkg.includes),
-          notIncludes: parseJsonArray(pkg.not_includes)
-        }
-      }
+          notIncludes: parseJsonArray(pkg.not_includes),
+        },
+      },
     });
   } catch (error) {
     console.error('Get package by id error:', error);
@@ -178,38 +144,16 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-// Get specific package
 router.get('/:category/:subcategory', async (req, res) => {
   try {
     const { category, subcategory } = req.params;
-    const db = await getDb();
-
-    const pkg = await db.prepare(`
-      SELECT
-        id,
-        category,
-        subcategory,
-        title,
-        subtitle,
-        price,
-        price_note,
-        description,
-        includes,
-        not_includes,
-        duration,
-        created_at,
-        updated_at
-      FROM packages
-      WHERE category = ? AND subcategory = ?
-    `).get(category, subcategory);
+    const packages = await loadPackages();
+    const pkg = packages.find((item) => item.category === category && item.subcategory === subcategory);
 
     if (!pkg) {
       const fallback = getCanonicalPackage(category, subcategory);
       if (!fallback) {
-        return res.status(404).json({
-          success: false,
-          message: 'Package not found'
-        });
+        return res.status(404).json({ success: false, message: 'Package not found' });
       }
 
       return res.json({
@@ -226,21 +170,20 @@ router.get('/:category/:subcategory', async (req, res) => {
             includes: fallback.includes,
             notIncludes: fallback.notIncludes,
             duration: fallback.duration,
-          }
-        }
+          },
+        },
       });
     }
 
-    // Parse JSON fields
     const parsedPackage = {
       ...pkg,
       includes: parseJsonArray(pkg.includes),
-      notIncludes: parseJsonArray(pkg.not_includes)
+      notIncludes: parseJsonArray(pkg.not_includes),
     };
 
     res.json({
       success: true,
-      data: { package: parsedPackage }
+      data: { package: parsedPackage },
     });
   } catch (error) {
     console.error('Get package error:', error);

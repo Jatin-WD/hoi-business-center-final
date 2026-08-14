@@ -1,13 +1,13 @@
 import express from 'express';
-import bcrypt from 'bcryptjs';
-import { getDb } from '../config/database.js';
-import { signToken, verifyToken } from '../middleware/auth.js';
+import { getAuth } from 'firebase-admin/auth';
 import { createRateLimiter } from '../middleware/rateLimit.js';
+import { getUserProfile, setUserCustomClaims, upsertUserProfile } from '../services/firestore.js';
 import { buildRequirementHtml, REQUIREMENT_EMAIL, sendRequirementMail } from '../utils/mailer.js';
 
 const router = express.Router();
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^\+?[0-9][0-9\s-]{7,}[0-9]$/;
+
 const loginLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000,
   limit: 10,
@@ -19,17 +19,20 @@ const registerLimiter = createRateLimiter({
   message: 'Too many registration attempts. Please try again later.',
 });
 
-function validPassword(password) {
-  return typeof password === 'string' && password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password);
-}
-
 function publicUser(user) {
-  const { password, ...cleanUser } = user;
+  if (!user) return null;
+  const { createdAt, updatedAt, ...cleanUser } = user;
   return cleanUser;
 }
 
-function issueToken(user) {
-  return signToken({ id: user.id, email: user.email, role: user.role || 'user' }, { expiresIn: '7d' });
+async function verifyTokenFromRequest(req) {
+  const token = req.body.idToken || req.headers.authorization?.replace('Bearer ', '');
+  if (!token) {
+    const error = new Error('No token provided');
+    error.statusCode = 401;
+    throw error;
+  }
+  return getAuth().verifyIdToken(token);
 }
 
 async function notify(subject, fields) {
@@ -45,75 +48,100 @@ async function notify(subject, fields) {
 
 router.post('/register', registerLimiter, async (req, res) => {
   try {
-    const { name, email, password, phone, company } = req.body;
-    const cleanEmail = String(email || '').toLowerCase().trim();
+    const decoded = await verifyTokenFromRequest(req);
+    const { name, phone, company } = req.body;
+    const cleanName = String(name || decoded.name || '').trim();
     const cleanPhone = String(phone || '').trim();
+    const cleanCompany = String(company || '').trim();
 
-    if (!name || !emailRegex.test(cleanEmail) || !phoneRegex.test(cleanPhone) || !validPassword(password)) {
-      return res.status(400).json({ success: false, message: 'Enter a valid name, email, phone, and password with 8 characters, one uppercase letter, and one number' });
+    if (!cleanName || !emailRegex.test(String(decoded.email || '')) || !phoneRegex.test(cleanPhone)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Enter a valid name, email, and phone number',
+      });
     }
 
-    const db = await getDb();
-    const existing = await db.get('SELECT id FROM users WHERE lower(email) = ? OR phone = ?', [cleanEmail, cleanPhone]);
-    if (existing) return res.status(409).json({ success: false, message: 'User already exists with this email or phone number' });
+    const user = await upsertUserProfile(decoded.uid, {
+      name: cleanName,
+      email: String(decoded.email || '').toLowerCase().trim(),
+      phone: cleanPhone,
+      company: cleanCompany,
+      role: 'user',
+      status: 'active',
+    });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await db.run(
-      'INSERT INTO users (name, email, password, phone, company) VALUES (?, ?, ?, ?, ?)',
-      [name.trim(), cleanEmail, hashedPassword, cleanPhone, company || null]
-    );
-    const user = await db.get('SELECT id, name, email, phone, company, role, status, created_at FROM users WHERE lower(email) = ?', [cleanEmail]);
-    await notify(`New HOI user signup: ${user.name}`, { Name: user.name, Email: user.email, Phone: user.phone, Company: user.company });
+    await setUserCustomClaims(decoded.uid, { role: user.role || 'user' });
+    await notify(`New HOI user signup: ${user.name}`, {
+      Name: user.name,
+      Email: user.email,
+      Phone: user.phone,
+      Company: user.company,
+    });
 
-    res.status(201).json({ success: true, message: 'User registered successfully', data: { user, token: issueToken(user) } });
+    res.status(201).json({
+      success: true,
+      message: 'User registered successfully',
+      data: { user: publicUser(user), token: req.body.idToken },
+    });
   } catch (error) {
     console.error('Register error:', error);
-    res.status(500).json({ success: false, message: 'Registration failed' });
+    const status = error.statusCode || 500;
+    res.status(status).json({ success: false, message: status === 401 ? 'No token provided' : 'Registration failed' });
   }
 });
 
 router.post('/login', loginLimiter, async (req, res) => {
   try {
-    const cleanEmail = String(req.body.email || '').toLowerCase().trim();
-    const password = String(req.body.password || '');
-    if (!emailRegex.test(cleanEmail) || password.length < 8) {
-      return res.status(400).json({ success: false, message: 'Enter a valid email and password' });
-    }
+    const decoded = await verifyTokenFromRequest(req);
+    const user = (await getUserProfile(decoded.uid)) || await upsertUserProfile(decoded.uid, {
+      email: String(decoded.email || '').toLowerCase().trim(),
+      name: String(decoded.name || '').trim(),
+      role: 'user',
+      status: 'active',
+    });
 
-    const db = await getDb();
-    const user = await db.get('SELECT * FROM users WHERE lower(email) = ?', [cleanEmail]);
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
-    }
     if (String(user.status || 'active').toLowerCase() === 'suspended') {
       return res.status(403).json({ success: false, message: 'This account is suspended. Please contact support.' });
     }
 
-    await notify(`HOI login: ${user.name}`, { Name: user.name, Email: user.email, Phone: user.phone, Method: 'Email password' });
-    res.json({ success: true, message: 'Login successful', data: { user: publicUser(user), token: issueToken(user) } });
+    await notify(`HOI login: ${user.name || user.email}`, {
+      Name: user.name || decoded.name || '',
+      Email: user.email || decoded.email || '',
+      Phone: user.phone || '',
+      Method: 'Firebase Auth',
+    });
+
+    res.json({
+      success: true,
+      message: 'Login successful',
+      data: { user: publicUser(user), token: req.body.idToken || req.headers.authorization?.replace('Bearer ', '') || '' },
+    });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ success: false, message: 'Login failed' });
+    const status = error.statusCode || 500;
+    res.status(status).json({ success: false, message: status === 401 ? 'No token provided' : 'Login failed' });
   }
 });
 
 async function profile(req, res) {
   try {
-    const token = req.headers.authorization?.replace('Bearer ', '');
-    if (!token) return res.status(401).json({ success: false, message: 'No token provided' });
+    const decoded = await verifyTokenFromRequest(req);
+    const user = (await getUserProfile(decoded.uid)) || await upsertUserProfile(decoded.uid, {
+      email: String(decoded.email || '').toLowerCase().trim(),
+      name: String(decoded.name || '').trim(),
+      role: 'user',
+      status: 'active',
+    });
 
-    const decoded = verifyToken(token);
-    const db = await getDb();
-    const user = await db.get('SELECT id, name, email, phone, company, role, status, created_at FROM users WHERE id = ?', [decoded.id]);
-    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     if (String(user.status || 'active').toLowerCase() === 'suspended') {
       return res.status(403).json({ success: false, message: 'This account is suspended. Please contact support.' });
     }
 
-    res.json({ success: true, data: { user } });
+    res.json({ success: true, data: { user: publicUser(user) } });
   } catch (error) {
     console.error('Profile error:', error);
-    res.status(401).json({ success: false, message: 'Invalid token' });
+    const status = error.statusCode || 401;
+    res.status(status).json({ success: false, message: status === 401 ? 'Invalid token' : 'Failed to load profile' });
   }
 }
 

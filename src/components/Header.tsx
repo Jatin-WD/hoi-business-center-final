@@ -97,7 +97,7 @@ export default function Header() {
   );
 }
 
-function UserActions({ name, logout }: { name: string; logout: () => void }) {
+function UserActions({ name, logout }: { name: string; logout: () => void | Promise<void> }) {
   const { language } = useSiteLanguage();
   const t = (key: string, fallback = "") => translateSiteText(language, key, fallback);
 

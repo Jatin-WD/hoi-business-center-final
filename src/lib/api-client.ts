@@ -1,4 +1,5 @@
 import { adminApiMethods } from "./admin-api-methods";
+import { getFirebaseIdToken } from "./firebase";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:3000/api" : "/api");
 const AUTH_TOKEN_KEY = "hoi_auth_token";
@@ -28,7 +29,7 @@ class ApiClient {
       headers,
     };
 
-    const token = this.getAuthToken();
+    const token = await this.getAuthToken();
     if (token && !headers.Authorization && !headers.authorization) {
       headers.Authorization = `Bearer ${token}`;
     }
@@ -52,8 +53,8 @@ class ApiClient {
     }
   }
 
-  getAuthToken() {
-    return sessionStorage.getItem(AUTH_TOKEN_KEY);
+  async getAuthToken() {
+    return sessionStorage.getItem(AUTH_TOKEN_KEY) || (await getFirebaseIdToken());
   }
 
   setAuthSession(token: string, user: unknown) {
@@ -166,7 +167,7 @@ class ApiClient {
 
 function friendlyTextError(text: string, status: number) {
   if (status === 503 || text.includes("503 Service Unavailable")) {
-    return "Server is temporarily unavailable. Please restart the Hostinger app and check database environment variables.";
+    return "Server is temporarily unavailable. Please check the backend deployment and environment variables.";
   }
   if (text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")) {
     return `Server returned an HTML error page (${status}).`;

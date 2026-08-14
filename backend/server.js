@@ -13,23 +13,20 @@ import eventsRoutes from './routes/events.js';
 import bookingsRoutes from './routes/bookings.js';
 import adminRoutes from './routes/admin.js';
 import cmsRoutes from './routes/cms.js';
-import { seedDatabaseIfEmpty } from './scripts/init-db.js';
-import { getDatabaseConfigStatus } from './config/database.js';
 import { scheduleIiccEventSync, syncIiccEvents } from './services/iicc-event-sync.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
+import { isFirebaseRuntime } from './config/firebase.js';
 import './config/env.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const databaseStatus = {
-  ready: false,
-  attempts: 0,
-  lastError: '',
-};
+const serveFrontend = !isFirebaseRuntime();
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'http://localhost:5173',
   'http://127.0.0.1:5173',
+  /^https:\/\/.*\.web\.app$/,
+  /^https:\/\/.*\.firebaseapp\.com$/,
 ].filter(Boolean);
 const allowedDevOrigin = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}):\d{4,5}$/;
 
@@ -52,7 +49,16 @@ app.use(helmet({
 }));
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin) || allowedDevOrigin.test(origin)) {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+    const isAllowed = allowedOrigins.some((allowedOrigin) => (
+      typeof allowedOrigin === 'string'
+        ? allowedOrigin === origin
+        : allowedOrigin.test(origin)
+    ));
+    if (isAllowed || allowedDevOrigin.test(origin)) {
       callback(null, true);
       return;
     }
@@ -62,7 +68,9 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads/admin-images', express.static(path.join(process.cwd(), 'uploads', 'admin-images')));
+if (serveFrontend) {
+  app.use('/uploads/admin-images', express.static(path.join(process.cwd(), 'uploads', 'admin-images')));
+}
 
 app.use('/api/auth', authRoutes);
 app.use('/api/venues', venuesRoutes);
@@ -78,55 +86,47 @@ app.use('/api/cms', cmsRoutes);
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
-    database: databaseStatus.ready ? 'ready' : 'starting',
-    databaseConfig: getDatabaseConfigStatus(),
-    databaseAttempts: databaseStatus.attempts,
-    databaseError: databaseStatus.ready ? '' : databaseStatus.lastError,
+    database: 'firestore',
+    runtime: isFirebaseRuntime() ? 'firebase' : 'node',
     timestamp: new Date().toISOString(),
   });
 });
 
-const distPath = path.join(process.cwd(), 'dist');
-app.use(express.static(distPath));
-app.get('*', (req, res, next) => {
-  if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) {
-    next();
-    return;
-  }
-  res.sendFile(path.join(distPath, 'index.html'));
-});
+if (serveFrontend) {
+  const distPath = path.join(process.cwd(), 'dist');
+  app.use(express.static(distPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) {
+      next();
+      return;
+    }
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
 
 app.use(notFound);
 app.use(errorHandler);
 
-async function initializeDatabase(attempt = 1) {
-  databaseStatus.attempts = attempt;
-  try {
-    await seedDatabaseIfEmpty();
-    databaseStatus.ready = true;
-    databaseStatus.lastError = '';
-    console.log('Database initialized');
-    void syncIiccEvents({ pruneMissing: true }).catch((error) => {
-      console.error('Initial IICC event sync failed:', error);
+let initializePromise;
+
+export async function ensureDatabaseInitialized() {
+  if (!initializePromise) {
+    initializePromise = Promise.resolve().then(() => {
+      void syncIiccEvents({ pruneMissing: true }).catch((error) => {
+        console.error('Initial IICC event sync failed:', error);
+      });
     });
-  } catch (error) {
-    databaseStatus.ready = false;
-    databaseStatus.lastError = error.message;
-    const delay = Math.min(30000, 5000 * attempt);
-    console.error(`Database initialization failed, retrying in ${delay / 1000}s:`, {
-      message: error.message,
-      code: error.code,
-      stack: error.stack,
-      databaseConfig: getDatabaseConfigStatus(),
-    });
-    setTimeout(() => initializeDatabase(attempt + 1), delay);
   }
+  return initializePromise;
 }
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Backend server running on port ${PORT}`);
-  console.log(`Health check: http://localhost:${PORT}/api/health`);
-  console.log('Database config:', getDatabaseConfigStatus());
-  scheduleIiccEventSync({ runImmediately: false });
-  initializeDatabase();
-});
+export async function startServer() {
+  await ensureDatabaseInitialized();
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Backend server running on port ${PORT}`);
+    console.log(`Health check: http://localhost:${PORT}/api/health`);
+    scheduleIiccEventSync({ runImmediately: false });
+  });
+}
+
+export { app };
